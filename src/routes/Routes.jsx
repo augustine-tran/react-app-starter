@@ -11,23 +11,28 @@ var RouteHandler = Router.RouteHandler;
  Components
  =================================*/
 var App = require('../components/App'),
+    HelloWorld = require('../components/HelloWorld'),
+    //What = require('../components/What'),
     Test = require('../components/Test');
+;
 
 /*=================================
  ROUTES
  =================================*/
 
 var routes = (
-  <Route name="app" path="/" handler={App} >
-    <Route name="test" handler={Test} />
-  </Route>
+    <Route name="app" path="/" handler={App} >
+        <Route name="hello-world" handler={HelloWorld} />
+
+        <Route name="test" handler={Test} />
+    </Route>
 );
 
 module.exports.init = function () {
-  Router.run(routes, Router.HistoryLocation, function (Handler) {
-    React.render(
-      <Handler/>,
-      document.body);
-  });
+    Router.run(routes, Router.HistoryLocation, function (Handler) {
+        React.render(
+            <Handler/>,
+            document.body);
+    });
 };
 
