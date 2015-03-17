@@ -1,19 +1,18 @@
 'use strict';
 
 // Gulp & plugins
-var gulp        = require('gulp'),
-    watch       = require('gulp-watch');
+var gulp = require('gulp');
 
 // BrowerSync
 var browserSync = require('browser-sync');
 
 // Configs
-var config      = require('../config');
+var config = require('../config');
 
 gulp.task('watch', ['browserSync'], function () {
-    watch(config.sass.src, ['sass']);
-    watch(config.scripts.src, ['script']);
-    watch(config.images.src, ['images']);
-    watch(config.fonts.src, ['fonts']);
-    watch(config.markup.src, ['markup']);
+    gulp.watch(config.sass.src, ['sass']);
+    gulp.watch(config.scripts.src, ['script']);
+    gulp.watch(config.images.src, ['images']);
+    gulp.watch(config.fonts.src, ['fonts']);
+    gulp.watch(config.markup.src, ['markup']);
 });

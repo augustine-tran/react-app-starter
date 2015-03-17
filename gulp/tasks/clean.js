@@ -9,6 +9,6 @@ var del = require('del');
 // Configs
 var config = require('../config').clean;
 
-gulp.task('clean', function(callback) {
-  del(config.folders, callback);
+gulp.task('clean', function (callback) {
+    del(config.folders, callback);
 });

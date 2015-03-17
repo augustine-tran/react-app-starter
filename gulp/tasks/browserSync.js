@@ -1,14 +1,14 @@
 'use strict';
 
 // Gulp & plugins
-var gulp        = require('gulp');
+var gulp = require('gulp');
 
 // BrowerSync
-var browserSync  = require('browser-sync');
+var browserSync = require('browser-sync');
 
 // Configs
-var config      = require('../config').browserSync;
+var config = require('../config').browserSync;
 
-gulp.task('browserSync', function() {
-  browserSync(config);
+gulp.task('browserSync', function () {
+    browserSync(config);
 });
