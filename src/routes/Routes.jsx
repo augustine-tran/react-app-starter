@@ -11,9 +11,7 @@ var RouteHandler = Router.RouteHandler;
  Components
  =================================*/
 var App = require('../components/App'),
-    HelloWorld = require('../components/HelloWorld'),
-    //What = require('../components/What'),
-    Test = require('../components/Test');
+    HelloWorld = require('../components/HelloWorld');
 ;
 
 /*=================================
@@ -23,8 +21,6 @@ var App = require('../components/App'),
 var routes = (
     <Route name="app" path="/" handler={App} >
         <Route name="hello-world" handler={HelloWorld} />
-
-        <Route name="test" handler={Test} />
     </Route>
 );
 
