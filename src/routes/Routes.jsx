@@ -29,7 +29,19 @@ var routes = (
 );
 
 module.exports.init = function () {
-    Router.run(routes, Router.HistoryLocation, function (Handler) {
+    Router.run(routes, Router.HistoryLocation, function (Handler, state) {
+
+        // Loop through the matching routes
+        var routesWithData = state.routes.filter(function (route) { return route.handler.fetchData; });
+
+        routesWithData.forEach(function (route) {
+            // Fetch data for each route
+            route.handler.fetchData();
+
+            // We can even get the meta data for each route and compile it for SEO injection
+            console.log("TITLE %s", route.handler.getMetaData().title);
+        });
+
         React.render(
             <Handler/>,
             document.body);

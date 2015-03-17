@@ -13,7 +13,24 @@ function getCurrentState() {
     };
 }
 
+var _data = {};
+
 var HelloWorld = React.createClass({
+    statics: {
+        fetchData: function (params) {
+            // TODO: You should invoke the necessary data stores to get data.
+            console.log("GETTING DATA FOR HELLO WORLD");
+            _data.title = "MY TITLE";
+        },
+
+        getMetaData: function () {
+            return {
+                title: "",
+                description: "",
+                coverImage: ""
+            };
+        }
+    },
 
     getInitialState: function () {
         return getCurrentState();
