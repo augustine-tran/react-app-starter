@@ -12,7 +12,6 @@ var RouteHandler = Router.RouteHandler;
  =================================*/
 var App = require('../components/App'),
     HelloWorld = require('../components/HelloWorld');
-;
 
 /*=================================
  ROUTES
