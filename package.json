@@ -17,6 +17,7 @@
     "morgan": "^1.5.2",
     "object-assign": "^2.0.0",
     "react": "^0.12.2",
+    "react-bootstrap": "^0.17.0",
     "react-router": "^0.12.4",
     "rss": "^1.1.1",
     "serve-favicon": "^2.2.0",
