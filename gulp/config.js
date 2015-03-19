@@ -12,9 +12,7 @@ module.exports = {
       // Serve up our build folder
       baseDir: dest,
       middleware: [
-        modRewrite([
-          '!\\.\\w+$ /index.html [L]'
-        ])
+        modRewrite(['^[^\\.]*$ /index.html [L]'])
       ]
     }
   },
@@ -85,8 +83,8 @@ module.exports = {
   },
   fonts: {
     src: [
-      src + "/assets/fonts/" + this.filter,
-      src + "/components/" + this.filter
+      src + "/assets/fonts/**/*.{eot,svg,ttf,woff,woff2}",
+      src + "/components/**/*.{eot,svg,ttf,woff,woff2}"
     ],
     dest: dest + "/fonts",
     filter: "**/*.{eot,svg,ttf,woff,woff2}"

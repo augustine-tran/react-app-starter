@@ -7,8 +7,8 @@ var gulp = require('gulp');
 var config = require('../config').fonts;
 
 gulp.task('fonts', function () {
-    return gulp.src(require('main-bower-files')({
-        filter: config.filter
-    }).concat(config.src))
+    var blobs = require('main-bower-files')({filter: config.filter}).concat(config.src);
+
+    return gulp.src(blobs)
         .pipe(gulp.dest(config.dest));
 });
