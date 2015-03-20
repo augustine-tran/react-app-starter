@@ -4,22 +4,10 @@ var AppConstants = require('../constants/AppConstants');
 var assign = require('object-assign');
 
 var _data = {
-    name: 'Tom Hanks'// Default Email
+    users: []
 };
 
-function updateName(name) {
-    if (name != null) {
-        name = name.trim();
-
-        if (name.length >= 1 && name !== _data.name) {
-            _data.name = name.trim();
-
-            NameStore.emitChange();
-        }
-    }
-}
-
-var NameStore = assign({}, EventEmitter.prototype, {
+var UserStore = assign({}, EventEmitter.prototype, {
     getName: function () {
         return _data.name;
     },
@@ -48,7 +36,7 @@ AppDispatcher.register(function (action) {
     var name;
 
     switch (action.actionType) {
-        case AppConstants.ActionTypes.HELLO_WORLD:
+        case AppConstants.ActionTypes.USER_LOADED:
             name = action.name == null ? '' : action.name.trim();
 
             if (name !== '') {
@@ -61,4 +49,4 @@ AppDispatcher.register(function (action) {
     }
 });
 
-module.exports = NameStore;
+module.exports = UserStore;

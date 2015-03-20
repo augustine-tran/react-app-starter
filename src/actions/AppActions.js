@@ -1,18 +1,22 @@
+// Libraries
+var async = require('async');
+
+// App Dispatcher and constants
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var AppConstants = require('../constants/AppConstants');
 
 var AppActions = {
 
     /**
-     * Hello World Action!
-     * @param name
+     * Load user from API.
+     * @param id
      */
-    helloWorld: function (name, email) {
-        console.log("Hello World" + name + email);
+    loadUser: function (id) {
+        var user = {};
+
         AppDispatcher.dispatch({
-            actionType: AppConstants.ActionTypes.HELLO_WORLD,
-            name: name,
-            email: email
+            actionType: AppConstants.ActionTypes.USER_LOADED,
+            user: user
         });
     }
 };
