@@ -10,11 +10,20 @@ module.exports = {
   browserSync: {
     server: {
       // Serve up our build folder
-      baseDir: dest,
-      middleware: [
-        modRewrite(['^[^\\.]*$ /index.html [L]'])
-      ]
+      //baseDir: dest,
+      //middleware: [
+      //  modRewrite(['^[^\\.]*$ /index.html [L]'])
+      //]
+      proxy: "http://localhost:3000",
+      port: 3010,
+      ui: {
+        port: 3011
+      }
+
     }
+  },
+  nodemon: {
+    script: './bin/www'
   },
   sass: {
     src: [
