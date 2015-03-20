@@ -14,16 +14,16 @@ module.exports = {
       //middleware: [
       //  modRewrite(['^[^\\.]*$ /index.html [L]'])
       //]
-      proxy: "http://localhost:3000",
-      port: 3010,
-      ui: {
-        port: 3011
-      }
-
+      proxy: "http://localhost:3000"
+    },
+    port: 3010,
+    ui: {
+      port: 3011
     }
   },
   nodemon: {
-    script: './bin/www'
+    script: './bin/www',
+    ignore: [dest]
   },
   sass: {
     src: [
