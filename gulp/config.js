@@ -7,11 +7,11 @@ var nodeSrc = "./node_modules";
 module.exports = {
   browserSync: {
     server: {
-      proxy: "http://localhost:3000"
+      proxy: "http://localhost:4000"
     },
-    port: 3010,
+    port: 4001,
     ui: {
-      port: 3011
+      port: 4002
     }
   },
   nodemon: {
