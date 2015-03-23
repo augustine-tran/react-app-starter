@@ -13,4 +13,4 @@ gulp.task('minifyCss', ['sass'], function () {
         .pipe(minifyCSS({keepBreaks: true}))
         .pipe(gulp.dest(config.dest))
         .pipe(size());
-})
+});

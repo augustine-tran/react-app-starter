@@ -17,7 +17,7 @@ var App = React.createClass({
         return (
             <div>
                 <h1>Welcome!</h1>
-                <RouteHandler/>
+                <RouteHandler data={this.props.data}/>
             </div>
         );
     }

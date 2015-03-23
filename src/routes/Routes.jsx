@@ -11,7 +11,6 @@ var React = require('react');
 var Router = require('react-router');
 var Route = Router.Route;
 var DefaultRoute = Router.DefaultRoute;
-var RouteHandler = Router.RouteHandler;
 
 /*=================================
  Components
@@ -31,22 +30,12 @@ var routes = (
 
 module.exports.init = function () {
     Router.run(routes, Router.HistoryLocation, function (Handler, state) {
-
-        // Loop through the matching routes
-        if (state.routes != null && state.routes.length >= 1) {
-            for (var i = 0; i < state.routes.length; ++i) {
-                console.log("MATCH ROUTE[%s] :: %s", i, JSON.stringify(state.routes[i]));
-            }
-        }
-
-        React.render(
-            <Handler data={{user: 1234}}/>,
-            document.body);
+        React.render(<Handler/>, document.body);
     });
 };
 
 module.exports.router = function (req, res, next) {
-    Router.run(routes, req.originalUrl, function (Handler, state) {
+    Router.run(routes, req.url, function (Handler, state) {
 
         // Loop through the matching routes
         var routesWithData = state.routes.filter(function (route) { return route.handler.fetchData; });
@@ -63,12 +52,19 @@ module.exports.router = function (req, res, next) {
             // TODO: At least one component should set the data.seo properties, so we can generate the SEO meta-tags.
             // var metaTags = generateMetaTags(data.seo);
 
-            var html = React.renderToString(<Handler/>);
+            var htmlBody = React.renderToString(<Handler data={data}/>);
 
-            console.log(html);
+            console.log("RENDERED BODY :: %s", htmlBody);
 
-            res.send(html);
-            // TODO: Inject html and metaTags in index.html template.
+            var testdata = {
+                body: htmlBody,
+                metadata: metaTags || {
+                    title: "Qanvast Web",
+                    description: "This is a test description."
+                }
+            };
+
+            res.render('index', testdata);
         });
     });
 };

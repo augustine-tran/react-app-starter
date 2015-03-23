@@ -8,12 +8,10 @@ var changed = require('gulp-changed');
 var browserSync = require('browser-sync');
 
 // Configs
-var config = require('../config').fonts;
+var config = require('../config').templates;
 
-gulp.task('fonts', function () {
-    var blobs = require('main-bower-files')({filter: config.filter}).concat(config.src);
-
-    return gulp.src(blobs)
+gulp.task('templates', function () {
+    return gulp.src(config.src)
         .pipe(changed(config.dest)) // Ignore unchanged files
         .pipe(gulp.dest(config.dest))
         .pipe(browserSync.reload({stream: true}));

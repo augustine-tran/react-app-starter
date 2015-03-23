@@ -2,6 +2,7 @@ var React = require('react');
 var Router = require('react-router');
 
 var assign = require('object-assign'),
+    async = require('async'),
     http = require('superagent');
 
 var AppActions = require('../../actions/AppActions');
@@ -15,14 +16,12 @@ function getCurrentState() {
     return AppActions.loadUser(123);
 }
 
-var _data = {
-    id: 1,
-    name: "Tom Hanks"
-};
-
 var User = React.createClass({
     mixins: [ Router.State ],
 
+    /**
+     * Static methods. Should not update component states.
+     */
     statics: {
         /**
          * Fetch data for this component for server-side rendering.
@@ -31,23 +30,28 @@ var User = React.createClass({
          * @returns {*}
          */
         fetchData: function (params, callback) {
-            http
-                .get('http://localhost:3000/test')
-                .end(function (error, result) {
+            // TODO: Implement API calls here.
+            async.waterfall([
+                function (callback) {
+                    // TODO Refactor this out to a DAO layer.
+                    http
+                        .get('http://localhost:3000/test')
+                        .end(callback);
+                },
+
+                function (result, callback) {
                     console.log("RESULT :: %s", JSON.stringify(result.body));
-                    _data = assign(_data, params, result.body);
 
-                    console.log("DATA IS NOW %s", JSON.stringify(_data));
-
-                    callback(null, _data);
-                });
+                    callback(null, assign(params, result.body)); // Merge initial params with current response.
+                }
+            ], callback);
         }
     },
 
     getInitialState: function () {
-        console.log("DATA AT INITIAL STAGE IS NOW %s", JSON.stringify(_data));
+        console.log("DATA AT INITIAL STAGE IS NOW %s", JSON.stringify(this.props.data));
 
-        return _data;
+        return this.props.data;
     },
 
     componentDidMount: function () {

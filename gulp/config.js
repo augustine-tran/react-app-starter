@@ -6,17 +6,16 @@ var nodeSrc = "./node_modules";
 
 module.exports = {
   browserSync: {
-    server: {
-      proxy: "http://localhost:4000"
-    },
-    port: 4001,
+    proxy: "http://localhost:8080",
+    port: 4000,
     ui: {
-      port: 4002
+      port: 4001
     }
   },
   nodemon: {
-    script: './bin/www',
-    ignore: [dest]
+    script: "server.js",
+    watch: ["server.js", "views", src],
+    ignore: [src + "/assets"]
   },
   sass: {
     src: [
@@ -30,7 +29,7 @@ module.exports = {
       includePaths: [
         bowerSrc + "/bootstrap-sass-official/assets/stylesheets"
       ],
-      outputStyle: 'expanded'
+      outputStyle: "expanded"
     }
   },
   scripts: {
@@ -49,10 +48,10 @@ module.exports = {
       watch: false,
       module: {
         preLoaders: [
-            { test: /\.jsx?$/, exclude: /node_modules/, loader: 'jsxhint-loader' }
+            { test: /\.jsx?$/, exclude: /node_modules/, loader: "jsxhint-loader" }
         ],
         loaders: [
-          { test: /\.jsx?$/, loader: 'jsx-loader' } // TODO: Recommended to use JSX extension only for JS files.
+          { test: /\.jsx?$/, loader: "jsx-loader" } // TODO: Recommended to use JSX extension only for JS files.
         ],
         noParse: /\.min\.js/,
         jshint: {
@@ -75,6 +74,12 @@ module.exports = {
         modulesDirectories: [bowerSrc, nodeSrc]
       }
     }
+  },
+  templates: {
+    src: [
+      src + "/templates/**/*.hbs"
+    ],
+    dest: "./views"
   },
   images: {
     src: [
@@ -101,8 +106,8 @@ module.exports = {
     ]
   },
   production: {
-    cssSrc: dest + '/css/*.css',
-    jsSrc: dest + '/js/*.js',
+    cssSrc: dest + "/css/*.css",
+    jsSrc: dest + "/js/*.js",
     jslint: {
       options: {
         node: true
