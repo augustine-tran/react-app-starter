@@ -5,16 +5,9 @@ var assign = require('object-assign'),
     async = require('async'),
     http = require('superagent');
 
-var AppActions = require('../../actions/AppActions');
+var UserActions = require('../../actions/UserActions');
 
 var UserStore = require('../../stores/UserStore');
-
-/**
- * Retrieve the current data from the EmailStore and NameStore
- */
-function getCurrentState() {
-    return AppActions.loadUser(123);
-}
 
 var User = React.createClass({
     mixins: [ Router.State ],
@@ -30,28 +23,23 @@ var User = React.createClass({
          * @returns {*}
          */
         fetchData: function (params, callback) {
-            // TODO: Implement API calls here.
-            async.waterfall([
-                function (callback) {
-                    // TODO Refactor this out to a DAO layer.
-                    http
-                        .get('http://localhost:3000/test')
-                        .end(callback);
-                },
-
-                function (result, callback) {
-                    console.log("RESULT :: %s", JSON.stringify(result.body));
-
-                    callback(null, assign(params, result.body)); // Merge initial params with current response.
-                }
-            ], callback);
+            UserActions.readUser(params.id, callback);
         }
     },
 
     getInitialState: function () {
-        console.log("DATA AT INITIAL STAGE IS NOW %s", JSON.stringify(this.props.data));
+        var state;
 
-        return this.props.data;
+        if (this.props.data != null) {
+            // Server side rendering. Let's use the provided data first.
+            state = this.props.data;
+        } else {
+            // Client side rendering.
+            // TODO: Get default state from UserStore AND fire off an API call to get a specific user.
+            UserActions.readUser(params.id);
+        }
+
+        return state;
     },
 
     componentDidMount: function () {

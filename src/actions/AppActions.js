@@ -6,19 +6,9 @@ var AppDispatcher = require('../dispatcher/AppDispatcher');
 var AppConstants = require('../constants/AppConstants');
 
 var AppActions = {
-
     /**
-     * Load user from API.
-     * @param id
+     * TODO: Add in generic app actions.
      */
-    loadUser: function (id) {
-        var user = {};
-
-        AppDispatcher.dispatch({
-            actionType: AppConstants.ActionTypes.USER_LOADED,
-            user: user
-        });
-    }
 };
 
 module.exports = AppActions;

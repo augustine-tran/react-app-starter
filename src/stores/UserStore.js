@@ -3,49 +3,59 @@ var EventEmitter = require('events').EventEmitter;
 var AppConstants = require('../constants/AppConstants');
 var assign = require('object-assign');
 
-var _data = {
-    users: []
-};
+var CHANGE_EVENT = 'CHANGE';
+
+var _user = {};
 
 var UserStore = assign({}, EventEmitter.prototype, {
-    getName: function () {
-        return _data.name;
+    get: function () {
+        return _user;
+    },
+
+    set: function (user) {
+        if (user != null) {
+            _user = user;
+
+            return true; // User was successfully updated.
+        } else {
+            return false;
+        }
     },
 
     emitChange: function () {
-        this.emit(AppConstants.EventTypes.NAME_CHANGE);
+        this.emit(CHANGE_EVENT);
     },
 
     /**
      * @param {function} callback
      */
     addChangeListener: function (callback) {
-        this.on(AppConstants.EventTypes.NAME_CHANGE, callback);
+        this.on(CHANGE_EVENT, callback);
     },
 
     /**
      * @param {function} callback
      */
     removeChangeListener: function (callback) {
-        this.removeListener(AppConstants.EventTypes.NAME_CHANGE, callback);
+        this.removeListener(CHANGE_EVENT, callback);
     }
 });
 
 // Register callback to handle all updates
 AppDispatcher.register(function (action) {
-    var name;
-
-    switch (action.actionType) {
-        case AppConstants.ActionTypes.USER_LOADED:
-            name = action.name == null ? '' : action.name.trim();
-
-            if (name !== '') {
-                updateName(name);
+    switch (action.EventTypes) {
+        case AppConstants.EventTypes.USER_READ_SUCCESS:
+            if (UserStore.set(action.user)) {
+                UserStore.emitChange();
             }
             break;
 
+        case AppConstants.EventTypes.USER_READ_ERROR:
+            // TODO: Shucks! Let's handle this error.
+            break;
+
         default:
-        // no op
+            // Do nothing.
     }
 });
 
