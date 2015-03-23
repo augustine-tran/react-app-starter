@@ -49,16 +49,15 @@ module.exports.router = function (req, res, next) {
                 callback();
             });
         }, function (error) {
-            // TODO: At least one component should set the data.seo properties, so we can generate the SEO meta-tags.
-            // var metaTags = generateMetaTags(data.seo);
-
+            // TODO: At least one component should set the data.metadata properties, so we can generate the SEO meta-tags.
+            // TODO: Make sure all metadata properties are set, and fill missing properties with default values.
             var htmlBody = React.renderToString(<Handler data={data}/>);
 
             console.log("RENDERED BODY :: %s", htmlBody);
 
             var testdata = {
                 body: htmlBody,
-                metadata: metaTags || {
+                metadata: data.metadata || {
                     title: "Qanvast Web",
                     description: "This is a test description."
                 }
