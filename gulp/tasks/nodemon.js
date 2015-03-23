@@ -3,7 +3,7 @@
 // Gulp & plugins
 var gulp = require('gulp');
 
-// BrowerSync
+// Nodemon
 var nodemon = require('gulp-nodemon');
 
 // Configs
