@@ -21,4 +21,7 @@ bower_components/
 
 # Layer private key cert
 layer-key.pem
+
+# Ignoring build folders
 public
+views
