@@ -4,16 +4,9 @@ var src = "./src";
 var bowerSrc = "./bower_components";
 var nodeSrc = "./node_modules";
 
-var modRewrite = require('connect-modrewrite');
-
 module.exports = {
   browserSync: {
     server: {
-      // Serve up our build folder
-      //baseDir: dest,
-      //middleware: [
-      //  modRewrite(['^[^\\.]*$ /index.html [L]'])
-      //]
       proxy: "http://localhost:3000"
     },
     port: 3010,
