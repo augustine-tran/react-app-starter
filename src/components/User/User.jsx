@@ -33,7 +33,8 @@ var User = React.createClass({
             return this.props.data;
         } else {
             // Client side rendering.
-            // TODO: Get default state from UserStore AND fire off an API call to get a specific user.
+            // TODO: Fire off an API call to get a specific user.
+            // TODO: Figure out a way to load data from DOM (right after server side rendering).
             UserActions.readUser(this.props.id);
 
             return {
