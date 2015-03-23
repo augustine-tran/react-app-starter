@@ -1,13 +1,13 @@
 var React = require('react');
 var Router = require('react-router');
 
-var assign = require('object-assign'),
-    async = require('async'),
-    http = require('superagent');
-
 var UserActions = require('../../actions/UserActions');
 
 var UserStore = require('../../stores/UserStore');
+
+function getCurrentState () {
+    return UserStore.get();
+}
 
 var User = React.createClass({
     mixins: [ Router.State ],
@@ -28,18 +28,19 @@ var User = React.createClass({
     },
 
     getInitialState: function () {
-        var state;
-
         if (this.props.data != null) {
             // Server side rendering. Let's use the provided data first.
-            state = this.props.data;
+            return this.props.data;
         } else {
             // Client side rendering.
             // TODO: Get default state from UserStore AND fire off an API call to get a specific user.
-            UserActions.readUser(params.id);
-        }
+            UserActions.readUser(this.props.id);
 
-        return state;
+            return {
+                loading: true,
+                name: '...'
+            };
+        }
     },
 
     componentDidMount: function () {
@@ -54,9 +55,15 @@ var User = React.createClass({
      * @return {object}
      */
     render: function () {
-        return (
-            <span>Request for user "{this.state.name}"!</span>
-        );
+        if (this.state.loading) {
+            return (
+                <span>Loading...</span>
+            );
+        } else {
+            return (
+                <span>Request for user "{this.state.name}"!</span>
+            );
+        }
     },
 
     /**
