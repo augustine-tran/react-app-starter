@@ -13,11 +13,19 @@ var handleErrors = require('../util/handleErrors');
 // Configs
 var config = require('../config').scripts;
 
-gulp.task('script', function () {
+gulp.task('script', ['script:client', 'script:server']);
+
+gulp.task('script:client', function () {
     return gulp.src(config.src)
-        .pipe(webpack(config.options))
+        .pipe(webpack(config.clientOptions))
         .on('error', handleErrors)
-        .pipe(gulp.dest(config.dest))
+        .pipe(gulp.dest(config.clientDest))
         .pipe(browserSync.reload({stream: true}));
 });
 
+gulp.task('script:server', function () {
+    return gulp.src(config.src)
+        .pipe(webpack(config.serverOptions))
+        .on('error', handleErrors)
+        .pipe(gulp.dest(config.serverDest));
+});

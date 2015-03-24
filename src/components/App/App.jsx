@@ -6,7 +6,6 @@ var RouteHandler = Router.RouteHandler;
 var App = React.createClass({
 
     getInitialState: function () {
-        console.log("PROPS :: %s", JSON.stringify(this.props));
         return {};
     },
 

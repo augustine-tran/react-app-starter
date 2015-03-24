@@ -1,7 +1,13 @@
+// Core
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var EventEmitter = require('events').EventEmitter;
 var AppConstants = require('../constants/AppConstants');
+
+// Libraries
 var assign = require('object-assign');
+
+// Components
+//var ReactToastr = require("react-toastr");
 
 var CHANGE_EVENT = 'CHANGE';
 
@@ -43,14 +49,14 @@ var UserStore = assign({}, EventEmitter.prototype, {
 
 // Register callback to handle all updates
 AppDispatcher.register(function (action) {
-    switch (action.EventTypes) {
-        case AppConstants.EventTypes.USER_READ_SUCCESS:
+    switch (action.actionType) {
+        case AppConstants.ActionTypes.READ_USER_SUCCESS:
             if (UserStore.set(action.user)) {
                 UserStore.emitChange();
             }
             break;
 
-        case AppConstants.EventTypes.USER_READ_ERROR:
+        case AppConstants.ActionTypes.READ_USER_ERROR:
             // TODO: Shucks! Let's handle this error.
             break;
 

@@ -33,12 +33,9 @@ var User = React.createClass({
             return this.props.data;
         } else {
             // Client side rendering.
-            // TODO: Fire off an API call to get a specific user.
-            // TODO: Figure out a way to load data from DOM (right after server side rendering).
-            UserActions.readUser(this.props.id);
-
+            // We create an initial state first.
             return {
-                loading: true,
+                isLoading: true,
                 name: '...'
             };
         }
@@ -46,6 +43,11 @@ var User = React.createClass({
 
     componentDidMount: function () {
         UserStore.addChangeListener(this._onChange);
+
+        // TODO: Disable this action if data has already been loaded via getInitialState()
+        if (this.state.isLoading) {
+            UserActions.readUser(this.props.id);
+        }
     },
 
     componentWillUnmount: function () {
@@ -56,7 +58,7 @@ var User = React.createClass({
      * @return {object}
      */
     render: function () {
-        if (this.state.loading) {
+        if (this.state.isLoading) {
             return (
                 <span>Loading...</span>
             );
@@ -68,10 +70,13 @@ var User = React.createClass({
     },
 
     /**
-     * Event handler for 'change' events coming from the TodoStore
+     * Event handler for 'change' events coming from the UserStore
      */
     _onChange: function () {
-        this.setState(getCurrentState());
+        /**
+         * TODO You should either setState() or replaceState(), but make sure you disable the isLoading flag.
+         */
+        this.replaceState(getCurrentState());
     }
 
 });

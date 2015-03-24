@@ -28,12 +28,12 @@ var UserActions = {
                 function (done) {
                     if (!error) {
                         AppDispatcher.dispatch({
-                            actionType: AppConstants.EventTypes.USER_READ_SUCCESS,
+                            actionType: AppConstants.ActionTypes.READ_USER_SUCCESS,
                             user: user
                         });
                     } else {
                         AppDispatcher.dispatch({
-                            actionType: AppConstants.EventTypes.USER_READ_ERROR,
+                            actionType: AppConstants.ActionTypes.READ_USER_ERROR,
                             user: user
                         });
                     }

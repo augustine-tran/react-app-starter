@@ -2,4 +2,6 @@ var React = require('react');
 
 var Routes = require('./routes');
 
-Routes.init();
+if (window != null) {
+    window.onload = Routes.init;
+}
