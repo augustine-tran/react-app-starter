@@ -49,7 +49,7 @@ module.exports = {
         }, webpackConfig),
         serverOptions: _.merge({
             entry: {
-                app: src + "/server.jsrs"
+                app: src + "/server.js"
             },
             externals: /^[a-z\-0-9]+$/,
             output: {
