@@ -12,7 +12,7 @@ var config = require('../config').nodemon;
 
 var BROWSER_SYNC_RELOAD_DELAY = 500;
 
-gulp.task('nodemon', function (callback) {
+gulp.task('nodemon', ['script:server'], function (callback) {
     var isCalled = false;
 
     return nodemon(config)
