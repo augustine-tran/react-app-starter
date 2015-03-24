@@ -16,6 +16,7 @@ var DefaultRoute = Router.DefaultRoute;
  Components
  =================================*/
 var App = require('../components/App'),
+    Test = require('../components/Test'),
     User = require('../components/User');
 
 /*=================================
@@ -24,6 +25,7 @@ var App = require('../components/App'),
 var routes = (
     <Route name="app" path="/" handler={App} >
         <Route name="user" path="/user/:id" handler={User}>
+            <Route name="test" path="test" handler={Test}></Route>
         </Route>
     </Route>
 );
@@ -42,7 +44,7 @@ module.exports.router = function (req, res, next) {
 
         async.map(routesWithData, function (route, callback) {
             // Fetch data for each route and then merge it back into the data source.
-            route.handler.fetchData(state.params, function (error, data) {
+            route.handler.fetchData(state, function (error, data) {
                 callback(null, data);
             });
         }, function (error, dataArray) {
