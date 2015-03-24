@@ -50,6 +50,5 @@ app.set('port', port);
  * Create HTTP server.
  */
 var server = app.listen(app.get('port'), function () {
-    console.log("HELLO!");
     debug('Express server listening on port ' + server.address().port);
 });

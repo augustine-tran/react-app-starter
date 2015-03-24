@@ -1,8 +1,8 @@
 /*=================================
  Libraries
  =================================*/
-var async = require('async'),
-    assign = require('object-assign');
+var _ = require('lodash'),
+    async = require('async');
 
 /*=================================
  React & Router
@@ -28,9 +28,9 @@ var routes = (
     </Route>
 );
 
-module.exports.init = function () {
+module.exports.init = function (data) {
     Router.run(routes, Router.HistoryLocation, function (Handler, state) {
-        React.render(<Handler/>, document.body);
+        React.render(<Handler data={data}/>, document.body);
     });
 };
 
@@ -40,30 +40,41 @@ module.exports.router = function (req, res, next) {
         // Loop through the matching routes
         var routesWithData = state.routes.filter(function (route) { return route.handler.fetchData; });
 
-        var data = {};
-
-        async.each(routesWithData, function (route, callback) {
+        async.map(routesWithData, function (route, callback) {
             // Fetch data for each route and then merge it back into the data source.
-            route.handler.fetchData(state.params, function (error, response) {
-                data = assign(data, response);
-                callback();
+            route.handler.fetchData(state.params, function (error, data) {
+                callback(null, data);
             });
-        }, function (error) {
-            // TODO: At least one component should set the data.metadata properties, so we can generate the SEO meta-tags.
-            // TODO: Make sure all metadata properties are set, and fill missing properties with default values.
-            var htmlBody = React.renderToString(<Handler data={data}/>);
+        }, function (error, dataArray) {
+            if (!error) {
+                var data = {};
 
-            console.log("RENDERED BODY :: %s", htmlBody);
+                _.each(dataArray, function (dataSet) {
+                    _.merge(data, dataSet);
+                });
 
-            var testdata = {
-                body: htmlBody,
-                metadata: data.metadata || {
-                    title: "Qanvast Web",
-                    description: "This is a test description."
-                }
-            };
+                // TODO: At least one component should set the data.metadata properties, so we can generate the SEO meta-tags.
+                // TODO: Make sure all metadata properties are set, and fill missing properties with default values.
+                var htmlBody = React.renderToString(<Handler data={data}/>);
 
-            res.render('index', testdata);
+                res.render('index', {
+                    body: htmlBody,
+                    // TODO: The last component to populate the metadata field will dictate the metadata properties.
+                    metadata: data.metadata || {
+                        title: "Qanvast Web",
+                        description: "This is a test description."
+                    },
+                    data: safeStringify(data)
+                });
+            } else {
+                // TODO: Render an error page
+                res.render('index');
+            }
         });
     });
 };
+
+// A utility function to safely escape JSON for embedding in a <script> tag
+function safeStringify(obj) {
+    return JSON.stringify(obj).replace(/<\/script/g, '<\\/script').replace(/<!--/g, '<\\!--')
+}
