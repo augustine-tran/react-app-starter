@@ -12,6 +12,8 @@ if (window != null) {
                 data = JSON.parse(serverDataDOM.innerHTML);
                 hasServerData = true;
             } catch (error) { console.log("Invalid server data."); }
+
+            serverDataDOM.remove();
         }
 
         Routes.init(hasServerData ? data : undefined);
