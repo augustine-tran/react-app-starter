@@ -18,7 +18,9 @@ gulp.task('nodemon', ['script:server'], function (callback) {
     return nodemon(config)
         .on('start', function () {
             if (!isCalled) {
-                callback();
+                setTimeout(function () {
+                    callback();
+                }, BROWSER_SYNC_RELOAD_DELAY);
             }
 
             isCalled = true;
