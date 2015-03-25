@@ -22,8 +22,8 @@ var User = React.createClass({
          * @param params
          * @returns {*}
          */
-        fetchData: function (params, callback) {
-            UserActions.readUser(params.id, callback);
+        fetchData: function (state, callback) {
+            UserActions.readUser(state.params.id, callback);
         }
     },
 
