@@ -8,7 +8,7 @@ module.exports.get = function (id, callback) {
         function (callback) {
             // TODO Refactor this out to a DAO layer.
             http
-                .get('http://localhost:3000/test/user/1234')
+                .get('http://localhost:3000/test/user/' + id)
                 .end(callback);
         },
 
