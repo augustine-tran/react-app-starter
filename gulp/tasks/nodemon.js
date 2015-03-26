@@ -12,19 +12,9 @@ var config = require('../config').nodemon;
 
 var BROWSER_SYNC_RELOAD_DELAY = 500;
 
-gulp.task('nodemon', ['script:server'], function (callback) {
-    var isCalled = false;
-
+gulp.task('nodemon', ['script:server'], function () {
     return nodemon(config)
-        .on('start', function () {
-            if (!isCalled) {
-                setTimeout(function () {
-                    callback();
-                }, BROWSER_SYNC_RELOAD_DELAY);
-            }
-
-            isCalled = true;
-        }).on('restart', function () {
+        .on('restart', function () {
             setTimeout(function () {
                 browserSync.reload({stream: false});
             }, BROWSER_SYNC_RELOAD_DELAY);

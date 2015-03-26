@@ -18,7 +18,7 @@ module.exports = {
         }
     },
     nodemon: {
-        script: serverDest + "/app.js",
+        script: serverDest + "/server.js",
         watch: [serverDest]
     },
     sass: {
@@ -49,7 +49,7 @@ module.exports = {
         }, webpackConfig),
         serverOptions: _.merge({
             entry: {
-                app: src + "/server.js"
+                server: src + "/server.js"
             },
             externals: /^[a-z\-0-9]+$/,
             output: {
@@ -93,7 +93,8 @@ module.exports = {
     },
     clean: {
         folders: [
-            dest
+            dest,
+            serverDest
         ]
     },
     production: {
