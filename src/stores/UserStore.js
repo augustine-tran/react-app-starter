@@ -4,27 +4,59 @@ var EventEmitter = require('events').EventEmitter;
 var AppConstants = require('../constants/AppConstants');
 
 // Libraries
-var assign = require('object-assign');
-
-// Components
-//var ReactToastr = require("react-toastr");
+var _ = require('lodash'),
+    assign = require('object-assign');
 
 var CHANGE_EVENT = 'CHANGE';
 
-var _user = {};
+var _users = {};
+
+var _userListOrder = [];
 
 var UserStore = assign({}, EventEmitter.prototype, {
-    get: function () {
-        return _user;
+    get: function (id) {
+        console.log("GETTING USER %s :: %s", id, JSON.stringify(_users[id]));
+        return _users[id];
+    },
+
+    getList: function (startIndex, count) {
+        if (count == null && startIndex != null) {
+            count = startIndex;
+            startIndex = 0;
+        }
+
+        if (startIndex > 0 && count > 1) {
+            return _.slice(_userListOrder, startIndex, count);
+        }
+
+        return null;
+    },
+
+    getPage: function (page, count) {
+        return this.getList((page - 1) * count, count);
     },
 
     set: function (user) {
         if (user != null) {
-            _user = user;
+            _users[user._id] = user;
+
+            console.log("USER [%s] :: %s", user._id, JSON.stringify(_users[user._id]));
 
             return true; // User was successfully updated.
         } else {
             return false;
+        }
+    },
+
+    setList: function (userList, startIndex) {
+        var i = startIndex;
+
+        if (_.isArray(userList)) {
+            _.forEach(userList, function (user) {
+                _users[user._id] = user;
+                _userListOrder[i] = user._id;
+                ++i;
+            });
         }
     },
 
@@ -48,9 +80,10 @@ var UserStore = assign({}, EventEmitter.prototype, {
 });
 
 // Register callback to handle all updates
-AppDispatcher.register(function (action) {
+UserStore.dispatcherToken = AppDispatcher.register(function (action) {
     switch (action.actionType) {
         case AppConstants.ActionTypes.READ_USER_SUCCESS:
+            console.log("ACTION USER PAYLOAD :: %s", JSON.stringify(action.user));
             if (UserStore.set(action.user)) {
                 UserStore.emitChange();
             }

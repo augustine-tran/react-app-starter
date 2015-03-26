@@ -1,16 +1,32 @@
-var React = require('react');
-var Router = require('react-router');
+// Libraries
+var _ = require('lodash');
 
-var UserActions = require('../../actions/UserActions');
+// React
+var React = require('react'),
+    Router = require('react-router'),
+    RouteHandler = Router.RouteHandler;
 
+// Actions
+var AppActions = require('../../actions/AppActions'),
+    UserActions = require('../../actions/UserActions');
+
+// Stores
 var UserStore = require('../../stores/UserStore');
 
-function getCurrentState () {
-    return UserStore.get();
+function getCurrentState (id) {
+    return {
+        user: UserStore.get(id)
+    };
+}
+
+function fireActions (params, callback) {
+    UserActions.readUser(params.id, callback);
 }
 
 var User = React.createClass({
-    mixins: [ Router.State ],
+    contextTypes: {
+        router: React.PropTypes.func.isRequired
+    },
 
     /**
      * Static methods. Should not update component states.
@@ -23,31 +39,33 @@ var User = React.createClass({
          * @returns {*}
          */
         fetchData: function (state, callback) {
-            UserActions.readUser(state.params.id, callback);
+            fireActions(state.params, callback);
         }
     },
 
     getInitialState: function () {
+        var initialState = {
+            user: {
+                name: '...'
+            }
+        };
+
         if (this.props.data != null) {
             // Server side rendering. Let's use the provided data first.
-            return this.props.data;
-        } else {
-            // Client side rendering.
-            // We create an initial state first.
-            return {
-                isLoading: true,
-                name: '...'
-            };
+            _.merge(initialState, this.props.data);
         }
+
+        console.log("INITIAL STATE :: %s", JSON.stringify(initialState));
+
+        return initialState;
     },
 
     componentDidMount: function () {
         UserStore.addChangeListener(this._onChange);
 
-        // TODO: Disable this action if data has already been loaded via getInitialState()
-        if (this.state.isLoading) {
-            UserActions.readUser(this.props.id);
-        }
+        console.log("COMPONENT DID MOUNT WITH PARAMS %s", JSON.stringify(this.context.router.getCurrentParams()));
+
+        fireActions(this.context.router.getCurrentParams());
     },
 
     componentWillUnmount: function () {
@@ -58,25 +76,23 @@ var User = React.createClass({
      * @return {object}
      */
     render: function () {
-        if (this.state.isLoading) {
-            return (
-                <span>Loading...</span>
-            );
-        } else {
-            return (
-                <span>Request for user "{this.state.name}"!</span>
-            );
-        }
+        console.log("USER PROPS :: %s", JSON.stringify(this.props));
+        console.log("USER STATE :: %s", JSON.stringify(this.state));
+
+        return (
+            <div>
+                <p><span>Request for user "{ this.state.user.name }"!</span></p>
+                <button className="primary" onClick={function () {AppActions.showAlert('info', 'oh my...', 'hello')}}>Show Alert</button>
+                <RouteHandler data={this.props.data}/>
+            </div>
+        );
     },
 
     /**
      * Event handler for 'change' events coming from the UserStore
      */
     _onChange: function () {
-        /**
-         * TODO You should either setState() or replaceState(), but make sure you disable the isLoading flag.
-         */
-        this.replaceState(getCurrentState());
+        this.replaceState(getCurrentState(this.context.router.getCurrentParams().id));
     }
 
 });

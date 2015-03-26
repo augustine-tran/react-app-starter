@@ -1,12 +1,37 @@
+// Libraries
+var _ = require('lodash');
+
+// React
 var React = require('react');
 var Router = require('react-router');
 var Link = Router.Link;
 var RouteHandler = Router.RouteHandler;
 
+// Components
+
+
+// Stores
+var AppStore = require('../../stores/AppStore');
+
 var App = React.createClass({
+    addAlert: function (type, message, title) {
+        // TODO
+    },
+
+    clearAlerts: function () {
+        this.refs.container.clear();
+    },
 
     getInitialState: function () {
         return {};
+    },
+
+    componentDidMount: function () {
+        AppStore.addAlertListener(this._onAlert);
+    },
+
+    componentWillUnmount: function () {
+        AppStore.removeAlertListener(this._onAlert);
     },
 
     /**
@@ -15,10 +40,18 @@ var App = React.createClass({
     render: function () {
         return (
             <div>
-                <h1>Welcome!</h1>
                 <RouteHandler data={this.props.data}/>
             </div>
         );
+    },
+
+    /**
+     * Event handler for 'change' events coming from the UserStore
+     */
+    _onAlert: function () {
+        _.forEach(AppStore.getPendingAlerts(), function (alertPayload) {
+            this.addAlert(alertPayload.type, alertPayload.message, alertPayload.title);
+        }, this);
     }
 });
 

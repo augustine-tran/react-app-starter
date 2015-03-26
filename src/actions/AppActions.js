@@ -9,6 +9,16 @@ var AppActions = {
     /**
      * TODO: Add in generic app actions.
      */
+    showAlert: function (type, message, title) {
+        AppDispatcher.dispatch({
+            actionType: AppConstants.ActionTypes.SHOW_ALERT,
+            alert: {
+                type: type,
+                message: message,
+                title: title
+            }
+        });
+    }
 };
 
 module.exports = AppActions;

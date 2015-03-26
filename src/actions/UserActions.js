@@ -16,31 +16,21 @@ var UserActions = {
      */
     readUser: function (id, callback) {
         UserAPI.get(id, function (error, user) {
-            async.parallel([
-                function (done) {
-                    if (callback != null && _.isFunction(callback)) {
-                        callback(error, user);
-                    }
+            var actionPayload = {
+                user: user
+            };
 
-                    done();
-                },
+            if (callback != null && _.isFunction(callback)) {
+                callback(error, actionPayload);
+            }
 
-                function (done) {
-                    if (!error) {
-                        AppDispatcher.dispatch({
-                            actionType: AppConstants.ActionTypes.READ_USER_SUCCESS,
-                            user: user
-                        });
-                    } else {
-                        AppDispatcher.dispatch({
-                            actionType: AppConstants.ActionTypes.READ_USER_ERROR,
-                            user: user
-                        });
-                    }
+            if (!error) {
+                actionPayload.actionType = AppConstants.ActionTypes.READ_USER_SUCCESS;
+            } else {
+                actionPayload.actionType = AppConstants.ActionTypes.READ_USER_ERROR;
+            }
 
-                    done();
-                }
-            ]);
+            AppDispatcher.dispatch(actionPayload);
         });
     }
 };

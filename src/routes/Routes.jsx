@@ -59,13 +59,14 @@ module.exports.router = function (req, res, next) {
                 // TODO: Make sure all metadata properties are set, and fill missing properties with default values.
                 var htmlBody = React.renderToString(<Handler data={data}/>);
 
+
                 res.render('index', {
                     body: htmlBody,
                     // TODO: The last component to populate the metadata field will dictate the metadata properties.
-                    metadata: data.metadata || {
+                    metadata: _.merge({
                         title: "Qanvast Web",
                         description: "This is a test description."
-                    },
+                    }, data.metadata),
                     data: safeStringify(data)
                 });
             } else {

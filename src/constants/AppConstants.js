@@ -3,6 +3,12 @@ var keyMirror = require('keymirror');
 module.exports = {
 
     ActionTypes: keyMirror({
+        SHOW_ALERT: null,
+        SHOW_INFO_ALERT: null,
+        SHOW_ERROR_ALERT: null,
+        SHOW_WARNING_ALERT: null,
+        SHOW_SUCCESS_ALERT: null,
+
         CREATE_USER: null,
         CREATE_USER_SUCCESS: null,
         CREATE_USER_ERROR: null,
