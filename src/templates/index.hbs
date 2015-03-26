@@ -1,3 +1,5 @@
 {{! Override this template only if you need to split body up into different React apps.}}
 
 {{{ body }}}
+
+{{#if data}}<script id="server-data" type="application/json">{{{ data }}}</script>{{/if}}
