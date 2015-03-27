@@ -16,7 +16,6 @@ var DefaultRoute = Router.DefaultRoute;
  Components
  =================================*/
 var App = require('../components/App'),
-    Test = require('../components/Test'),
     User = require('../components/User');
 
 /*=================================
@@ -25,7 +24,6 @@ var App = require('../components/App'),
 var routes = (
     <Route name="app" path="/" handler={App} >
         <Route name="user" path="/user/:id" handler={User}>
-            <Route name="test" path="test" handler={Test}></Route>
         </Route>
     </Route>
 );

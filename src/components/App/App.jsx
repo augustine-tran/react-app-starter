@@ -15,7 +15,7 @@ var AppStore = require('../../stores/AppStore');
 
 var App = React.createClass({
     addAlert: function (type, message, title) {
-        // TODO
+        window.alert(type.toUpperCase() + " :: " + message, title);
     },
 
     clearAlerts: function () {

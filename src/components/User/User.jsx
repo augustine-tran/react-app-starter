@@ -55,15 +55,11 @@ var User = React.createClass({
             _.merge(initialState, this.props.data);
         }
 
-        console.log("INITIAL STATE :: %s", JSON.stringify(initialState));
-
         return initialState;
     },
 
     componentDidMount: function () {
         UserStore.addChangeListener(this._onChange);
-
-        console.log("COMPONENT DID MOUNT WITH PARAMS %s", JSON.stringify(this.context.router.getCurrentParams()));
 
         fireActions(this.context.router.getCurrentParams());
     },
@@ -76,9 +72,6 @@ var User = React.createClass({
      * @return {object}
      */
     render: function () {
-        console.log("USER PROPS :: %s", JSON.stringify(this.props));
-        console.log("USER STATE :: %s", JSON.stringify(this.state));
-
         return (
             <div>
                 <p><span>Request for user "{ this.state.user.name }"!</span></p>
