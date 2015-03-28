@@ -1,17 +1,17 @@
 'use strict';
 
 // Libraries
-//var async = require('async');
+//import async from 'async';
 
 // App Dispatcher and constants
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var AppConstants = require('../constants/AppConstants');
+import AppDispatcher from '../dispatcher/AppDispatcher';
+import AppConstants from '../constants/AppConstants';
 
-var AppActions = {
+let AppActions = {
     /**
      * TODO: Add in generic app actions.
      */
-    showAlert: function (type, message, title) {
+    showAlert (type, message, title) {
         AppDispatcher.dispatch({
             actionType: AppConstants.ActionTypes.SHOW_ALERT,
             alert: {
@@ -23,4 +23,4 @@ var AppActions = {
     }
 };
 
-module.exports = AppActions;
+export default AppActions;

@@ -1,19 +1,18 @@
 'use strict';
 
 // Libraries
-var _ = require('lodash');
+import _ from 'lodash';
 
 // React
-var React = require('react'),
-    Router = require('react-router'),
-    RouteHandler = Router.RouteHandler;
+import React from 'react';
+import {Link, RouteHandler} from 'react-router';
 
 // Actions
-var AppActions = require('../../actions/AppActions'),
-    UserActions = require('../../actions/UserActions');
+import AppActions from '../../actions/AppActions';
+import UserActions from '../../actions/UserActions';
 
 // Stores
-var UserStore = require('../../stores/UserStore');
+import UserStore from '../../stores/UserStore';
 
 function getCurrentState (id) {
     return {
@@ -25,55 +24,36 @@ function fireActions (params, callback) {
     UserActions.readUser(params.id, callback);
 }
 
-var User = React.createClass({
-    contextTypes: {
-        router: React.PropTypes.func.isRequired
-    },
+export default class User extends React.Component {
+    constructor(props, context) {
+        super(props, context); // NOTE: IntelliJ lints this as invalid. Ignore warning.
 
-    /**
-     * Static methods. Should not update component states.
-     */
-    statics: {
-        /**
-         * Fetch data for this component for server-side rendering.
-         *
-         * @param params
-         * @returns {*}
-         */
-        fetchData: function (state, callback) {
-            fireActions(state.params, callback);
-        }
-    },
-
-    getInitialState: function () {
-        var initialState = {
+        this.state = {
             user: {
                 name: '...'
             }
         };
 
-        if (this.props.data != null) {
+        if (props.data != null) {
             // Server side rendering. Let's use the provided data first.
-            _.merge(initialState, this.props.data);
+            _.merge(this.state, props.data);
         }
+    }
 
-        return initialState;
-    },
-
-    componentDidMount: function () {
+    componentDidMount() {
         UserStore.addChangeListener(this._onChange);
 
         fireActions(this.context.router.getCurrentParams());
-    },
+    }
 
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         UserStore.removeChangeListener(this._onChange);
-    },
+    }
 
     /**
      * @return {object}
      */
-    render: function () {
+    render() {
         return (
             <div>
                 <p><span>Request for user "{ this.state.user.name }"!</span></p>
@@ -81,15 +61,30 @@ var User = React.createClass({
                 <RouteHandler data={this.props.data}/>
             </div>
         );
-    },
+    }
 
     /**
      * Event handler for 'change' events coming from the UserStore
      */
-    _onChange: function () {
+    _onChange() {
         this.replaceState(getCurrentState(this.context.router.getCurrentParams().id));
     }
 
-});
+    /**
+     * Static method to trigger data actions for server-side rendering.
+     *
+     * @param params
+     * @returns {*}
+     */
+    static fetchData (state, callback) {
+        fireActions(state.params, callback);
+    }
+}
 
-module.exports = User;
+User.contextTypes = {
+    router: React.PropTypes.func.isRequired
+};
+
+User.propTypes = {
+    data: React.PropTypes.object
+};

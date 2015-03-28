@@ -1,8 +1,8 @@
 'use strict';
 
-var keyMirror = require('keymirror');
+import keyMirror from 'keymirror';
 
-module.exports = {
+export default {
 
     ActionTypes: keyMirror({
         SHOW_ALERT: null,

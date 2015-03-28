@@ -3,53 +3,50 @@
 /*=================================
  Libraries
  =================================*/
-var _ = require('lodash'),
-    async = require('async');
+import _ from 'lodash';
+import async from 'async';
 
 /*=================================
  React & Router
  =================================*/
-var React = require('react');
-var Router = require('react-router');
-var Route = Router.Route;
-var DefaultRoute = Router.DefaultRoute;
+import React from 'react';
+import Router, {Route, DefaultRoute} from 'react-router';
 
 /*=================================
  Components
  =================================*/
-var App = require('../components/App'),
-    User = require('../components/User');
+import App from '../components/App';
+import User from '../components/User';
 
 /*=================================
  ROUTES
  =================================*/
-var routes = (
+let routes = (
     <Route name="app" path="/" handler={App} >
-        <Route name="user" path="/user/:id" handler={User}>
-        </Route>
+        <Route name="user" path="/user/:id" handler={User}/>
     </Route>
 );
 
-module.exports.init = function (data) {
+export function init (data) {
     Router.run(routes, Router.HistoryLocation, function (Handler, state) {
         React.render(<Handler data={data}/>, document.body);
     });
-};
+}
 
-module.exports.router = function (req, res, next) {
-    Router.run(routes, req.url, function (Handler, state) {
+export function router (req, res, next) {
+    Router.run(routes, req.url, (Handler, state) => {
 
         // Loop through the matching routes
-        var routesWithData = state.routes.filter(function (route) { return route.handler.fetchData; });
+        let routesWithData = state.routes.filter((route) => { return route.handler.fetchData; });
 
-        async.map(routesWithData, function (route, callback) {
+        async.map(routesWithData, (route, callback) => {
             // Fetch data for each route and then merge it back into the data source.
-            route.handler.fetchData(state, function (error, data) {
-                callback(null, data);
+            route.handler.fetchData(state, (error, data) => {
+                callback(error, data);
             });
-        }, function (error, dataArray) {
+        }, (error, dataArray) => {
             if (!error) {
-                var data = {};
+                let data = {};
 
                 _.each(dataArray, function (dataSet) {
                     _.merge(data, dataSet);
@@ -57,15 +54,15 @@ module.exports.router = function (req, res, next) {
 
                 // TODO: At least one component should set the data.metadata properties, so we can generate the SEO meta-tags.
                 // TODO: Make sure all metadata properties are set, and fill missing properties with default values.
-                var htmlBody = React.renderToString(<Handler data={data}/>);
+                let htmlBody = React.renderToString(<Handler data={data}/>);
 
 
                 res.render('index', {
                     body: htmlBody,
                     // TODO: The last component to populate the metadata field will dictate the metadata properties.
                     metadata: _.merge({
-                        title: "Qanvast Web",
-                        description: "This is a test description."
+                        title: 'React App Starter',
+                        description: 'This is a fully isomorphic React / Flux App starter.'
                     }, data.metadata),
                     data: safeStringify(data)
                 });
@@ -75,9 +72,9 @@ module.exports.router = function (req, res, next) {
             }
         });
     });
-};
+}
 
 // A utility function to safely escape JSON for embedding in a <script> tag
 function safeStringify(obj) {
-    return JSON.stringify(obj).replace(/<\/script/g, '<\\/script').replace(/<!--/g, '<\\!--')
+    return JSON.stringify(obj).replace(/<\/script/g, '<\\/script').replace(/<!--/g, '<\\!--');
 }

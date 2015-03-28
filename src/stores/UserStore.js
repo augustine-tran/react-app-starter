@@ -1,26 +1,26 @@
 'use strict';
 
 // Core
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var EventEmitter = require('events').EventEmitter;
-var AppConstants = require('../constants/AppConstants');
+import AppDispatcher from '../dispatcher/AppDispatcher';
+import {EventEmitter} from 'events';
+import AppConstants from '../constants/AppConstants';
 
 // Libraries
-var _ = require('lodash'),
-    assign = require('object-assign');
+import _ from 'lodash';
+import assign from 'object-assign';
 
-var CHANGE_EVENT = 'CHANGE';
+const CHANGE_EVENT = 'CHANGE';
 
-var _users = {};
+// Data
+let _users = {};
+let _userListOrder = [];
 
-var _userListOrder = [];
-
-var UserStore = assign({}, EventEmitter.prototype, {
-    get: function (id) {
+let UserStore = assign({}, EventEmitter.prototype, {
+    get(id) {
         return _users[id];
     },
 
-    getList: function (startIndex, count) {
+    getList(startIndex, count) {
         if (count == null && startIndex != null) {
             count = startIndex;
             startIndex = 0;
@@ -33,11 +33,11 @@ var UserStore = assign({}, EventEmitter.prototype, {
         return null;
     },
 
-    getPage: function (page, count) {
+    getPage(page, count) {
         return this.getList((page - 1) * count, count);
     },
 
-    set: function (user) {
+    set(user) {
         if (user != null) {
             _users[user._id] = user;
 
@@ -47,8 +47,8 @@ var UserStore = assign({}, EventEmitter.prototype, {
         }
     },
 
-    setList: function (userList, startIndex) {
-        var i = startIndex;
+    setList(userList, startIndex) {
+        let i = startIndex;
 
         if (_.isArray(userList)) {
             _.forEach(userList, function (user) {
@@ -59,27 +59,27 @@ var UserStore = assign({}, EventEmitter.prototype, {
         }
     },
 
-    emitChange: function () {
+    emitChange() {
         this.emit(CHANGE_EVENT);
     },
 
     /**
      * @param {function} callback
      */
-    addChangeListener: function (callback) {
+    addChangeListener(callback) {
         this.on(CHANGE_EVENT, callback);
     },
 
     /**
      * @param {function} callback
      */
-    removeChangeListener: function (callback) {
+    removeChangeListener(callback) {
         this.removeListener(CHANGE_EVENT, callback);
     }
 });
 
 // Register callback to handle all updates
-UserStore.dispatcherToken = AppDispatcher.register(function (action) {
+UserStore.dispatcherToken = AppDispatcher.register(action => {
     switch (action.actionType) {
         case AppConstants.ActionTypes.READ_USER_SUCCESS:
             if (UserStore.set(action.user)) {
@@ -96,4 +96,4 @@ UserStore.dispatcherToken = AppDispatcher.register(function (action) {
     }
 });
 
-module.exports = UserStore;
+export default UserStore;

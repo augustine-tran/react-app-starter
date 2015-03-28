@@ -1,11 +1,11 @@
 'use strict';
 
-var Routes = require('./routes');
+import {init} from './routes';
 
-if (window != null) {
+if (typeof window !== 'undefined') {
     window.onload = function () {
-        var data, hasServerData = false;
-        var serverDataDOM = document.getElementById('server-data');
+        let data, hasServerData = false;
+        let serverDataDOM = document.getElementById('server-data');
 
         if (serverDataDOM != null && serverDataDOM.innerHTML != null && serverDataDOM.innerHTML.length > 0) {
             try {
@@ -16,6 +16,6 @@ if (window != null) {
             serverDataDOM.remove();
         }
 
-        Routes.init(hasServerData ? data : undefined);
+        init(hasServerData ? data : undefined);
     };
 }

@@ -3,23 +3,25 @@
 /**
  * Module dependencies.
  */
-var debug = require('debug')('react-app-starter');
+import Debug from 'debug';
+
+let debug = Debug('react-app-starter');
 
 /**
  * Express app dependencies.
  */
-var express = require('express');
-var hbs = require('express-handlebars');
-var path = require('path');
-//var favicon = require('serve-favicon');
-var logger = require('morgan');
+import express from 'express';
+import hbs from 'express-handlebars';
+import path from 'path';
+//import favicon from 'serve-favicon';
+import logger from 'morgan';
 
 /**
  * Setup server app.
  */
 
-var app = express();
-var router = require('./routes').router;
+let app = express();
+import {router} from './routes';
 
 // disable `X-Powered-By` HTTP header
 app.disable('x-powered-by');
@@ -36,8 +38,8 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use(router);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-    var err = new Error('Not Found');
+app.use((req, res, next) => {
+    let err = new Error('Not Found');
     err.status = 404;
     next(err);
 });
@@ -45,12 +47,12 @@ app.use(function(req, res, next) {
 /**
  * Get port from environment and store in Express.
  */
-var port = process.env.PORT || '8080';
+let port = process.env.PORT || '8080';
 app.set('port', port);
 
 /**
  * Create HTTP server.
  */
-var server = app.listen(app.get('port'), function () {
+let server = app.listen(app.get('port'), () => {
     debug('Express server listening on port ' + server.address().port);
 });

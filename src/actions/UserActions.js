@@ -1,24 +1,24 @@
 'use strict';
 
 // Libraries
-var _ = require('lodash'),
-    async = require('async');
+import _ from 'lodash';
+//import async from 'async';
 
 // App Dispatcher and constants
-var AppDispatcher = require('../dispatcher/AppDispatcher');
-var AppConstants = require('../constants/AppConstants');
+import AppDispatcher from '../dispatcher/AppDispatcher';
+import AppConstants from '../constants/AppConstants';
 
 // API
-var UserAPI = require('../api/user');
+import UserAPI from '../api/user';
 
-var UserActions = {
+export default {
     /**
      * Read user from API.
      * @param id
      */
-    readUser: function (id, callback) {
-        UserAPI.get(id, function (error, user) {
-            var actionPayload = {
+    readUser (id, callback) {
+        UserAPI.get(id, (error, user) =>{
+            let actionPayload = {
                 user: user
             };
 
@@ -35,6 +35,4 @@ var UserActions = {
             AppDispatcher.dispatch(actionPayload);
         });
     }
-};
-
-module.exports = UserActions;
+}
