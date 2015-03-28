@@ -7,10 +7,18 @@ module.exports = function (src, bowerSrc, nodeSrc) {
         watch: false,
         module: {
             preLoaders: [
-                { test: /\.jsx?$/, exclude: /node_modules/, loader: "jsxhint-loader" }
+                {
+                    test: /\.js$/,
+                    exclude: /node_modules/,
+                    loader: 'eslint-loader'
+                }
             ],
             loaders: [
-                { test: /\.jsx?$/, loader: "jsx-loader" } // TODO: Recommended to use JSX extension only for JS files.
+                {
+                    test: /\.jsx?$/,
+                    exclude: /node_modules/,
+                    loader: 'babel-loader?experimental'
+                }
             ],
             noParse: /\.min\.js/,
             jshint: {

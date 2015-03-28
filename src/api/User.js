@@ -1,21 +1,22 @@
+'use strict';
+
 // Libraries
-var assign = require('object-assign'),
-    async = require('async'),
+var async = require('async'),
     http = require('superagent');
 
 module.exports.get = function (id, callback) {
     async.waterfall([
-        function (callback) {
+        function (asyncCallback) {
             // TODO Refactor this out to a DAO layer.
             http
                 .get('http://localhost:3000/test/user/' + id)
-                .end(callback);
+                .end(asyncCallback);
         },
 
-        function (result, callback) {
+        function (result, asyncCallback) {
             // TODO: Transform the data if necessary.
             // TODO: Otherwise, pass it back to the caller.
-            callback(null, result.body);
+            asyncCallback(null, result.body);
         }
     ], callback);
 };

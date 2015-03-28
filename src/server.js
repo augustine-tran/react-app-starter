@@ -1,3 +1,5 @@
+'use strict';
+
 /**
  * Module dependencies.
  */
@@ -7,9 +9,9 @@ var debug = require('debug')('react-app-starter');
  * Express app dependencies.
  */
 var express = require('express');
-var hbs  = require('express-handlebars');
+var hbs = require('express-handlebars');
 var path = require('path');
-var favicon = require('serve-favicon');
+//var favicon = require('serve-favicon');
 var logger = require('morgan');
 
 /**

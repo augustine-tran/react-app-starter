@@ -1,4 +1,4 @@
-var React = require('react');
+'use strict';
 
 var Routes = require('./routes');
 
@@ -11,7 +11,7 @@ if (window != null) {
             try {
                 data = JSON.parse(serverDataDOM.innerHTML);
                 hasServerData = true;
-            } catch (error) { console.log("Invalid server data."); }
+            } catch (error) { console.log('Invalid server data.'); }
 
             serverDataDOM.remove();
         }

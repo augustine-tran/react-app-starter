@@ -1,3 +1,5 @@
+'use strict';
+
 // Libraries
 var _ = require('lodash'),
     async = require('async');

@@ -1,5 +1,7 @@
+'use strict';
+
 // Libraries
-var async = require('async');
+//var async = require('async');
 
 // App Dispatcher and constants
 var AppDispatcher = require('../dispatcher/AppDispatcher');

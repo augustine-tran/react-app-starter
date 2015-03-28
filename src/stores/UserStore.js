@@ -1,3 +1,5 @@
+'use strict';
+
 // Core
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var EventEmitter = require('events').EventEmitter;
@@ -15,7 +17,6 @@ var _userListOrder = [];
 
 var UserStore = assign({}, EventEmitter.prototype, {
     get: function (id) {
-        console.log("GETTING USER %s :: %s", id, JSON.stringify(_users[id]));
         return _users[id];
     },
 
@@ -39,8 +40,6 @@ var UserStore = assign({}, EventEmitter.prototype, {
     set: function (user) {
         if (user != null) {
             _users[user._id] = user;
-
-            console.log("USER [%s] :: %s", user._id, JSON.stringify(_users[user._id]));
 
             return true; // User was successfully updated.
         } else {
@@ -83,7 +82,6 @@ var UserStore = assign({}, EventEmitter.prototype, {
 UserStore.dispatcherToken = AppDispatcher.register(function (action) {
     switch (action.actionType) {
         case AppConstants.ActionTypes.READ_USER_SUCCESS:
-            console.log("ACTION USER PAYLOAD :: %s", JSON.stringify(action.user));
             if (UserStore.set(action.user)) {
                 UserStore.emitChange();
             }
