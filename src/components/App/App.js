@@ -8,7 +8,7 @@ import React from 'react';
 import {Link, RouteHandler} from 'react-router';
 
 // Components
-
+import GoogleAnalytics from '../GoogleAnalytics';
 
 // Stores
 import AppStore from '../../stores/AppStore';
@@ -29,6 +29,7 @@ export default class App extends React.Component {
         return (
             <div>
                 <h1>Hello</h1>
+                <GoogleAnalytics id="UA-*******-**" />
                 <RouteHandler data={this.props.data}/>
             </div>
         );
