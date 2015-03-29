@@ -12,7 +12,7 @@ debug = debug('react-app-starter');
 import express from 'express';
 import hbs from 'express-handlebars';
 import path from 'path';
-//import favicon from 'serve-favicon';
+import favicon from 'serve-favicon';
 import logger from 'morgan';
 
 /**
@@ -30,8 +30,7 @@ app.engine('hbs', hbs({defaultLayout: 'main', extname: '.hbs'}));
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'hbs');
 
-// TODO: uncomment after placing your favicon in /public
-//app.use(favicon(__dirname + '../public/favicon.ico'));
+app.use(favicon(path.join(__dirname, '../public/favicon.ico')));
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(router);
