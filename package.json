@@ -26,7 +26,8 @@
     "rss": "^1.1.1",
     "serve-favicon": "^2.2.0",
     "sitemap": "^0.7.4",
-    "superagent": "^1.1.0"
+    "superagent": "^1.1.0",
+    "superagent-prefix": "0.0.2"
   },
   "devDependencies": {
     "babel-core": "^4.7.16",
