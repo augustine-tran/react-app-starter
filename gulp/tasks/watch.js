@@ -10,6 +10,7 @@ var browserSync = require('browser-sync');
 var config = require('../config');
 
 gulp.task('watch', ['browserSync'], function () {
+    gulp.watch(config.assets.src, ['assets']);
     gulp.watch(config.sass.src, ['sass']);
     gulp.watch(config.scripts.src, ['script']);
     gulp.watch(config.templates.src, ['templates']);

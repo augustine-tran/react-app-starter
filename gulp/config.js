@@ -21,6 +21,13 @@ module.exports = {
         script: serverDest + "/app.js",
         watch: [serverDest]
     },
+    assets: {
+        src: [
+            src + "/assets/**/*",
+            "!" + src + "/assets/{sass,sass/**,img,img/**,fonts,fonts/**}"
+        ],
+        dest: dest
+    },
     sass: {
         src: [
             src + "/assets/sass/**/*.{sass,scss}",
