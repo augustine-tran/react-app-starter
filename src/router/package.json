@@ -2,5 +2,5 @@
     "name": "router",
     "version": "0.0.0",
     "private": true,
-    "main": "./Router.js"
+    "main": "./Router.jsx"
 }

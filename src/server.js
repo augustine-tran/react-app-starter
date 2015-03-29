@@ -20,7 +20,7 @@ import logger from 'morgan';
  */
 
 let app = express();
-import {server as router} from './router';
+import Router from './router';
 
 // disable `X-Powered-By` HTTP header
 app.disable('x-powered-by');
@@ -33,7 +33,7 @@ app.set('view engine', 'hbs');
 app.use(favicon(path.join(__dirname, '../public/favicon.ico')));
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, '../public')));
-app.use(router);
+app.use(Router.serve);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

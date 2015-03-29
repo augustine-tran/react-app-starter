@@ -1,6 +1,6 @@
 'use strict';
 
-import {init} from './router';
+import Router from './router';
 
 if (typeof window !== 'undefined') {
     window.onload = function () {
@@ -16,6 +16,6 @@ if (typeof window !== 'undefined') {
             serverDataDOM.remove();
         }
 
-        init(hasServerData ? data : undefined);
+        Router.init(hasServerData ? data : undefined);
     };
 }

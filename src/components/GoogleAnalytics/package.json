@@ -1,5 +1,5 @@
 {
   "name": "GoogleAnalytics",
   "version": "0.0.1",
-  "main": "GoogleAnalytics.js"
+  "main": "GoogleAnalytics.jsx"
 }
