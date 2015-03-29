@@ -57,7 +57,7 @@ export default class User extends React.Component {
         return (
             <div>
                 <p><span>Request for user "{ this.state.user.name }"!</span></p>
-                <button className="primary" onClick={function () {AppActions.showAlert('info', 'oh my...', 'hello')}}>Show Alert</button>
+                <button className="primary" onClick={() => { AppActions.showAlert('info', 'oh my...', 'hello'); }}>Show Alert</button>
                 <RouteHandler data={this.props.data}/>
             </div>
         );
