@@ -72,7 +72,9 @@ export function server (req, res, next) {
                 });
             } else {
                 // TODO: Render an error page
-                res.render('index');
+                res.render('error', {
+                    error: error
+                });
             }
         });
     });
