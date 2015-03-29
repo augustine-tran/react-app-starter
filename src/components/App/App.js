@@ -39,7 +39,8 @@ export default class App extends React.Component {
      */
     _onAlert() {
         _.forEach(AppStore.getPendingAlerts(), (alertPayload) => {
-            window.alert(`${alertPayload.type.toUpperCase()} :: ${alertPayload.title} - ${alertPayload.message}`);
+            console.log(`${alertPayload.type.toUpperCase()} :: ${alertPayload.title} - ${alertPayload.message}`);
+            //window.alert(`${alertPayload.type.toUpperCase()} :: ${alertPayload.title} - ${alertPayload.message}`);
         });
     }
 }

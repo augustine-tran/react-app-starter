@@ -3,9 +3,8 @@
 /**
  * Module dependencies.
  */
-import Debug from 'debug';
-
-let debug = Debug('react-app-starter');
+import debug from 'debug';
+debug = debug('react-app-starter');
 
 /**
  * Express app dependencies.
@@ -21,7 +20,7 @@ import logger from 'morgan';
  */
 
 let app = express();
-import {router} from './routes';
+import {server as router} from './router';
 
 // disable `X-Powered-By` HTTP header
 app.disable('x-powered-by');

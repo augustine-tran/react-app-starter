@@ -10,31 +10,35 @@ import async from 'async';
  React & Router
  =================================*/
 import React from 'react';
-import Router, {Route, DefaultRoute} from 'react-router';
+import Router from 'react-router';
 
 /*=================================
- Components
+ Routes
  =================================*/
-import App from '../components/App';
-import User from '../components/User';
+import Routes from './Routes';
 
 /*=================================
- ROUTES
+ Router
  =================================*/
-let routes = (
-    <Route name="app" path="/" handler={App} >
-        <Route name="user" path="/user/:id" handler={User}/>
-    </Route>
-);
 
+/**
+ * Client side router initialization.
+ * @param data
+ */
 export function init (data) {
-    Router.run(routes, Router.HistoryLocation, function (Handler, state) {
+    Router.run(Routes, Router.HistoryLocation, function (Handler) {
         React.render(<Handler data={data}/>, document.body);
     });
 }
 
-export function router (req, res, next) {
-    Router.run(routes, req.url, (Handler, state) => {
+/**
+ * Express style router middleware.
+ * @param req
+ * @param res
+ * @param next
+ */
+export function server (req, res, next) {
+    Router.run(Routes, req.url, (Handler, state) => {
 
         // Loop through the matching routes
         let routesWithData = state.routes.filter((route) => { return route.handler.fetchData; });

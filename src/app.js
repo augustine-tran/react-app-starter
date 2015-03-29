@@ -1,6 +1,6 @@
 'use strict';
 
-import {init} from './routes';
+import {init} from './router';
 
 if (typeof window !== 'undefined') {
     window.onload = function () {

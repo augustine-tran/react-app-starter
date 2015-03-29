@@ -1,6 +1,6 @@
 {
-    "name": "Routes",
+    "name": "router",
     "version": "0.0.0",
     "private": true,
-    "main": "./Routes.js"
+    "main": "./Router.js"
 }
