@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-export default class Alert extends React.Component {
+class Alert extends React.Component {
     constructor(props, context) {
         super(props, context); // NOTE: IntelliJ lints this as invalid. Ignore warning.
 
@@ -72,3 +72,5 @@ Alert.propTypes = {
 Alert.defaultProps = {
     type: 'info'
 };
+
+export default Alert;

@@ -13,7 +13,7 @@ import GoogleAnalytics from '../Widgets/GoogleAnalytics';
 // Stores
 import AppStore from '../../stores/AppStore';
 
-export default class App extends React.Component {
+class App extends React.Component {
     componentDidMount() {
         AppStore.addAlertListener(this._onAlert);
     }
@@ -45,3 +45,5 @@ export default class App extends React.Component {
         });
     }
 }
+
+export default App;
