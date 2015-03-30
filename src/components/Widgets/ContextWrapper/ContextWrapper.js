@@ -9,7 +9,6 @@ import React from 'react';
  */
 class ContextWrapper extends React.Component {
     getChildContext() {
-        console.log('THIS HAS CONTEXT ROUTER IN CONTEXT WRAPPER? ', this.context != null && this.context.router != null);
         return {
             router: this.context.router
         };
