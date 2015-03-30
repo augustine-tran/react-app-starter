@@ -14,13 +14,13 @@ import UserActions from '../../actions/UserActions';
 // Stores
 import UserStore from '../../stores/UserStore';
 
-function getCurrentState (id) {
+function getCurrentState(id) {
     return {
         user: UserStore.get(id)
     };
 }
 
-function fireActions (params, callback) {
+function fireActions(params, callback) {
     UserActions.readUser(params.id, callback);
 }
 
@@ -76,7 +76,7 @@ class User extends React.Component {
      * @param params
      * @returns {*}
      */
-    static fetchData (state, callback) {
+    static fetchData(state, callback) {
         fireActions(state.params, callback);
     }
 }
