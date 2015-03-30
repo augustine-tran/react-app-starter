@@ -1,14 +1,14 @@
 'use strict';
 
-// Libraries
-import _ from 'lodash';
-
 // React
 import React from 'react';
+
+// Libraries
+import _ from 'lodash';
 import {Link, RouteHandler} from 'react-router';
 
 // Components
-import GoogleAnalytics from '../GoogleAnalytics';
+import GoogleAnalytics from '../Widgets/GoogleAnalytics';
 
 // Stores
 import AppStore from '../../stores/AppStore';

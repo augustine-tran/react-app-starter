@@ -6,21 +6,28 @@ var currentId = null;
 var latestUrl = null;
 
 function addScript(id) {
-    if(!id) {
+    if (!id) {
         throw new Error('Google analytics ID is undefined');
     }
 
     /*eslint-disable*/
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    (function (i, s, o, g, r, a, m) {
+        i['GoogleAnalyticsObject'] = r;
+        i[r] = i[r] || function () {
+            (i[r].q = i[r].q || []).push(arguments)
+        }, i[r].l = 1 * new Date();
+        a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0];
+        a.async = 1;
+        a.src = g;
+        m.parentNode.insertBefore(a, m)
+    })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
     /*eslint-enable*/
 
     window.ga('create', id, 'auto');
 }
 
-export default class GoogleAnalytics extends React.Component {
+class GoogleAnalytics extends React.Component {
     getDefaultProps() {
         return {
             displayfeatures: false,
@@ -29,7 +36,7 @@ export default class GoogleAnalytics extends React.Component {
     }
 
     componentDidMount() {
-        if(!GoogleAnalytics.isInitialized()) {
+        if (!GoogleAnalytics.isInitialized()) {
             GoogleAnalytics.init(this.props.id);
         }
     }
@@ -44,7 +51,7 @@ export default class GoogleAnalytics extends React.Component {
 
     pageview() {
         var path = this.context.router.getPath();
-        if(latestUrl === path) {
+        if (latestUrl === path) {
             return;
         }
 
@@ -54,11 +61,11 @@ export default class GoogleAnalytics extends React.Component {
     }
 
     static init(id) {
-        if(!id) {
+        if (!id) {
             throw new Error('Google analytics ID is undefined');
         }
 
-        if(GoogleAnalytics.isInitialized()) {
+        if (GoogleAnalytics.isInitialized()) {
             throw new Error('Google analytics is already initialized');
         }
 
@@ -75,7 +82,7 @@ export default class GoogleAnalytics extends React.Component {
     }
 
     static send(what, options) {
-        if(!GoogleAnalytics.isInitialized()) {
+        if (!GoogleAnalytics.isInitialized()) {
             throw new Error('Google analytics is not initialized');
         }
 
@@ -101,3 +108,5 @@ GoogleAnalytics.propTypes = {
 GoogleAnalytics.contextTypes = {
     router: React.PropTypes.func.isRequired
 };
+
+export default GoogleAnalytics;

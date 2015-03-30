@@ -1,10 +1,10 @@
 'use strict';
 
-// Libraries
-import _ from 'lodash';
-
 // React
 import React from 'react';
+
+// Libraries
+import _ from 'lodash';
 import {Link, RouteHandler} from 'react-router';
 
 // Actions
@@ -24,7 +24,7 @@ function fireActions (params, callback) {
     UserActions.readUser(params.id, callback);
 }
 
-export default class User extends React.Component {
+class User extends React.Component {
     constructor(props, context) {
         super(props, context); // NOTE: IntelliJ lints this as invalid. Ignore warning.
 
@@ -88,3 +88,5 @@ User.contextTypes = {
 User.propTypes = {
     data: React.PropTypes.object
 };
+
+export default User;
