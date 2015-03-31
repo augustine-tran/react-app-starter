@@ -21,7 +21,7 @@ function getCurrentState(id) {
 }
 
 function fireActions(params, callback) {
-    UserActions.readUser(params.id, callback);
+    UserActions.getUser(params.id, callback);
 }
 
 class User extends React.Component {
