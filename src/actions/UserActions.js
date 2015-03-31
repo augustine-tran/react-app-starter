@@ -16,7 +16,7 @@ export default {
      * Read user from API.
      * @param id
      */
-    readUser (id, callback) {
+    getUser (id, callback) {
         UserAPI.get(id, (error, user) =>{
             let actionPayload = {
                 user: user
