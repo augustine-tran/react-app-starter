@@ -6,7 +6,7 @@ import async from 'async';
 import http from 'superagent';
 import prefix from 'superagent-prefix'
 
-export default class API {
+class API {
     constructor () {
 
     }
@@ -17,4 +17,5 @@ API.constants = {
     TIMEOUT_MS: 500
 };
 
+export default API;
 

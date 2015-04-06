@@ -5,7 +5,7 @@ import React from 'react';
 
 // Libraries
 import _ from 'lodash';
-import {Link, RouteHandler} from 'react-router';
+import {RouteHandler} from 'react-router';
 
 // Components
 import GoogleAnalytics from '../Widgets/GoogleAnalytics';

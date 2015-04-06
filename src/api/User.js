@@ -7,7 +7,7 @@ import http from 'superagent';
 // Base API class
 import Base from './Base';
 
-export default class User extends Base {
+class User extends Base {
     static get(id, callback) {
         async.waterfall([
             function (asyncCallback) {
@@ -49,3 +49,5 @@ export default class User extends Base {
         ], callback);
     }
 }
+
+export default User;
