@@ -13,15 +13,8 @@ import ContextWrapper from '../ContextWrapper';
 class List extends ContextWrapper {
 
     processChildren() {
-        let component = React.createFactory(this.props.of);
-
-        invariant(
-            (this.props.data.length >= this.props.children.length),
-            `List data only has ${this.props.data.length} items but there are ${this.props.children.length} children.`
-        );
-
         let nodes = this.props.data.map(function (data) {
-            return component(data);
+            return this.props.of(data);
         });
 
         return nodes;
@@ -39,8 +32,8 @@ class List extends ContextWrapper {
 }
 
 List.propTypes = {
-    of: React.PropTypes.instanceOf(React.Component).isRequired,
-    data: React.PropTypes.object.isRequired
+    of: React.PropTypes.element.isRequired,
+    data: React.PropTypes.array.isRequired
 };
 
 List.contextTypes = assign({}, ContextWrapper.contextTypes);
