@@ -58,7 +58,9 @@ apiRouter.get('/users', (req, res) => {
 apiRouter.get('/user/:id', (req, res) => {
     res.json({
         id: req.params.id,
-        name: generator.name()
+        name: generator.name(),
+        gender: generator.gender(),
+        birthday: generator.birthday()
     });
 });
 
