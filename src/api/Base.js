@@ -13,7 +13,7 @@ class API {
 }
 
 API.constants = {
-    BASE_URL: prefix('http://localhost:3000'),
+    BASE_URL: prefix('http://localhost:8080/api'),
     TIMEOUT_MS: 500
 };
 

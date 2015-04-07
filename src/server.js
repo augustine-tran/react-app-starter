@@ -9,11 +9,13 @@ debug = debug('react-app-starter');
 /**
  * Express app dependencies.
  */
-import express from 'express';
+import express, {Router as expressRouter} from 'express';
 import hbs from 'express-handlebars';
 import path from 'path';
 import favicon from 'serve-favicon';
 import logger from 'morgan';
+
+import chance from 'chance';
 
 /**
  * Setup server app.
@@ -33,6 +35,36 @@ app.set('view engine', 'hbs');
 app.use(favicon(path.join(__dirname, '../public/favicon.ico')));
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, '../public')));
+
+let generator = chance();
+
+var apiRouter = expressRouter();
+
+apiRouter.get('/users', (req, res) => {
+    let count = req.query.count || 10;
+
+    let users = [];
+
+    for (let i = 0; i < count; i++) {
+        users.push({
+            id: generator.hash({length: 24}),
+            name: generator.name()
+        });
+    }
+
+    res.json(users);
+});
+
+apiRouter.get('/user/:id', (req, res) => {
+    res.json({
+        id: req.params.id,
+        name: generator.name()
+    });
+});
+
+app.use('/api', apiRouter);
+
+// React App
 app.use(Router.serve);
 
 // catch 404 and forward to error handler
