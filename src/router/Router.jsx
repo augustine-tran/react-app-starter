@@ -26,7 +26,7 @@ export default class AppRouter {
      * Client side router initialization.
      * @param data
      */
-    static init (data) {
+    static init(data) {
         Router.run(routes, Router.HistoryLocation, function (Handler) {
             React.render(<Handler data={data}/>, document.body);
         });
@@ -39,7 +39,7 @@ export default class AppRouter {
      * @param res
      * @param next
      */
-    static serve (req, res, next) {
+    static serve(req, res, next) {
         Router.run(routes, req.url, (Handler, state) => {
 
             // Loop through the matching routes
@@ -54,9 +54,7 @@ export default class AppRouter {
                 if (!error) {
                     let data = {};
 
-                    _.each(dataArray, function (dataSet) {
-                        _.merge(data, dataSet);
-                    });
+                    _.each(dataArray, dataSet => _.merge(data, dataSet));
 
                     // TODO: At least one component should set the data.metadata properties, so we can generate the SEO meta-tags.
                     // TODO: Make sure all metadata properties are set, and fill missing properties with default values.

@@ -9,13 +9,7 @@ import React from 'react';
  */
 class ContextWrapper extends React.Component {
     getChildContext() {
-        return {
-            router: this.context.router
-        };
-    }
-
-    render() {
-        return this.props.children;
+        return this.context;
     }
 }
 

@@ -16,8 +16,8 @@ export default {
      * Read user from API.
      * @param id
      */
-    getUser (id, callback) {
-        UserAPI.get(id, (error, user) =>{
+    getUser(id, callback) {
+        UserAPI.get(id, (error, user) => {
             let actionPayload = {
                 user: user
             };
@@ -30,6 +30,28 @@ export default {
                 actionPayload.actionType = AppConstants.ActionTypes.READ_USER_SUCCESS;
             } else {
                 actionPayload.actionType = AppConstants.ActionTypes.READ_USER_ERROR;
+            }
+
+            AppDispatcher.dispatch(actionPayload);
+        });
+    },
+
+    getUsers(page, count, callback) {
+        UserAPI.getList(page, count, (error, users) => {
+            let actionPayload = {
+                users: users,
+                page: page,
+                count: count
+            };
+
+            if (callback != null && _.isFunction(callback)) {
+                callback(error, actionPayload);
+            }
+
+            if (!error) {
+                actionPayload.actionType = AppConstants.ActionTypes.READ_USER_LIST_SUCCESS;
+            } else {
+                actionPayload.actionType = AppConstants.ActionTypes.READ_USER_LIST_ERROR;
             }
 
             AppDispatcher.dispatch(actionPayload);

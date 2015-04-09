@@ -1,6 +1,6 @@
 {
-    "name": "User",
+    "name": "Widget",
     "version": "0.0.0",
     "private": true,
-    "main": "./User.jsx"
+    "main": "./Widget.jsx"
 }

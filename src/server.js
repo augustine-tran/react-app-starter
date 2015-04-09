@@ -10,6 +10,7 @@ debug = debug('react-app-starter');
  * Express app dependencies.
  */
 import express, {Router as expressRouter} from 'express';
+import cors from 'cors';
 import hbs from 'express-handlebars';
 import path from 'path';
 import favicon from 'serve-favicon';
@@ -35,6 +36,8 @@ app.set('view engine', 'hbs');
 app.use(favicon(path.join(__dirname, '../public/favicon.ico')));
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, '../public')));
+
+app.use(cors());
 
 let generator = chance();
 

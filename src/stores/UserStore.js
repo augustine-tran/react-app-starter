@@ -39,7 +39,7 @@ let UserStore = assign({}, EventEmitter.prototype, {
 
     set(user) {
         if (user != null) {
-            _users[user._id] = user;
+            _users[user.id] = user;
 
             return true; // User was successfully updated.
         } else {
@@ -52,8 +52,8 @@ let UserStore = assign({}, EventEmitter.prototype, {
 
         if (_.isArray(userList)) {
             _.forEach(userList, function (user) {
-                _users[user._id] = user;
-                _userListOrder[i] = user._id;
+                _users[user.id] = user;
+                _userListOrder[i] = user.id;
                 ++i;
             });
         }
@@ -89,6 +89,12 @@ UserStore.dispatcherToken = AppDispatcher.register(action => {
 
         case AppConstants.ActionTypes.READ_USER_ERROR:
             // TODO: Shucks! Let's handle this error.
+            break;
+
+        case AppConstants.ActionTypes.READ_USER_LIST_SUCCESS:
+            if (UserStore.setList(action.users, (action.page - 1) * action.count)) {
+                UserStore.emitChange();
+            }
             break;
 
         default:
