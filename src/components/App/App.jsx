@@ -21,9 +21,11 @@ import UserActions from '../../actions/UserActions';
 import AppStore from '../../stores/AppStore';
 import UserStore from '../../stores/UserStore';
 
-function getCurrentState(previousState) {
-    return {
-        users: UserStore.getPage(previousState.page, previousState.count)
+function getStateFromStores(previousState) {
+    let users = UserStore.getPage(previousState.page, previousState.count);
+
+    return (users == null) ? null : {
+        users: users
     };
 }
 
@@ -39,6 +41,17 @@ class App extends React.Component {
             users: [],
             page: 1,
             count: 100
+        };
+
+        /**
+         * Event handler for 'change' events coming from the UserStore
+         */
+        this._onChange = () => {
+            let newState = getStateFromStores(this.state);
+
+            if (newState != null) {
+                this.setState(getStateFromStores(this.state));
+            }
         };
 
         if (props.data != null) {
@@ -81,13 +94,6 @@ class App extends React.Component {
             console.log(`${alertPayload.type.toUpperCase()} :: ${alertPayload.title} - ${alertPayload.message}`);
             //window.alert(`${alertPayload.type.toUpperCase()} :: ${alertPayload.title} - ${alertPayload.message}`);
         });
-    }
-
-    /**
-     * Event handler for 'change' events coming from the UserStore
-     */
-    _onChange() {
-        this.replaceState(getCurrentState(this.state));
     }
 
     /**

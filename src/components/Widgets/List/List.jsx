@@ -32,7 +32,13 @@ class List extends ContextWrapper {
         let factory = this.state.of;
 
         if (this.state.dataSet != null && this.state.dataSet.length > 0) {
-            body = this.state.dataSet.map(data => {
+            body = this.state.dataSet.map((data, index) => {
+                if (data == null || data.id == null) {
+                    console.log(`Oops! Data is empty at position ${index}!`);
+                } else {
+                    console.log(`Building list element #${index} with ${JSON.stringify(data)}`);
+                }
+
                 data.key = data.id; // Set the unique key
 
                 return factory(data);
@@ -65,7 +71,12 @@ List.propTypes = {
     //    }
     //},
     of: React.PropTypes.func.isRequired,
-    dataSet: React.PropTypes.arrayOf(React.PropTypes.shape({id: React.PropTypes.string})).isRequired
+    dataSet: React.PropTypes.arrayOf(React.PropTypes.shape({
+        id: React.PropTypes.oneOfType([
+            React.PropTypes.string,
+            React.PropTypes.number
+        ])
+    })).isRequired
 };
 
 List.contextTypes = assign({}, ContextWrapper.contextTypes);

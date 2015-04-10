@@ -4,7 +4,7 @@
 import React from 'react';
 
 // Libraries
-import _ from 'lodash';
+import assign from 'object-assign';
 import {Link, RouteHandler} from 'react-router';
 
 // Actions
@@ -14,7 +14,7 @@ import UserActions from '../../../actions/UserActions';
 // Stores
 import UserStore from '../../../stores/UserStore';
 
-function getCurrentState(props, context, state) {
+function getStateFromStores(props, context, state) {
     let user = UserStore.get(id);
 
     return {
@@ -67,7 +67,7 @@ class Details extends React.Component {
             );
         } else if (this.state.user.gender != null && this.state.isLoading === false) {
             userDetails = (
-                <p><button onClick={_onButtonClick()}>Get user details!</button></p>
+                <p><button onClick={_onButtonClick}>Get user details!</button></p>
             );
         } else {
             userDetails = (
@@ -88,7 +88,7 @@ class Details extends React.Component {
      * Event handler for 'change' events coming from the UserStore
      */
     _onChange() {
-        this.replaceState(getCurrentState(this.context.router.getCurrentParams().id));
+        this.replaceState(getStateFromStores(this.context.router.getCurrentParams().id));
     }
 
     _onButtonClick() {

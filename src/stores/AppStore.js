@@ -2,7 +2,7 @@
 
 // Core
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import {EventEmitter} from 'events';
+import EventEmitter from 'eventemitter3';
 import AppConstants from '../constants/AppConstants';
 
 // Libraries

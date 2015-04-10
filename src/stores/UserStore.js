@@ -2,7 +2,7 @@
 
 // Core
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import {EventEmitter} from 'events';
+import EventEmitter from 'eventemitter3';
 import AppConstants from '../constants/AppConstants';
 
 // Libraries
@@ -13,7 +13,7 @@ const CHANGE_EVENT = 'CHANGE';
 
 // Data
 let _users = {};
-let _userListOrder = [];
+let _userListOrder = []; // TODO: If user list is to be filtered, we can have a new order array. e.g. _userSortedListOrder or _userFilteredListOrder
 
 let UserStore = assign({}, EventEmitter.prototype, {
     get(id) {
@@ -95,6 +95,10 @@ UserStore.dispatcherToken = AppDispatcher.register(action => {
             if (UserStore.setList(action.users, (action.page - 1) * action.count)) {
                 UserStore.emitChange();
             }
+            break;
+
+        case AppConstants.ActionTypes.READ_USER_LIST_ERROR:
+            // TODO: Shucks! Let's handle this error.
             break;
 
         default:

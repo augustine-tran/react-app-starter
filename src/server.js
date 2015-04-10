@@ -3,8 +3,8 @@
 /**
  * Module dependencies.
  */
-import debug from 'debug';
-debug = debug('react-app-starter');
+import {default as _debug} from 'debug';
+let debug = _debug('react-app-starter');
 
 /**
  * Express app dependencies.
@@ -16,6 +16,7 @@ import path from 'path';
 import favicon from 'serve-favicon';
 import logger from 'morgan';
 
+import _ from 'lodash';
 import chance from 'chance';
 
 /**
@@ -40,31 +41,41 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use(cors());
 
 let generator = chance();
+let _users = [], MAX_USERS = 1000;
 
-var apiRouter = expressRouter();
+for (let i = 0; i <= MAX_USERS; i++) {
+    _users.push({
+        id: i,
+        name: generator.name(),
+        gender: generator.gender(),
+        birthday: generator.birthday()
+    });
+}
+
+let apiRouter = expressRouter();
 
 apiRouter.get('/users', (req, res) => {
-    let count = req.query.count || 10;
+    let count = (req.query.count == null || req.query.count < 1) ? 10 : req.query.count,
+        page = (req.query.page == null || req.query.page < 0) ? 1 : req.query.page,
+        startIndex = (page - 1) * count;
 
-    let users = [];
+    let users = _.slice(_users, startIndex, count);
 
-    for (let i = 0; i < count; i++) {
-        users.push({
-            id: generator.hash({length: 24}),
-            name: generator.name()
-        });
-    }
+    users = users.map(user => {
+        return {id: user.id, name: user.name};
+    });
 
     res.json(users);
 });
 
 apiRouter.get('/user/:id', (req, res) => {
-    res.json({
-        id: req.params.id,
-        name: generator.name(),
-        gender: generator.gender(),
-        birthday: generator.birthday()
-    });
+    let id = req.params.id;
+
+    if (id == null || _users.length <= id) {
+        res.status(500).send({error: 'Invalid user'});
+    } else {
+        res.json(_users[id]);
+    }
 });
 
 app.use('/api', apiRouter);

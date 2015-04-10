@@ -14,10 +14,12 @@ import UserActions from '../../../actions/UserActions';
 // Stores
 import UserStore from '../../../stores/UserStore';
 
-function getCurrentState(previousState) {
-    return {
+function getStateFromStores(previousState) {
+    let user = UserStore.get(previousState.user.id);
+
+    return (user == null) ? null : {
         isLoadingMoreDetails: false,
-        user: UserStore.get(previousState.user.id)
+        user: user
     };
 }
 
@@ -45,25 +47,33 @@ class Widget extends React.Component {
          * Event handler for 'change' events coming from the UserStore
          */
         this._onChange = () => {
-            this.setState(getCurrentState(this.state));
+            let newState = getStateFromStores(this.state);
+
+            if (newState != null) {
+                console.log(`Setting state for widget #${this.state.user.id} - New state: ${JSON.stringify(newState)}`);
+                this.setState(newState);
+            }
         };
 
         /**
          * Event handler for 'button click' events coming from the button
          */
         this._onButtonClick = () => {
-            this.setState(assign({}, this.state, {isLoadingMoreDetails: true})); // Set isLoadingMoreDetails to true
-            fireActions(this.state);
+            this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true}), () => {
+                console.log(`Fire event for widget #${this.state.user.id}`);
+                fireActions(this.state);
+            }); // Set isLoadingMoreDetails to true
         };
     }
 
     componentDidMount() {
         UserStore.addChangeListener(this._onChange);
 
-        fireActions(this.state);
+        //fireActions(this.state);
     }
 
     componentWillUnmount() {
+        console.log('User Widget will unmount!');
         UserStore.removeChangeListener(this._onChange);
     }
 
@@ -77,15 +87,19 @@ class Widget extends React.Component {
             userDetails = (
                 <p><span>Loading more details...</span></p>
             );
-        } else if (this.state.isLoadingMoreDetails === false) {
-            userDetails = (
-                <p><button onClick={this._onButtonClick}>Get more user details!</button></p>
-            );
         } else {
-            userDetails = (
-                <p><span>{this.state.user.name} is {this.state.user.gender}!</span></p>
-            );
+            if (this.state.user.gender != null) {
+                userDetails = (
+                    <p><span>{this.state.user.name} is {this.state.user.gender}!</span></p>
+                );
+            } else {
+                userDetails = (
+                    <p><button onClick={this._onButtonClick}>Get more user details!</button></p>
+                );
+            }
         }
+
+        console.log(`THE STATE OF USER WIDGET :: ${JSON.stringify(this.state)}`);
 
         return (
             <div key={this.state.user.id}>
