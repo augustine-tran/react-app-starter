@@ -44,8 +44,6 @@ class App extends React.Component {
         if (props.data != null) {
             // Server side rendering. Let's use the provided data first.
             _.merge(this.state, props.data);
-
-            console.log(`THIS>DATA :: ${JSON.stringify(props.data)}`);
         }
     }
 

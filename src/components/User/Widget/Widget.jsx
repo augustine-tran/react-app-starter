@@ -4,7 +4,7 @@
 import React from 'react';
 
 // Libraries
-import _ from 'lodash';
+import assign from 'object-assign';
 import {Link, RouteHandler} from 'react-router';
 
 // Actions
@@ -36,11 +36,24 @@ class Widget extends React.Component {
     constructor(props, context) {
         super(props, context); // NOTE: IntelliJ lints this as invalid. Ignore warning.
 
-        console.log(`I'm a child, getting parent's Context! Does Context contain router? ${this.context.router != null}`);
-
         this.state = {
             isLoadingMoreDetails: false,
             user: props
+        };
+
+        /**
+         * Event handler for 'change' events coming from the UserStore
+         */
+        this._onChange = () => {
+            this.setState(getCurrentState(this.state));
+        };
+
+        /**
+         * Event handler for 'button click' events coming from the button
+         */
+        this._onButtonClick = () => {
+            this.setState(assign({}, this.state, {isLoadingMoreDetails: true})); // Set isLoadingMoreDetails to true
+            fireActions(this.state);
         };
     }
 
@@ -58,8 +71,6 @@ class Widget extends React.Component {
      * @return {object}
      */
     render() {
-        console.log(`I'm a child, getting parent's Context in my render()! Does Context contain router? ${this.context.router != null}`);
-
         let userDetails;
 
         if (this.state.isLoadingMoreDetails === true) {
@@ -84,19 +95,6 @@ class Widget extends React.Component {
                 <Link to="user" params={{id: this.state.user.id}}/>
             </div>
         );
-    }
-
-    /**
-     * Event handler for 'change' events coming from the UserStore
-     */
-    _onChange() {
-        this.replaceState(getCurrentState(this.state));
-    }
-
-    _onButtonClick() {
-        //this.setState({isLoadingMoreDetails: true}); // Set isLoadingMoreDetails to true
-
-        fireActions(this.state);
     }
 }
 

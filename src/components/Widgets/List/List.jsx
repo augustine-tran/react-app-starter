@@ -64,10 +64,7 @@ List.propTypes = {
     //        return new Error(`Invalid prop \`${propName}\` of type \`${typeof of}\` supplied to \`${componentName}\`, expected \`Composite Component\`.`);
     //    }
     //},
-    //placeholder: (props, propName, componentName, location) => {
-    //    console.log("TEST");
-    //    return React.PropTypes.element(props, propName, componentName, location);
-    //},
+    of: React.PropTypes.func.isRequired,
     dataSet: React.PropTypes.arrayOf(React.PropTypes.shape({id: React.PropTypes.string})).isRequired
 };
 
