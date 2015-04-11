@@ -52,12 +52,15 @@ let UserStore = assign({}, EventEmitter.prototype, {
 
         if (_.isArray(userList)) {
             _.forEach(userList, function (user) {
-                _users[user.id] = user;
+                _users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
                 _userListOrder[i] = user.id;
                 ++i;
             });
         }
     },
+
+    // TODO:
+    // setSortedList(userList, startIndex) { },
 
     emitChange() {
         this.emit(CHANGE_EVENT);
