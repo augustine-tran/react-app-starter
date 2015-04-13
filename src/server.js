@@ -62,7 +62,15 @@ apiRouter.get('/users', (req, res) => {
     let users = _.slice(_users, startIndex, count);
 
     users = users.map(user => {
-        return {id: user.id, name: user.name};
+        /**
+         * TODO: Even numbered users will contain the whole object, while odd numbered users will only contain ID and name.
+         * TODO: Remove this if you're not trying to learn React.
+         */
+        if (user.id % 2 === 1) {
+            return user;
+        } else {
+            return {id: user.id, name: user.name};
+        }
     });
 
     res.json(users);
