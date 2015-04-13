@@ -57,9 +57,10 @@ let apiRouter = expressRouter();
 apiRouter.get('/users', (req, res) => {
     let count = (req.query.count == null || req.query.count < 1) ? 10 : req.query.count,
         page = (req.query.page == null || req.query.page < 0) ? 1 : req.query.page,
-        startIndex = (page - 1) * count;
+        startIndex = (page - 1) * count,
+        endIndex = startIndex + count;
 
-    let users = _.slice(_users, startIndex, count);
+    let users = _.slice(_users, startIndex, endIndex);
 
     users = users.map(user => {
         /**
