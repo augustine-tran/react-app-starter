@@ -41,7 +41,8 @@ app.use(express.static(path.join(__dirname, '../public')));
 app.use(cors());
 
 let generator = chance();
-let _users = [], MAX_USERS = 1000;
+const MAX_USERS = 1000;
+let _users = [];
 
 for (let i = 0; i <= MAX_USERS; i++) {
     _users.push({
@@ -55,10 +56,10 @@ for (let i = 0; i <= MAX_USERS; i++) {
 let apiRouter = expressRouter();
 
 apiRouter.get('/users', (req, res) => {
-    let count = (req.query.count == null || req.query.count < 1) ? 10 : req.query.count,
-        page = (req.query.page == null || req.query.page < 0) ? 1 : req.query.page,
-        startIndex = (page - 1) * count,
-        endIndex = startIndex + count;
+    let perPageCount = (req.query.per_page_count == null || req.query.per_page_count < 1) ? 10 : parseInt(req.query.per_page_count),
+        page = (req.query.page == null || req.query.page < 0) ? 1 : parseInt(req.query.page),
+        startIndex = (page - 1) * perPageCount,
+        endIndex = startIndex + perPageCount;
 
     let users = _.slice(_users, startIndex, endIndex);
 
@@ -74,7 +75,14 @@ apiRouter.get('/users', (req, res) => {
         }
     });
 
-    res.json(users);
+    let response = {
+        page: page,
+        totalCount: MAX_USERS,
+        perPageCount: perPageCount,
+        data: users
+    };
+
+    res.json(response);
 });
 
 apiRouter.get('/user/:id', (req, res) => {

@@ -22,23 +22,19 @@ class List extends ContextWrapper {
             // Server side rendering. Let's use the provided data first.
             _.merge(this.state, props.data);
         } else {
+            console.log(`SETTING STATE :: ${JSON.stringify(props.dataSet)}`);
             this.state.dataSet = props.dataSet;
             this.state.of = props.of;
         }
     }
 
     render() {
+        console.log(`RENDER CALLED WITH DATASET :: ${JSON.stringify(this.state.dataSet)}`);
         let body;
         let factory = this.state.of;
 
         if (this.state.dataSet != null && this.state.dataSet.length > 0) {
             body = this.state.dataSet.map((data, index) => {
-                if (data == null || data.id == null) {
-                    console.log(`Oops! Data is empty at position ${index}!`);
-                } else {
-                    console.log(`Building list element #${index} with ${JSON.stringify(data)}`);
-                }
-
                 data.key = data.id; // Set the unique key
 
                 return factory(data);

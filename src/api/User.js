@@ -27,14 +27,14 @@ class User extends Base {
         ], callback);
     }
 
-    static getList(page, count, callback) {
+    static getPage(page, perPageCount, callback) {
         async.waterfall([
             function (asyncCallback) {
                 http
                     .get('/users')
                     .query({
                         page: page,
-                        count: count
+                        'per_page_count': perPageCount
                     })
                     .use(super.constants.BASE_URL)
                     .timeout(super.constants.TIMEOUT_MS)
@@ -44,7 +44,13 @@ class User extends Base {
             function (result, asyncCallback) {
                 // TODO: Transform the data if necessary.
                 // TODO: Otherwise, pass it back to the caller.
-                asyncCallback(null, result.body);
+                let response = result.body;
+
+                if (response.page === page && response.perPageCount === perPageCount && response.data != null) {
+                    asyncCallback(null, response.data);
+                } else {
+                    asyncCallback(new Error('Invalid response!'));
+                }
             }
         ], callback);
     }

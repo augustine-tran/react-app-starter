@@ -21,36 +21,68 @@ import UserActions from '../../actions/UserActions';
 import AppStore from '../../stores/AppStore';
 import UserStore from '../../stores/UserStore';
 
-function getStateFromStores(previousState) {
-    let users = UserStore.getPage(previousState.page, previousState.count);
+function getInitialState() {
+    return {
+        users: [],
+        page: 1,
+        perPageCount: 5
+    };
+}
+
+function getStateFromStores(parameters) {
+    let users = UserStore.getPage(parameters.page, parameters.perPageCount);
 
     return (users == null) ? null : {
+        page: parameters.page,
+        perPageCount: parameters.perPageCount,
         users: users
     };
 }
 
-function fireActions(state, callback) {
-    UserActions.getUsers(state.page, state.count, callback);
+function fireActions(parameters, callback) {
+    UserActions.getUsers(parameters.page, parameters.perPageCount, callback);
 }
 
 class App extends React.Component {
     constructor(props, context) {
         super(props, context); // NOTE: IntelliJ lints this as invalid. Ignore warning.
 
-        this.state = {
-            users: [],
-            page: 1,
-            count: 100
-        };
+        this.state = getInitialState();
 
         /**
          * Event handler for 'change' events coming from the UserStore
          */
         this._onChange = () => {
-            let newState = getStateFromStores(this.state);
+            let parameters = {
+                page: this.state.page,
+                perPageCount: this.state.perPageCount
+            };
+
+            console.log(`STORE ON CHANGE :: PAGE - ${parameters.page} | PAGE PER COUNT - ${parameters.perPageCount}`);
+
+            let newState = getStateFromStores(parameters);
 
             if (newState != null) {
-                this.setState(getStateFromStores(this.state));
+                this.setState(newState);
+            }
+        };
+
+        this._onNextButtonClicked = () => {
+            this._onLoadPage(this.state.page + 1);
+        };
+
+        this._onPrevButtonClicked = () => {
+            this._onLoadPage(this.state.page - 1);
+        };
+
+        this._onLoadPage = (page) => {
+            if (page >= 1) { // TODO: We can set a max too
+                this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true, page: page, perPageCount: this.state.perPageCount}), () => {
+                    fireActions({
+                        page: this.state.page,
+                        perPageCount: this.state.perPageCount
+                    });
+                }); // Set isLoadingMoreDetails to true
             }
         };
 
@@ -76,10 +108,12 @@ class App extends React.Component {
      * @return {object}
      */
     render() {
+        console.log(`STATE OF USERS :: ${JSON.stringify(this.state.users)}`);
         return (
             <div>
                 <h1>Hello</h1>
                 <List of={React.createFactory(UserWidget)} dataSet={this.state.users}  />
+                <p><button onClick={this._onPrevButtonClicked}>&#8592; Prev</button> or <button onClick={this._onNextButtonClicked}>Next &#8594;</button></p>
                 <GoogleAnalytics id="UA-*******-**" />
                 <RouteHandler data={this.props.data}/>
             </div>
@@ -99,10 +133,13 @@ class App extends React.Component {
     /**
      * Static method to trigger data actions for server-side rendering.
      *
-     * @param params
+     * @param routerState
      * @returns {*}
      */
-    static fetchData(state, callback) {
+    static fetchData(routeState, callback) {
+        // TODO: Get state from router params
+        let state = getInitialState();
+
         fireActions(state, callback);
     }
 }

@@ -14,44 +14,70 @@ import UserActions from '../../../actions/UserActions';
 // Stores
 import UserStore from '../../../stores/UserStore';
 
-function getStateFromStores(props, context, state) {
-    let user = UserStore.get(id);
+function getStateFromStores(parameters) {
+    let user = UserStore.get(parameters.user.id);
 
-    return {
-        isLoading: (user == null),
+    return (user == null) ? null : {
+        isLoadingMoreDetails: false,
         user: user
     };
 }
 
 function fireActions(state, callback) {
-    UserActions.getUser(params.id, callback);
+    UserActions.getUser(state.user.id, ['id', 'name', 'gender'], callback);
 }
 
 /**
- * User Details shows full user details.
+ * User Details shows a quick user summary.
  *
- * It supports server side rendering.
+ * It does not support server side rendering
+ * but you can use a parent object to pass
+ * it the server state.
  */
 class Details extends React.Component {
     constructor(props, context) {
         super(props, context); // NOTE: IntelliJ lints this as invalid. Ignore warning.
 
-        if (props.data != null) {
-            // Server side rendering. Let's use the provided data first.
-            //this.state = props.data[];
-        } else {
-            this.state.user = props.user;
-            this.state.isLoading = false;
-        }
+        this.state = {
+            isFirstLoad: true,
+            isLoadingMoreDetails: false,
+            user: props
+        };
+
+        /**
+         * Event handler for 'change' events coming from the UserStore
+         */
+        this._onChange = () => {
+            let parameters = {
+                user: {
+                    id: this.state.user.id
+                }
+            };
+            let newState = getStateFromStores(parameters);
+
+            if (newState != null) {
+                this.setState(newState);
+            }
+        };
+
+        /**
+         * Event handler for 'button click' events coming from the button
+         */
+        this._onButtonClick = () => {
+            this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true, isFirstLoad: false}), () => {
+                fireActions(this.state);
+            }); // Set isLoadingMoreDetails to true
+        };
     }
 
     componentDidMount() {
         UserStore.addChangeListener(this._onChange);
 
-        fireActions(this.context.router.getCurrentParams());
+        //fireActions(this.state);
     }
 
     componentWillUnmount() {
+        console.log('User Details will unmount!');
         UserStore.removeChangeListener(this._onChange);
     }
 
@@ -61,50 +87,30 @@ class Details extends React.Component {
     render() {
         let userDetails;
 
-        if (this.state.isLoading === true) {
+        if (this.state.isLoadingMoreDetails === true) {
             userDetails = (
                 <p><span>Loading more details...</span></p>
             );
-        } else if (this.state.user.gender != null && this.state.isLoading === false) {
-            userDetails = (
-                <p><button onClick={_onButtonClick}>Get user details!</button></p>
-            );
         } else {
-            userDetails = (
-                <p><span>{ this.state.user.name } is { this.state.user.gender }!</span></p>
-            );
+            if (this.state.user.gender != null && this.state.isFirstLoad !== true) {
+                userDetails = (
+                    <p><span>{this.state.user.name} is {this.state.user.gender}!</span></p>
+                );
+            } else {
+                userDetails = (
+                    <p><button onClick={this._onButtonClick}>Get more user details!</button></p>
+                );
+            }
         }
 
         return (
-            <div>
-                <h2>{ this.state.user.name }</h2>
+            <div key={this.state.user.id}>
+                <h2>{this.state.user.name}</h2>
                 {userDetails}
-                <RouteHandler data={this.props.data}/>
+                <hr/>
+                <Link to="user" params={{id: this.state.user.id}}/>
             </div>
         );
-    }
-
-    /**
-     * Event handler for 'change' events coming from the UserStore
-     */
-    _onChange() {
-        this.replaceState(getStateFromStores(this.context.router.getCurrentParams().id));
-    }
-
-    _onButtonClick() {
-        this.setState({isLoading: true}); // Set isLoading to true
-
-        fireActions(this.context.router.getCurrentParams());
-    }
-
-    /**
-     * Static method to trigger data actions for server-side rendering.
-     *
-     * @param params
-     * @returns {*}
-     */
-    static fetchData(state, callback) {
-        fireActions(state.params, callback);
     }
 }
 
@@ -113,7 +119,16 @@ Details.contextTypes = {
 };
 
 Details.propTypes = {
-    data: React.PropTypes.object
+    data: React.PropTypes.object,
+    id: (props, propName, componentName) => {
+        // Only required if data doesn't exist
+        if (props['data'] == null) {
+            return React.PropTypes.oneOfType([
+                React.PropTypes.string,
+                React.PropTypes.number
+            ]).isRequired(props, propName, componentName);
+        }
+    }
 };
 
 export default Details;

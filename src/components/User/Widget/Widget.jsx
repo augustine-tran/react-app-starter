@@ -14,8 +14,8 @@ import UserActions from '../../../actions/UserActions';
 // Stores
 import UserStore from '../../../stores/UserStore';
 
-function getStateFromStores(previousState) {
-    let user = UserStore.get(previousState.user.id);
+function getStateFromStores(parameters) {
+    let user = UserStore.get(parameters.user.id);
 
     return (user == null) ? null : {
         isLoadingMoreDetails: false,
@@ -24,7 +24,7 @@ function getStateFromStores(previousState) {
 }
 
 function fireActions(state, callback) {
-    UserActions.getUser(state.user.id, callback);
+    UserActions.getUser(state.user.id, ['id', 'name', 'gender'], callback);
 }
 
 /**
@@ -39,6 +39,7 @@ class Widget extends React.Component {
         super(props, context); // NOTE: IntelliJ lints this as invalid. Ignore warning.
 
         this.state = {
+            isFirstLoad: true,
             isLoadingMoreDetails: false,
             user: props
         };
@@ -47,10 +48,14 @@ class Widget extends React.Component {
          * Event handler for 'change' events coming from the UserStore
          */
         this._onChange = () => {
-            let newState = getStateFromStores(this.state);
+            let parameters = {
+                user: {
+                    id: this.state.user.id
+                }
+            };
+            let newState = getStateFromStores(parameters);
 
             if (newState != null) {
-                console.log(`Setting state for widget #${this.state.user.id} - New state: ${JSON.stringify(newState)}`);
                 this.setState(newState);
             }
         };
@@ -59,8 +64,7 @@ class Widget extends React.Component {
          * Event handler for 'button click' events coming from the button
          */
         this._onButtonClick = () => {
-            this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true}), () => {
-                console.log(`Fire event for widget #${this.state.user.id}`);
+            this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true, isFirstLoad: false}), () => {
                 fireActions(this.state);
             }); // Set isLoadingMoreDetails to true
         };
@@ -88,7 +92,7 @@ class Widget extends React.Component {
                 <p><span>Loading more details...</span></p>
             );
         } else {
-            if (this.state.user.gender != null) {
+            if (this.state.user.gender != null && this.state.isFirstLoad !== true) {
                 userDetails = (
                     <p><span>{this.state.user.name} is {this.state.user.gender}!</span></p>
                 );
@@ -98,8 +102,6 @@ class Widget extends React.Component {
                 );
             }
         }
-
-        console.log(`THE STATE OF USER WIDGET :: ${JSON.stringify(this.state)}`);
 
         return (
             <div key={this.state.user.id}>
