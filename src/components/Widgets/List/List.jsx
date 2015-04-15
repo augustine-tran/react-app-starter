@@ -22,14 +22,17 @@ class List extends ContextWrapper {
             // Server side rendering. Let's use the provided data first.
             _.merge(this.state, props.data);
         } else {
-            console.log(`SETTING STATE :: ${JSON.stringify(props.dataSet)}`);
             this.state.dataSet = props.dataSet;
             this.state.of = props.of;
         }
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.state.dataSet = nextProps.dataSet;
+        this.state.of = nextProps.of;
+    }
+
     render() {
-        console.log(`RENDER CALLED WITH DATASET :: ${JSON.stringify(this.state.dataSet)}`);
         let body;
         let factory = this.state.of;
 

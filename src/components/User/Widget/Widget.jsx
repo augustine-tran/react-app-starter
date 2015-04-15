@@ -105,10 +105,10 @@ class Widget extends React.Component {
 
         return (
             <div key={this.state.user.id}>
-                <h2>{this.state.user.name}</h2>
+                <h3>{this.state.user.name}</h3>
                 {userDetails}
                 <hr/>
-                <Link to="user" params={{id: this.state.user.id}}/>
+                <Link to="user-details" params={{id: this.state.user.id}}/>
             </div>
         );
     }

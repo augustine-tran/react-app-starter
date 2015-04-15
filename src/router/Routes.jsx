@@ -10,6 +10,7 @@ import {Route, DefaultRoute} from 'react-router';
  Components
  =================================*/
 import App from '../components/App';
+import Home from '../components/Home';
 import UserDetails from '../components/User/Details';
 
 /*=================================
@@ -17,7 +18,8 @@ import UserDetails from '../components/User/Details';
  =================================*/
 let routes = (
     <Route name="app" path="/" handler={App} >
-        <Route name="user" path="/user/:id" handler={UserDetails}/>
+        <Route name="user-details" path="user/:id/?" handler={UserDetails}/>
+        <Route name="home" path=":page?/?" handler={Home} />
     </Route>
 );
 
