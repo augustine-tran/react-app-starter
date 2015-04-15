@@ -5,38 +5,45 @@ import React from 'react/addons';
 import invariant from 'react/lib/invariant';
 
 // Libraries
+import _ from 'lodash';
 import assign from 'object-assign';
 
 // Components
 import ContextWrapper from '../ContextWrapper';
 
+function getInitialState() {
+    return {
+        dataSet: []
+    };
+}
+
 class List extends ContextWrapper {
     constructor(props, context) {
         super(props, context); // NOTE: IntelliJ lints this as invalid. Ignore warning.
 
-        this.state = {
-            dataSet: []
-        };
+        this.state = getInitialState();
 
-        this.updateProps = (nextProps) => {
-            this.state.dataSet = nextProps.dataSet;
-            this.state.of = nextProps.of;
+        this.updateStateFromProps = (nextProps) => {
+            // We should always treat state as immutable
+            let newState = _.merge({}, this.state);
+
+            newState.dataSet = nextProps.dataSet;
+            newState.of = nextProps.of;
+
+            this.setState(newState);
         };
 
         if (props.data != null) {
             // Server side rendering. Let's use the provided data first.
             _.merge(this.state, props.data);
         } else {
-            this.updateProps(props);
+            this.state.dataSet = props.dataSet;
+            this.state.of = props.of;
         }
     }
 
-    /**
-     *
-     * @param nextProps
-     */
     componentWillReceiveProps(nextProps) {
-        this.updateProps(nextProps);
+        this.updateStateFromProps(nextProps);
     }
 
     render() {

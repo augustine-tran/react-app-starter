@@ -37,10 +37,8 @@ let UserStore = assign({}, EventEmitter.prototype, {
                 return true;
             }
         } else {
-            return true;
+            return false;
         }
-
-        return (_users[id] != null);
     },
 
     hasList(startIndex, count, fields) {
@@ -72,6 +70,7 @@ let UserStore = assign({}, EventEmitter.prototype, {
     },
 
     get(id) {
+        console.log(`USER # ${id} - ${JSON.stringify(_users[id])}`);
         return _users[id];
     },
 

@@ -53,6 +53,7 @@ class Widget extends React.Component {
                     id: this.state.user.id
                 }
             };
+
             let newState = getStateFromStores(parameters);
 
             if (newState != null) {
@@ -113,8 +114,9 @@ class Widget extends React.Component {
             <div key={this.state.user.id}>
                 <h3>{this.state.user.name}</h3>
                 {userDetails}
-                <hr/>
-                <Link to="user-details" params={{id: this.state.user.id}}/>
+                <br />
+                <Link to="user-details" params={{id: this.state.user.id}}>Full Details</Link>
+                <hr />
             </div>
         );
     }

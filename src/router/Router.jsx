@@ -29,9 +29,12 @@ export default class AppRouter {
     static init(data) {
         Router.run(routes, Router.HistoryLocation, function (Handler) {
             React.render(<Handler data={data}/>, document.body);
+
+            if (data != null) {
+                data = undefined;
+            }
         });
     }
-
 
     /**
      * Express style router middleware.

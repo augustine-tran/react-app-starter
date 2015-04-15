@@ -5,7 +5,7 @@ import React from 'react';
 
 // Libraries
 import _ from 'lodash';
-import {RouteHandler} from 'react-router';
+//import {RouteHandler} from 'react-router';
 
 // Components
 import {Button} from 'react-bootstrap';
@@ -113,7 +113,6 @@ class Home extends React.Component {
                 <hr />
                 <List of={React.createFactory(UserWidget)} dataSet={this.state.users}  />
                 <p><button onClick={this._onPrevButtonClicked}>&#8592; Prev</button> or <button onClick={this._onNextButtonClicked}>Next &#8594;</button></p>
-                <RouteHandler data={this.props.data} />
             </div>
         );
     }

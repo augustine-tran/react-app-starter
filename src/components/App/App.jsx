@@ -39,12 +39,21 @@ class App extends React.Component {
      * @return {object}
      */
     render() {
+        let routeHandler;
+
+        //if (this.props.data != null) {
+        //    routeHandler = (
+        //
+        //    );
+        //} else {
+        //
+        //}
+
         return (
             <div>
                 <h1>App</h1>
-                <br /><hr /><br />
+                <hr />
                 <RouteHandler data={this.props.data} />
-                <br /><hr /><br />
                 <GoogleAnalytics id="UA-*******-**" />
             </div>
         );
