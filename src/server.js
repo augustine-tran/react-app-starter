@@ -49,7 +49,11 @@ for (let i = 0; i <= MAX_USERS; i++) {
         id: i,
         name: generator.name(),
         gender: generator.gender(),
-        birthday: generator.birthday()
+        birthday: generator.birthday(),
+        address: {
+            line1: generator.address(),
+            line2: generator.city()
+        }
     });
 }
 

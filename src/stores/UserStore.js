@@ -8,6 +8,7 @@ import AppConstants from '../constants/AppConstants';
 // Libraries
 import _ from 'lodash';
 import assign from 'object-assign';
+import objectHasKey from '../utilities/objectHasKey';
 
 const CHANGE_EVENT = 'CHANGE';
 
@@ -25,7 +26,7 @@ let UserStore = assign({}, EventEmitter.prototype, {
             if (_.isArray(fields)) {
                 let hasAllRequiredFields = true;
                 for (let field of fields) {
-                    if (user[field] == null) {
+                    if (!objectHasKey(user, field)) {
                         hasAllRequiredFields = false;
                         break;
                     }

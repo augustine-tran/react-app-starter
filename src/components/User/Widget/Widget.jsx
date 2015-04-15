@@ -24,7 +24,7 @@ function getStateFromStores(parameters) {
 }
 
 function fireActions(state, callback) {
-    UserActions.getUser(state.user.id, ['id', 'name', 'gender'], callback);
+    UserActions.getUser(state.user.id, ['id', 'name', 'gender', ['address', 'line1'], ['address', 'line2']], callback);
 }
 
 /**
@@ -94,7 +94,14 @@ class Widget extends React.Component {
         } else {
             if (this.state.user.gender != null && this.state.isFirstLoad !== true) {
                 userDetails = (
-                    <p><span>{this.state.user.name} is {this.state.user.gender}!</span></p>
+                    <p>
+                        <span>{this.state.user.name} is {this.state.user.gender}!</span>
+                        <br />
+                        <span>{this.state.user.address.line1}</span>
+                        <br />
+                        <span>{this.state.user.address.line2}</span>
+                    </p>
+
                 );
             } else {
                 userDetails = (
