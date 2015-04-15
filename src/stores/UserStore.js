@@ -49,7 +49,7 @@ let UserStore = assign({}, EventEmitter.prototype, {
             startIndex = 0;
         }
 
-        if (startIndex > 0 && count > 1) {
+        if (startIndex >= 0 && count > 1) {
             let lastIndex = startIndex + count,
                 listElementsExists = true;
 
@@ -81,7 +81,7 @@ let UserStore = assign({}, EventEmitter.prototype, {
             startIndex = 0;
         }
 
-        if (startIndex > 0 && count > 1) {
+        if (startIndex >= 0 && count > 1) {
             let endIndex = startIndex + count;
 
             let userList = _.slice(_userListOrder, startIndex, endIndex);

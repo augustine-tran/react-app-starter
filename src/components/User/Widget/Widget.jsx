@@ -77,7 +77,6 @@ class Widget extends React.Component {
     }
 
     componentWillUnmount() {
-        console.log('User Widget will unmount!');
         UserStore.removeChangeListener(this._onChange);
     }
 

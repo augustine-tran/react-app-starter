@@ -63,22 +63,28 @@ class Home extends React.Component {
         };
 
         this._onNextButtonClicked = () => {
-            this._onLoadPage(this.state.page + 1);
+            let page = this.state.page + 1;
+
+            this._onLoadPage(page);
         };
 
         this._onPrevButtonClicked = () => {
-            this._onLoadPage(this.state.page - 1);
+            let page = this.state.page - 1;
+
+            if (page < 1) {
+                page = 1;
+            }
+
+            this._onLoadPage(page);
         };
 
         this._onLoadPage = (page) => {
-            if (page >= 1) { // TODO: We can set a max too
-                this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true, page: page, perPageCount: this.state.perPageCount}), () => {
-                    fireActions({
-                        page: this.state.page,
-                        perPageCount: this.state.perPageCount
-                    });
-                }); // Set isLoadingMoreDetails to true
-            }
+            this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true, page: page, perPageCount: this.state.perPageCount}), () => {
+                fireActions({
+                    page: this.state.page,
+                    perPageCount: this.state.perPageCount
+                });
+            }); // Set isLoadingMoreDetails to true
         };
 
         if (props.data != null) {
@@ -103,7 +109,7 @@ class Home extends React.Component {
     render() {
         return (
             <div>
-                <h2>USER DETAILS</h2>
+                <h2>USER DETAILS - Page {this.state.page}</h2>
                 <hr />
                 <List of={React.createFactory(UserWidget)} dataSet={this.state.users}  />
                 <p><button onClick={this._onPrevButtonClicked}>&#8592; Prev</button> or <button onClick={this._onNextButtonClicked}>Next &#8594;</button></p>
