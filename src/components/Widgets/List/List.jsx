@@ -18,18 +18,25 @@ class List extends ContextWrapper {
             dataSet: []
         };
 
+        this.updateProps = (nextProps) => {
+            this.state.dataSet = nextProps.dataSet;
+            this.state.of = nextProps.of;
+        };
+
         if (props.data != null) {
             // Server side rendering. Let's use the provided data first.
             _.merge(this.state, props.data);
         } else {
-            this.state.dataSet = props.dataSet;
-            this.state.of = props.of;
+            this.updateProps(props);
         }
     }
 
+    /**
+     *
+     * @param nextProps
+     */
     componentWillReceiveProps(nextProps) {
-        this.state.dataSet = nextProps.dataSet;
-        this.state.of = nextProps.of;
+        this.updateProps(nextProps);
     }
 
     render() {
