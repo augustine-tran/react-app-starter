@@ -30,7 +30,6 @@ import Router from './router';
 app.disable('x-powered-by');
 
 // view engine setup
-app.engine('hbs', hbs({defaultLayout: 'main', extname: '.hbs'}));
 app.set('views', path.join(__dirname, '../views'));
 app.set('view engine', 'hbs');
 
