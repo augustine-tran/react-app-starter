@@ -79,6 +79,7 @@ class Home extends React.Component {
         };
 
         this._onLoadPage = (page) => {
+            // TODO : Use router to transition to next / prev page
             this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true, page: page, perPageCount: this.state.perPageCount}), () => {
                 fireActions({
                     page: this.state.page,

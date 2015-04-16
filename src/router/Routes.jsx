@@ -18,8 +18,9 @@ import UserDetails from '../components/User/Details';
  =================================*/
 let routes = (
     <Route name="app" path="/" handler={App} >
-        <Route name="user-details" path="user/:id/?" handler={UserDetails}/>
-        <Route name="home" path=":page?/?" handler={Home} />
+        <Route name="user-details" path="/user/:id/?" handler={UserDetails} />
+        <Route name="user-list" path="/:page/?" handler={Home} />
+        <DefaultRoute handler={Home} />
     </Route>
 );
 
