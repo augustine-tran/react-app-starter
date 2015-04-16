@@ -27,11 +27,32 @@ export default class AppRouter {
      * @param data
      */
     static init(data) {
-        Router.run(routes, Router.HistoryLocation, function (Handler) {
-            React.render(<Handler data={data}/>, document.body);
-
+        Router.run(routes, Router.HistoryLocation, function (Handler, state) {
             if (data != null) {
+                React.render(<Handler data={data}/>, document.body);
+
                 data = undefined;
+            } else {
+                // Loop through the matching routes
+                let routesWithData = state.routes.filter((route) => { return route.handler.fetchData; });
+
+                async.map(routesWithData, (route, callback) => {
+                    // Fetch data for each route and then merge it back into the data source.
+                    route.handler.fetchData(state, (error, data) => {
+                        callback(error, data);
+                    });
+                }, (error, dataArray) => {
+                    if (!error) {
+                        let data = {};
+
+                        _.each(dataArray, dataSet => _.merge(data, dataSet));
+
+                        React.render(<Handler data={data}/>, document.body);
+                    } else {
+                        // TODO: Render an error page
+                        React.render(<h1>ERROR</h1>, document.body);
+                    }
+                });
             }
         });
     }
@@ -62,7 +83,6 @@ export default class AppRouter {
                     // TODO: At least one component should set the data.metadata properties, so we can generate the SEO meta-tags.
                     // TODO: Make sure all metadata properties are set, and fill missing properties with default values.
                     let htmlBody = React.renderToString(<Handler data={data}/>);
-
 
                     res.render('index', {
                         body: htmlBody,

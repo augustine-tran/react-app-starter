@@ -29,7 +29,6 @@ export default {
             };
 
             if (callback != null && _.isFunction(callback)) {
-                console.log(`ACTION PAYLOAD : ${JSON.stringify(actionPayload)}`);
                 callback(error, actionPayload);
             }
 
@@ -43,10 +42,8 @@ export default {
         };
 
         if (UserStore.has(id, fields)) {
-            console.log(`USER STORE HAS USER #${id}`);
             responseCallback(null, UserStore.get(id));
         } else {
-            console.log(`USER STORE DOES NOT HAVE USER #${id}`);
             UserAPI.get(id, responseCallback);
         }
     },

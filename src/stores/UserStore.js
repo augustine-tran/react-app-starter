@@ -70,7 +70,6 @@ let UserStore = assign({}, EventEmitter.prototype, {
     },
 
     get(id) {
-        console.log(`USER # ${id} - ${JSON.stringify(_users[id])}`);
         return _users[id];
     },
 
@@ -101,6 +100,12 @@ let UserStore = assign({}, EventEmitter.prototype, {
 
     set(user) {
         if (user != null) {
+            //let currentUserObject = _users[user.id];
+            //
+            //if (currentUserObject != null) {
+            //    user = _.merge({}, currentUserObject, user);
+            //}
+
             _users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
 
             return true; // User was successfully updated.
@@ -114,6 +119,13 @@ let UserStore = assign({}, EventEmitter.prototype, {
 
         if (_.isArray(userList)) {
             _.forEach(userList, function (user) {
+                //let currentUserObject = _users[user.id];
+                //
+                //if (currentUserObject != null) {
+                //    // Merge all existing user properties
+                //    user = _.merge({}, currentUserObject, user);
+                //}
+
                 _users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
                 _userListOrder[i] = user.id;
                 ++i;

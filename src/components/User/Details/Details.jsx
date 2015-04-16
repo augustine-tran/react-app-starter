@@ -42,31 +42,27 @@ class Details extends React.Component {
     constructor(props, context) {
         super(props, context); // NOTE: IntelliJ lints this as invalid. Ignore warning.
 
-        console.log(`PROPS :: ${JSON.stringify(props)}`);
-
         this.state = getInitialState();
 
         this.updateStateFromProps = (nextProps) => {
             // We should always treat state as immutable
             let newState = _.merge({}, this.state);
 
-            newState.user.id = nextProps.id;
+            if (nextProps.data != null) {
+                // Server side rendering. Let's use the provided data first.
+                _.merge(newState, nextProps.data);
+
+                newState.isLoading = false;
+            }
 
             this.setState(newState);
         };
 
         if (props.data != null) {
             // Server side rendering. Let's use the provided data first.
-            console.log("USING SERVER SIDE DATA IN USER DETAILS :: " + JSON.stringify(props.data));
             _.merge(this.state, props.data);
 
             this.state.isLoading = false;
-        } else {
-            let params = this.context.router.getCurrentParams();
-
-            this.state.user = {
-                id: params.id
-            }
         }
 
         /**
@@ -129,8 +125,9 @@ class Details extends React.Component {
                 <h3>{this.state.user.name}</h3>
                 {userDetails}
                 <hr/>
-                <Link to="user-details" params={{id: this.state.user.id + 1}}>Next user</Link>
-                <button onClick={() => {this.context.router.goBack();}}>Back</button>
+                <button onClick={() => {this.context.router.transitionTo('user-details', {id: parseInt(this.state.user.id) + 1});}}>Next User</button>
+                <br />
+                <button onClick={() => { if (!this.context.router.goBack()) {this.context.router.transitionTo('app');}}}>Back</button>
             </div>
         );
     }
@@ -142,7 +139,6 @@ class Details extends React.Component {
      * @returns {*}
      */
     static fetchData(routerState, callback) {
-        console.log(`Router State : ${JSON.stringify(routerState)}`);
         let state = getInitialState();
 
         if (routerState.params != null) {
@@ -155,7 +151,6 @@ class Details extends React.Component {
             }
         }
 
-        console.log(`FIRING ACTIONS WITH STATE: ${JSON.stringify(state)}`);
         fireActions(state, callback);
     }
 }
@@ -165,16 +160,16 @@ Details.contextTypes = {
 };
 
 Details.propTypes = {
-    data: React.PropTypes.object
-    //id: (props, propName, componentName) => {
-    //    // Only required if data doesn't exist
-    //    if (props['data'] == null) {
-    //        return React.PropTypes.oneOfType([
-    //            React.PropTypes.string,
-    //            React.PropTypes.number
-    //        ]).isRequired(props, propName, componentName);
-    //    }
-    //}
+    data: React.PropTypes.shape({
+        id: React.PropTypes.string.isRequired,
+        name: React.PropTypes.string.isRequired,
+        gender: React.PropTypes.string.isRequired,
+        birthday: React.PropTypes.string.isRequired,
+        address: React.PropTypes.shape({
+            line1: React.PropTypes.string.isRequired,
+            line2: React.PropTypes.string.isRequired
+        }).isRequired
+    }).isRequired
 };
 
 export default Details;
