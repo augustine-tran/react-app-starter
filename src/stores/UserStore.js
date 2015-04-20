@@ -2,20 +2,73 @@
 
 // Core
 import AppDispatcher from '../dispatcher/AppDispatcher';
-import {EventEmitter} from 'events';
+import EventEmitter from 'eventemitter3';
 import AppConstants from '../constants/AppConstants';
 
 // Libraries
 import _ from 'lodash';
 import assign from 'object-assign';
+import objectHasKey from '../utilities/objectHasKey';
 
 const CHANGE_EVENT = 'CHANGE';
 
 // Data
 let _users = {};
-let _userListOrder = [];
+let _userListOrder = []; // TODO: If user list is to be filtered, we can have a new order array. e.g. _userSortedListOrder or _userFilteredListOrder
+//let _userSortedListOrder = [];
 
 let UserStore = assign({}, EventEmitter.prototype, {
+
+    has(id, fields) {
+        let user = _users[id];
+
+        if (user != null) {
+            if (_.isArray(fields)) {
+                let hasAllRequiredFields = true;
+                for (let field of fields) {
+                    if (!objectHasKey(user, field)) {
+                        hasAllRequiredFields = false;
+                        break;
+                    }
+                }
+
+                return hasAllRequiredFields;
+            } else {
+                return true;
+            }
+        } else {
+            return false;
+        }
+    },
+
+    hasList(startIndex, count, fields) {
+        if (count == null && startIndex != null) {
+            count = startIndex;
+            startIndex = 0;
+        }
+
+        if (startIndex >= 0 && count > 1) {
+            let lastIndex = startIndex + count,
+                listElementsExists = true;
+
+            for (let i = startIndex; i < lastIndex; ++i) {
+                let userId = _userListOrder[i];
+                if (userId == null || !this.has(userId, fields)) {
+                    listElementsExists = false;
+                    break;
+                }
+            }
+
+            return listElementsExists;
+        } else {
+            return false;
+        }
+    },
+
+    hasPage(page, count, fields) {
+        return this.hasList((page - 1) * count, count, fields);
+    },
+
     get(id) {
         return _users[id];
     },
@@ -26,8 +79,16 @@ let UserStore = assign({}, EventEmitter.prototype, {
             startIndex = 0;
         }
 
-        if (startIndex > 0 && count > 1) {
-            return _.slice(_userListOrder, startIndex, count);
+        if (startIndex >= 0 && count > 1) {
+            let endIndex = startIndex + count;
+
+            let userList = _.slice(_userListOrder, startIndex, endIndex);
+
+            userList = _.map(userList, function (id) {
+                return _users[id];
+            });
+
+            return userList;
         }
 
         return null;
@@ -39,7 +100,13 @@ let UserStore = assign({}, EventEmitter.prototype, {
 
     set(user) {
         if (user != null) {
-            _users[user._id] = user;
+            //let currentUserObject = _users[user.id];
+            //
+            //if (currentUserObject != null) {
+            //    user = _.merge({}, currentUserObject, user);
+            //}
+
+            _users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
 
             return true; // User was successfully updated.
         } else {
@@ -52,12 +119,36 @@ let UserStore = assign({}, EventEmitter.prototype, {
 
         if (_.isArray(userList)) {
             _.forEach(userList, function (user) {
-                _users[user._id] = user;
-                _userListOrder[i] = user._id;
+                //let currentUserObject = _users[user.id];
+                //
+                //if (currentUserObject != null) {
+                //    // Merge all existing user properties
+                //    user = _.merge({}, currentUserObject, user);
+                //}
+
+                _users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
+                _userListOrder[i] = user.id;
                 ++i;
             });
+
+            return true;
+        } else {
+            return false;
         }
     },
+
+    // TODO If we need to manage a separate
+    // setSortedList(userList, startIndex) {
+    //     let i = startIndex;
+    //
+    //     if (_.isArray(userList)) {
+    //         _.forEach(userList, function (user) {
+    //             _users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
+    //             _userSortedListOrder[i] = user.id;
+    //             ++i;
+    //         });
+    //     }
+    // },
 
     emitChange() {
         this.emit(CHANGE_EVENT);
@@ -88,6 +179,16 @@ UserStore.dispatcherToken = AppDispatcher.register(action => {
             break;
 
         case AppConstants.ActionTypes.READ_USER_ERROR:
+            // TODO: Shucks! Let's handle this error.
+            break;
+
+        case AppConstants.ActionTypes.READ_USER_LIST_SUCCESS:
+            if (UserStore.setList(action.users, (action.page - 1) * action.perPageCount)) {
+                UserStore.emitChange();
+            }
+            break;
+
+        case AppConstants.ActionTypes.READ_USER_LIST_ERROR:
             // TODO: Shucks! Let's handle this error.
             break;
 

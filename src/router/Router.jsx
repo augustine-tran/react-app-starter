@@ -26,12 +26,36 @@ export default class AppRouter {
      * Client side router initialization.
      * @param data
      */
-    static init (data) {
-        Router.run(routes, Router.HistoryLocation, function (Handler) {
-            React.render(<Handler data={data}/>, document.body);
+    static init(data) {
+        Router.run(routes, Router.HistoryLocation, function (Handler, state) {
+            if (data != null) {
+                React.render(<Handler data={data}/>, document.body);
+
+                data = undefined;
+            } else {
+                // Loop through the matching routes
+                let routesWithData = state.routes.filter((route) => { return route.handler.fetchData; });
+
+                async.map(routesWithData, (route, callback) => {
+                    // Fetch data for each route and then merge it back into the data source.
+                    route.handler.fetchData(state, (error, data) => {
+                        callback(error, data);
+                    });
+                }, (error, dataArray) => {
+                    if (!error) {
+                        let data = {};
+
+                        _.each(dataArray, dataSet => _.merge(data, dataSet));
+
+                        React.render(<Handler data={data}/>, document.body);
+                    } else {
+                        // TODO: Render an error page
+                        React.render(<h1>ERROR</h1>, document.body);
+                    }
+                });
+            }
         });
     }
-
 
     /**
      * Express style router middleware.
@@ -39,7 +63,7 @@ export default class AppRouter {
      * @param res
      * @param next
      */
-    static serve (req, res, next) {
+    static serve(req, res, next) {
         Router.run(routes, req.url, (Handler, state) => {
 
             // Loop through the matching routes
@@ -54,14 +78,11 @@ export default class AppRouter {
                 if (!error) {
                     let data = {};
 
-                    _.each(dataArray, function (dataSet) {
-                        _.merge(data, dataSet);
-                    });
+                    _.each(dataArray, dataSet => _.merge(data, dataSet));
 
                     // TODO: At least one component should set the data.metadata properties, so we can generate the SEO meta-tags.
                     // TODO: Make sure all metadata properties are set, and fill missing properties with default values.
                     let htmlBody = React.renderToString(<Handler data={data}/>);
-
 
                     res.render('index', {
                         body: htmlBody,

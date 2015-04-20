@@ -6,10 +6,10 @@ var minifyCSS = require('gulp-minify-css');
 var size = require('gulp-filesize');
 
 // Configs
-var config = require('../config').production;
+var config = require('../config').production.css;
 
 gulp.task('minifyCss', ['sass'], function () {
-    return gulp.src(config.cssSrc)
+    return gulp.src(config.src)
         .pipe(minifyCSS({keepBreaks: true}))
         .pipe(gulp.dest(config.dest))
         .pipe(size());

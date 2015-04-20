@@ -38,7 +38,7 @@ module.exports = {
             //indentedSyntax: true, // Enable .sass syntax!
             imagePath: dest + "/img", // Used by the image-url helper
             includePaths: [
-                bowerSrc + "/bootstrap-sass-official/assets/stylesheets"
+                bowerSrc + "/bootstrap-sass/assets/stylesheets"
             ],
             outputStyle: "expanded"
         }
@@ -105,13 +105,13 @@ module.exports = {
         ]
     },
     production: {
-        cssSrc: dest + "/css/*.css",
-        jsSrc: dest + "/js/*.js",
-        jslint: {
-            options: {
-                node: true
-            }
+        css: {
+            src: dest + "/css/*.css",
+            dest: dest + "/css"
         },
-        dest: dest
+        script: {
+            src: dest + "/js/*.js",
+            dest: dest + "/js"
+        }
     }
 };

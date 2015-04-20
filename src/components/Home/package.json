@@ -1,6 +1,6 @@
 {
-    "name": "User",
+    "name": "Home",
     "version": "0.0.0",
     "private": true,
-    "main": "./User.jsx"
+    "main": "./Home.jsx"
 }

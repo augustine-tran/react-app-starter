@@ -17,7 +17,7 @@ module.exports = function (src, bowerSrc, nodeSrc) {
                 {
                     test: /\.jsx?$/,
                     exclude: /node_modules/,
-                    loader: 'babel-loader?experimental'
+                    loader: 'babel-loader'
                 }
             ],
             noParse: /\.min\.js/,

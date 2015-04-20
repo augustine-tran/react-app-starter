@@ -8,12 +8,25 @@ import _ from 'lodash';
 import {RouteHandler} from 'react-router';
 
 // Components
+import {Button} from 'react-bootstrap';
 import GoogleAnalytics from '../Widgets/GoogleAnalytics';
+import List from '../Widgets/List';
+import UserWidget from '../User/Widget';
+
+// Actions
+import AppActions from '../../actions/AppActions';
+import UserActions from '../../actions/UserActions';
 
 // Stores
 import AppStore from '../../stores/AppStore';
+import UserStore from '../../stores/UserStore';
+
 
 class App extends React.Component {
+    constructor(props, context) {
+        super(props, context); // NOTE: IntelliJ lints this as invalid. Ignore warning.
+    }
+
     componentDidMount() {
         AppStore.addAlertListener(this._onAlert);
     }
@@ -26,11 +39,22 @@ class App extends React.Component {
      * @return {object}
      */
     render() {
+        let routeHandler;
+
+        //if (this.props.data != null) {
+        //    routeHandler = (
+        //
+        //    );
+        //} else {
+        //
+        //}
+
         return (
             <div>
-                <h1>Hello</h1>
+                <h1>App</h1>
+                <hr />
+                <RouteHandler data={this.props.data} />
                 <GoogleAnalytics id="UA-*******-**" />
-                <RouteHandler data={this.props.data}/>
             </div>
         );
     }
