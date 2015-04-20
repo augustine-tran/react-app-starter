@@ -20,21 +20,7 @@ module.exports = function (src, bowerSrc, nodeSrc) {
                     loader: 'babel-loader'
                 }
             ],
-            noParse: /\.min\.js/,
-            jshint: {
-                browser: true,
-                curly: true,
-                unused: true,
-
-                // jshint errors are displayed by default as warnings
-                // set emitErrors to true to display them as errors
-                emitErrors: false,
-
-                // jshint to not interrupt the compilation
-                // if you want any file with jshint errors to fail
-                // set failOnHint to true
-                failOnHint: false
-            }
+            noParse: /\.min\.js/
         },
         resolve: {
             // Tell webpack to look for required files in bower and node
