@@ -38,7 +38,7 @@ module.exports = {
             //indentedSyntax: true, // Enable .sass syntax!
             imagePath: dest + "/img", // Used by the image-url helper
             includePaths: [
-                bowerSrc + "/bootstrap-sass-official/assets/stylesheets"
+                bowerSrc + "/bootstrap-sass/assets/stylesheets"
             ],
             outputStyle: "expanded"
         }
