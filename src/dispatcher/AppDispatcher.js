@@ -1,5 +1,5 @@
 'use strict';
 
-import {Dispatcher} from 'flux';
+import Alt from 'alt';
 
-module.exports = new Dispatcher();
+module.exports = new Alt();
