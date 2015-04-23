@@ -28,13 +28,6 @@ function addScript(id) {
 }
 
 class GoogleAnalytics extends React.Component {
-    getDefaultProps() {
-        return {
-            displayfeatures: false,
-            pageview: false
-        };
-    }
-
     componentDidMount() {
         if (!GoogleAnalytics.isInitialized()) {
             GoogleAnalytics.init(this.props.id);
@@ -103,6 +96,11 @@ GoogleAnalytics.propTypes = {
     id: React.PropTypes.string.isRequired,
     displayfeatures: React.PropTypes.bool,
     pageview: React.PropTypes.bool
+};
+
+GoogleAnalytics.defaultProps = {
+    displayfeatures: false,
+    pageview: false
 };
 
 GoogleAnalytics.contextTypes = {
