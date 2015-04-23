@@ -39,16 +39,6 @@ class App extends React.Component {
      * @return {object}
      */
     render() {
-        let routeHandler;
-
-        //if (this.props.data != null) {
-        //    routeHandler = (
-        //
-        //    );
-        //} else {
-        //
-        //}
-
         return (
             <div>
                 <h1>App</h1>
