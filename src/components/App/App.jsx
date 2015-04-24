@@ -11,15 +11,9 @@ import {RouteHandler} from 'react-router';
 import {Button} from 'react-bootstrap';
 import GoogleAnalytics from '../Widgets/GoogleAnalytics';
 import List from '../Widgets/List';
-import UserWidget from '../User/Widget';
-
-// Actions
-import AppActions from '../../actions/AppActions';
-import UserActions from '../../actions/UserActions';
 
 // Stores
 import AppStore from '../../stores/AppStore';
-import UserStore from '../../stores/UserStore';
 
 
 class App extends React.Component {
@@ -28,11 +22,11 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        AppStore.addAlertListener(this._onAlert);
+        AppStore.listen(this._onAlert);
     }
 
     componentWillUnmount() {
-        AppStore.removeAlertListener(this._onAlert);
+        AppStore.unlisten(this._onAlert);
     }
 
     /**
@@ -55,7 +49,7 @@ class App extends React.Component {
     _onAlert() {
         _.forEach(AppStore.getPendingAlerts(), (alertPayload) => {
             console.log(`${alertPayload.type.toUpperCase()} :: ${alertPayload.title} - ${alertPayload.message}`);
-            //window.alert(`${alertPayload.type.toUpperCase()} :: ${alertPayload.title} - ${alertPayload.message}`);
+            window.alert(`${alertPayload.type.toUpperCase()} :: ${alertPayload.title} - ${alertPayload.message}`);
         });
     }
 }

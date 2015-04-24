@@ -2,82 +2,81 @@
 
 // Libraries
 import _ from 'lodash';
-//import async from 'async';
 
-// App Dispatcher and constants
-import AppDispatcher from '../dispatcher/AppDispatcher';
-import AppConstants from '../constants/AppConstants';
+// Dispatcher and constants
+import alt from '../alt';
+
+// Actions
+import AppActions from './AppActions';
 
 // API
 import UserAPI from '../api/user';
-import UserStore from '../stores/UserStore';
 
-export default {
+// Stores
+//import UserStore from '../stores/UserStore';
+
+class UserActions {
     /**
      * Read user from API.
      * @param id
      */
-    getUser(id, fields, callback) {
-        if (fields != null && callback == null && _.isFunction(fields)) {
-            callback = fields;
-            fields = undefined;
-        }
+    getUser(parameters) {
+        let { id, fields, callback } = parameters;
 
         let responseCallback = (error, user) => {
-            let actionPayload = {
-                user: user
+            let data = {
+                user
             };
 
             if (callback != null && _.isFunction(callback)) {
-                callback(error, actionPayload);
+                callback(error, data);
             }
 
             if (!error) {
-                actionPayload.actionType = AppConstants.ActionTypes.READ_USER_SUCCESS;
+                this.dispatch(data);
             } else {
-                actionPayload.actionType = AppConstants.ActionTypes.READ_USER_ERROR;
+                AppActions.showAlert({error});
             }
-
-            AppDispatcher.dispatch(actionPayload);
         };
 
-        if (UserStore.has(id, fields)) {
-            responseCallback(null, UserStore.get(id));
-        } else {
-            UserAPI.get(id, responseCallback);
-        }
-    },
+        // TODO UserAPI should be refactored into UserUtil and it will check if UserStore has requested user before calling API.
+        //if (UserStore.has(id, fields)) {
+        //    responseCallback(null, UserStore.get(id));
+        //} else {
+        //    UserAPI.get(id, responseCallback);
+        //}
+        UserAPI.get(id, responseCallback);
+    }
 
-    getUsers(page, perPageCount, fields, callback) {
-        if (fields != null && callback == null && _.isFunction(fields)) {
-            callback = fields;
-            fields = undefined;
-        }
+    getUsers(parameters) {
+        let { page, perPageCount, fields, callback } = parameters;
 
         let responseCallback = (error, users) => {
-            let actionPayload = {
-                users: users,
-                page: page,
-                perPageCount: perPageCount
+            let data = {
+                users,
+                page,
+                perPageCount
             };
 
             if (callback != null && _.isFunction(callback)) {
-                callback(error, actionPayload);
+                callback(error, data);
             }
 
             if (!error) {
-                actionPayload.actionType = AppConstants.ActionTypes.READ_USER_LIST_SUCCESS;
+                this.dispatch(data);
             } else {
-                actionPayload.actionType = AppConstants.ActionTypes.READ_USER_LIST_ERROR;
+                AppActions.showAlert({error});
             }
-
-            AppDispatcher.dispatch(actionPayload);
         };
 
-        if (UserStore.hasPage(page, perPageCount)) {
-            responseCallback(null, UserStore.getPage(page, perPageCount));
-        } else {
-            UserAPI.getPage(page, perPageCount, responseCallback);
-        }
+        // TODO UserAPI should be refactored into UserUtil and it will check if UserStore has requested users before calling API.
+        //if (UserStore.hasPage(page, perPageCount)) {
+        //    responseCallback(null, UserStore.getPage(page, perPageCount));
+        //} else {
+        //    UserAPI.getPage(page, perPageCount, responseCallback);
+        //}
+        UserAPI.getPage(page, perPageCount, responseCallback);
     }
 }
+
+export default alt.createActions(UserActions);

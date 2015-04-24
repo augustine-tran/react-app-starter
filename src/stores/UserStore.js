@@ -1,26 +1,48 @@
 'use strict';
 
 // Core
-import AppDispatcher from '../dispatcher/AppDispatcher';
+import alt from '../alt';
 import EventEmitter from 'eventemitter3';
-import AppConstants from '../constants/AppConstants';
+
+// Actions
+import UserActions from '../actions/UserActions';
+
+// Dependent Stores
+import AppStore from './AppStore';
 
 // Libraries
 import _ from 'lodash';
 import assign from 'object-assign';
 import objectHasKey from '../utilities/objectHasKey';
 
-const CHANGE_EVENT = 'CHANGE';
+class UserStore {
+    constructor () {
+        this.users = {};
+        this.userListOrder = []; // TODO: If user list is to be filtered, we can have a new order array. e.g. userSortedListOrder or userFilteredListOrder
+        this.userSortedListOrder = [];
 
-// Data
-let _users = {};
-let _userListOrder = []; // TODO: If user list is to be filtered, we can have a new order array. e.g. _userSortedListOrder or _userFilteredListOrder
-//let _userSortedListOrder = [];
+        this.bindAction(UserActions.getUser, this.onGetUser);
 
-let UserStore = assign({}, EventEmitter.prototype, {
+        this.exportPublicMethods({
+            has: this.has,
+            hasList: this.hasList,
+            hasPage: this.hasPage,
+            get: this.get,
+            getList: this.getList,
+            getPage: this.getPage,
+            set: this.set,
+            setList: this.setList
+        });
+    }
+
+    onGetUser(data) {
+        if (data.user != null) {
+            this.set(data.user);
+        }
+    }
 
     has(id, fields) {
-        let user = _users[id];
+        let user = this.users[id];
 
         if (user != null) {
             if (_.isArray(fields)) {
@@ -39,7 +61,7 @@ let UserStore = assign({}, EventEmitter.prototype, {
         } else {
             return false;
         }
-    },
+    }
 
     hasList(startIndex, count, fields) {
         if (count == null && startIndex != null) {
@@ -52,7 +74,7 @@ let UserStore = assign({}, EventEmitter.prototype, {
                 listElementsExists = true;
 
             for (let i = startIndex; i < lastIndex; ++i) {
-                let userId = _userListOrder[i];
+                let userId = this.userListOrder[i];
                 if (userId == null || !this.has(userId, fields)) {
                     listElementsExists = false;
                     break;
@@ -63,15 +85,15 @@ let UserStore = assign({}, EventEmitter.prototype, {
         } else {
             return false;
         }
-    },
+    }
 
     hasPage(page, count, fields) {
         return this.hasList((page - 1) * count, count, fields);
-    },
+    }
 
     get(id) {
-        return _users[id];
-    },
+        return this.users[id];
+    }
 
     getList(startIndex, count) {
         if (count == null && startIndex != null) {
@@ -82,52 +104,52 @@ let UserStore = assign({}, EventEmitter.prototype, {
         if (startIndex >= 0 && count > 1) {
             let endIndex = startIndex + count;
 
-            let userList = _.slice(_userListOrder, startIndex, endIndex);
+            let userList = _.slice(this.userListOrder, startIndex, endIndex);
 
             userList = _.map(userList, function (id) {
-                return _users[id];
+                return this.users[id];
             });
 
             return userList;
         }
 
         return null;
-    },
+    }
 
     getPage(page, count) {
         return this.getList((page - 1) * count, count);
-    },
+    }
 
     set(user) {
         if (user != null) {
-            //let currentUserObject = _users[user.id];
+            //let currentUserObject = this.users[user.id];
             //
             //if (currentUserObject != null) {
             //    user = _.merge({}, currentUserObject, user);
             //}
 
-            _users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
+            this.users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
 
             return true; // User was successfully updated.
         } else {
             return false;
         }
-    },
+    }
 
     setList(userList, startIndex) {
         let i = startIndex;
 
         if (_.isArray(userList)) {
             _.forEach(userList, function (user) {
-                //let currentUserObject = _users[user.id];
+                //let currentUserObject = this.users[user.id];
                 //
                 //if (currentUserObject != null) {
                 //    // Merge all existing user properties
                 //    user = _.merge({}, currentUserObject, user);
                 //}
 
-                _users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
-                _userListOrder[i] = user.id;
+                this.users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
+                this.userListOrder[i] = user.id;
                 ++i;
             });
 
@@ -135,66 +157,20 @@ let UserStore = assign({}, EventEmitter.prototype, {
         } else {
             return false;
         }
-    },
+    }
 
-    // TODO If we need to manage a separate
+    // TODO If we need to manage a separate sorted list
     // setSortedList(userList, startIndex) {
     //     let i = startIndex;
     //
     //     if (_.isArray(userList)) {
     //         _.forEach(userList, function (user) {
-    //             _users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
-    //             _userSortedListOrder[i] = user.id;
+    //             this.users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
+    //             this.userSortedListOrder[i] = user.id;
     //             ++i;
     //         });
     //     }
-    // },
+    // }
+}
 
-    emitChange() {
-        this.emit(CHANGE_EVENT);
-    },
-
-    /**
-     * @param {function} callback
-     */
-    addChangeListener(callback) {
-        this.on(CHANGE_EVENT, callback);
-    },
-
-    /**
-     * @param {function} callback
-     */
-    removeChangeListener(callback) {
-        this.removeListener(CHANGE_EVENT, callback);
-    }
-});
-
-// Register callback to handle all updates
-UserStore.dispatcherToken = AppDispatcher.register(action => {
-    switch (action.actionType) {
-        case AppConstants.ActionTypes.READ_USER_SUCCESS:
-            if (UserStore.set(action.user)) {
-                UserStore.emitChange();
-            }
-            break;
-
-        case AppConstants.ActionTypes.READ_USER_ERROR:
-            // TODO: Shucks! Let's handle this error.
-            break;
-
-        case AppConstants.ActionTypes.READ_USER_LIST_SUCCESS:
-            if (UserStore.setList(action.users, (action.page - 1) * action.perPageCount)) {
-                UserStore.emitChange();
-            }
-            break;
-
-        case AppConstants.ActionTypes.READ_USER_LIST_ERROR:
-            // TODO: Shucks! Let's handle this error.
-            break;
-
-        default:
-            // Do nothing.
-    }
-});
-
-export default UserStore;
+export default alt.createStore(UserStore, 'UserStore', true);
