@@ -9,7 +9,7 @@ import {RouteHandler} from 'react-router';
 
 // Components
 import {Button} from 'react-bootstrap';
-import GoogleAnalytics from '../Widgets/GoogleAnalytics';
+import GoogleAnalytics from 'react-ga';
 import List from '../Widgets/List';
 
 // Stores
@@ -36,8 +36,7 @@ class App extends React.Component {
             <div>
                 <h1>App</h1>
                 <hr />
-                <RouteHandler data={this.props.data} />
-                <GoogleAnalytics id="UA-*******-**" />
+                <RouteHandler />
             </div>
         );
     }

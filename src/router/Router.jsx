@@ -13,6 +13,11 @@ import React from 'react';
 import Router from 'react-router';
 
 /*=================================
+ Google Analytics
+ =================================*/
+import GoogleAnalytics from 'react-ga';
+
+/*=================================
  Routes
  =================================*/
 import routes from './routes.jsx';
@@ -27,7 +32,11 @@ export default class AppRouter {
      * @param data
      */
     static init(data) {
+        GoogleAnalytics.initialize('UA-xxxxxxxx-x');
+
         Router.run(routes, Router.HistoryLocation, function (Handler, state) {
+            GoogleAnalytics.pageview(state.pathname);
+
             if (data != null) {
                 React.render(<Handler data={data}/>, document.body);
 
@@ -96,8 +105,7 @@ export default class AppRouter {
                         metadata: _.merge({
                             title: 'React App Starter',
                             description: 'This is a fully isomorphic React / Flux App starter.'
-                        }, data.metadata),
-                        data: safeStringify(data)
+                        }, data.metadata)
                     });
                 } else {
                     // TODO: Render an error page
@@ -108,9 +116,4 @@ export default class AppRouter {
             });
         });
     }
-}
-
-// A utility function to safely escape JSON for embedding in a <script> tag
-function safeStringify(obj) {
-    return JSON.stringify(obj).replace(/<\/script/g, '<\\/script').replace(/<!--/g, '<\\!--');
 }
