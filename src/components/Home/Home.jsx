@@ -90,17 +90,10 @@ class Home extends React.Component {
                 fireActions(this.state);
             }); // Set isLoadingMoreDetails to true
         };
-
-        if (props.data != null) {
-            // Server side rendering. Let's use the provided data first.
-            _.merge(this.state, props.data);
-        }
     }
 
     componentDidMount() {
         UserStore.listen(this.onChange);
-
-        fireActions(this.state);
     }
 
     componentWillUnmount() {
@@ -115,7 +108,7 @@ class Home extends React.Component {
             <div>
                 <h2>USER DETAILS - Page {this.state.page}</h2>
                 <hr />
-                <List of={React.createFactory(UserWidget)} dataSet={this.state.users}  />
+                <List of={React.createFactory(UserWidget)} dataSet={this.state.users} />
                 <p><button onClick={this.onPrevButtonClicked}>&#8592; Prev</button> or <button onClick={this.onNextButtonClicked}>Next &#8594;</button></p>
             </div>
         );

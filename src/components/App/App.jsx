@@ -36,7 +36,7 @@ class App extends React.Component {
             <div>
                 <h1>App</h1>
                 <hr />
-                <RouteHandler />
+                <RouteHandler {...this.props}/>
             </div>
         );
     }

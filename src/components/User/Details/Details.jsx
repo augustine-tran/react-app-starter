@@ -64,13 +64,6 @@ class Details extends React.Component {
             this.setState(newState);
         };
 
-        if (props.data != null) {
-            // Server side rendering. Let's use the provided data first.
-            _.merge(this.state, props.data);
-
-            this.state.isLoading = false;
-        }
-
         /**
          * Event handler for 'change' events coming from the UserStore
          */
@@ -165,16 +158,16 @@ Details.contextTypes = {
 };
 
 Details.propTypes = {
-    data: React.PropTypes.shape({
-        id: React.PropTypes.string.isRequired,
-        name: React.PropTypes.string.isRequired,
-        gender: React.PropTypes.string.isRequired,
-        birthday: React.PropTypes.string.isRequired,
-        address: React.PropTypes.shape({
-            line1: React.PropTypes.string.isRequired,
-            line2: React.PropTypes.string.isRequired
-        }).isRequired
-    }).isRequired
+    //data: React.PropTypes.shape({
+    //    id: React.PropTypes.string.isRequired,
+    //    name: React.PropTypes.string.isRequired,
+    //    gender: React.PropTypes.string.isRequired,
+    //    birthday: React.PropTypes.string.isRequired,
+    //    address: React.PropTypes.shape({
+    //        line1: React.PropTypes.string.isRequired,
+    //        line2: React.PropTypes.string.isRequired
+    //    }).isRequired
+    //}).isRequired
 };
 
 export default Details;

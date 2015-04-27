@@ -47,7 +47,7 @@ class Widget extends React.Component {
         this.state = {
             isFirstLoad: true,
             isLoadingMoreDetails: false,
-            user: props
+            user: props // We set props as user
         };
 
         /**
@@ -79,8 +79,6 @@ class Widget extends React.Component {
 
     componentDidMount() {
         UserStore.listen(this.onChange);
-
-        //fireActions(this.state);
     }
 
     componentWillUnmount() {
@@ -133,16 +131,11 @@ Widget.contextTypes = {
 };
 
 Widget.propTypes = {
-    data: React.PropTypes.object,
-    id: (props, propName, componentName) => {
-        // Only required if data doesn't exist
-        if (props['data'] == null) {
-            return React.PropTypes.oneOfType([
-                React.PropTypes.string,
-                React.PropTypes.number
-            ]).isRequired(props, propName, componentName);
-        }
-    }
+    id: React.PropTypes.oneOfType([
+        React.PropTypes.string,
+        React.PropTypes.number
+    ]).isRequired,
+    name: React.PropTypes.string.isRequired
 };
 
 export default Widget;

@@ -29,7 +29,7 @@ class UserActions {
             };
 
             if (callback != null && _.isFunction(callback)) {
-                callback(error, data);
+                callback(error);
             }
 
             if (!error) {
@@ -61,7 +61,7 @@ class UserActions {
             };
 
             if (callback != null && _.isFunction(callback)) {
-                callback(error, data);
+                callback(error);
             }
 
             if (!error) {
