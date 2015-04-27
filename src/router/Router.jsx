@@ -43,7 +43,7 @@ export default class AppRouter {
             async.map(routesWithData, (route, callback) => {
                 // Fetch data for each route and then merge it back into the data source.
                 route.handler.fetchData(state, callback);
-            }, error => {
+            }, () => {
                 React.render(<Handler/>, document.body);
             });
 
