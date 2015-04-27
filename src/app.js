@@ -17,7 +17,7 @@ if (typeof window !== 'undefined') {
     window.onload = function () {
         GoogleAnalytics.initialize('UA-xxxxxxxx-x');
 
-        Iso.bootstrap(state => {
+        Iso.bootstrap((state, meta, containerReference) => {
             alt.bootstrap(state);
 
             Router.init();
