@@ -14,6 +14,7 @@ import AppStore from './AppStore';
 import _ from 'lodash';
 import assign from 'object-assign';
 import objectHasKey from '../utilities/objectHasKey';
+import validator from 'validator';
 
 class UserStore {
     constructor () {
@@ -22,6 +23,7 @@ class UserStore {
         this.userSortedListOrder = [];
 
         this.bindAction(UserActions.getUser, this.onGetUser);
+        this.bindAction(UserActions.getUsers, this.onGetUsers);
 
         this.exportPublicMethods({
             has: this.has,
@@ -36,8 +38,20 @@ class UserStore {
     }
 
     onGetUser(data) {
+        console.log(`ON GET USER :: ${JSON.stringify(data)}`);
+
         if (data.user != null) {
             this.set(data.user);
+        }
+    }
+
+    onGetUsers(data) {
+        console.log(`ON GET USERS :: ${JSON.stringify(data)}`);
+
+        if (data.users != null
+            && validator.isInt(data.page) && data.page >= 1
+            && validator.isInt(data.page) && data.perPageCount >= 1) {
+            this.setList(data.users, (data.page - 1) * data.perPageCount);
         }
     }
 
@@ -92,7 +106,9 @@ class UserStore {
     }
 
     get(id) {
-        return this.users[id];
+        let state = this.getState();
+
+        return state.users[id];
     }
 
     getList(startIndex, count) {
@@ -103,14 +119,12 @@ class UserStore {
 
         if (startIndex >= 0 && count > 1) {
             let endIndex = startIndex + count;
+            let state = this.getState();
+            let userList = _.slice(state.userListOrder, startIndex, endIndex);
 
-            let userList = _.slice(this.userListOrder, startIndex, endIndex);
-
-            userList = _.map(userList, function (id) {
-                return this.users[id];
+            return _.map(userList, function (id) {
+                return state.users[id];
             });
-
-            return userList;
         }
 
         return null;
@@ -141,17 +155,10 @@ class UserStore {
 
         if (_.isArray(userList)) {
             _.forEach(userList, function (user) {
-                //let currentUserObject = this.users[user.id];
-                //
-                //if (currentUserObject != null) {
-                //    // Merge all existing user properties
-                //    user = _.merge({}, currentUserObject, user);
-                //}
-
                 this.users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
                 this.userListOrder[i] = user.id;
                 ++i;
-            });
+            }, this);
 
             return true;
         } else {
@@ -168,7 +175,7 @@ class UserStore {
     //             this.users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
     //             this.userSortedListOrder[i] = user.id;
     //             ++i;
-    //         });
+    //         }, this);
     //     }
     // }
 }

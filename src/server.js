@@ -42,10 +42,10 @@ app.use(cors());
 
 let generator = chance();
 const MAX_USERS = 1000;
-let userDatabase = [];
+let _users = [];
 
 for (let i = 0; i <= MAX_USERS; i++) {
-    userDatabase.push({
+    _users.push({
         id: i,
         name: generator.name(),
         gender: generator.gender(),
@@ -65,7 +65,7 @@ apiRouter.get('/users', (req, res) => {
         startIndex = (page - 1) * perPageCount,
         endIndex = startIndex + perPageCount;
 
-    let users = _.slice(userDatabase, startIndex, endIndex);
+    let users = _.slice(_users, startIndex, endIndex);
 
     users = users.map(user => {
         /**
@@ -92,10 +92,10 @@ apiRouter.get('/users', (req, res) => {
 apiRouter.get('/user/:id', (req, res) => {
     let id = req.params.id;
 
-    if (id == null || userDatabase.length <= id) {
+    if (id == null || _users.length <= id) {
         res.status(500).send({error: 'Invalid user'});
     } else {
-        res.json(userDatabase[id]);
+        res.json(_users[id]);
     }
 });
 

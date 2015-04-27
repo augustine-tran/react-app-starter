@@ -64,10 +64,14 @@ export default class AppRouter {
      * @param next
      */
     static serve(req, res, next) {
+        console.log(`SERVER SIDE RENDERING!`);
+
         Router.run(routes, req.url, (Handler, state) => {
 
             // Loop through the matching routes
             let routesWithData = state.routes.filter((route) => { return route.handler.fetchData; });
+
+            console.log(`ROUTES WITH DATA :: ${JSON.stringify(routesWithData)}`);
 
             async.map(routesWithData, (route, callback) => {
                 // Fetch data for each route and then merge it back into the data source.
@@ -79,6 +83,8 @@ export default class AppRouter {
                     let data = {};
 
                     _.each(dataArray, dataSet => _.merge(data, dataSet));
+
+                    console.log(`DATA :: ${JSON.stringify(data)}`);
 
                     // TODO: At least one component should set the data.metadata properties, so we can generate the SEO meta-tags.
                     // TODO: Make sure all metadata properties are set, and fill missing properties with default values.

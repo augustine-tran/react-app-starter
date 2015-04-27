@@ -32,7 +32,13 @@ function getStateFromStores(parameters) {
 }
 
 function fireActions(state, callback) {
-    UserActions.getUser(state.user.id, ['id', 'name', 'gender', 'birthday', ['address', 'line1'], ['address', 'line2']], callback);
+    let parameters = {
+        id: state.user.id,
+        fields: ['id', 'name', 'gender', 'birthday', ['address', 'line1'], ['address', 'line2']],
+        callback: callback
+    };
+
+    UserActions.getUser(parameters);
 }
 
 /**
@@ -68,7 +74,7 @@ class Details extends React.Component {
         /**
          * Event handler for 'change' events coming from the UserStore
          */
-        this._onChange = () => {
+        this.onChange = () => {
             let parameters = {
                 user: {
                     id: this.state.user.id
@@ -84,13 +90,13 @@ class Details extends React.Component {
     }
 
     componentDidMount() {
-        UserStore.addChangeListener(this._onChange);
+        UserStore.listen(this.onChange);
 
         fireActions(this.state);
     }
 
     componentWillUnmount() {
-        UserStore.removeChangeListener(this._onChange);
+        UserStore.unlisten(this.onChange);
     }
 
     componentWillReceiveProps(nextProps) {

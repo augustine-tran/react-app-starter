@@ -24,7 +24,13 @@ function getStateFromStores(parameters) {
 }
 
 function fireActions(state, callback) {
-    UserActions.getUser(state.user.id, ['id', 'name', 'gender', ['address', 'line1'], ['address', 'line2']], callback);
+    let parameters = {
+        id: state.user.id,
+        fields: ['id', 'name', 'gender', ['address', 'line1'], ['address', 'line2']],
+        callback: callback
+    };
+
+    UserActions.getUser(parameters);
 }
 
 /**
@@ -47,7 +53,7 @@ class Widget extends React.Component {
         /**
          * Event handler for 'change' events coming from the UserStore
          */
-        this._onChange = () => {
+        this.onChange = () => {
             let parameters = {
                 user: {
                     id: this.state.user.id
@@ -64,7 +70,7 @@ class Widget extends React.Component {
         /**
          * Event handler for 'button click' events coming from the button
          */
-        this._onButtonClick = () => {
+        this.onButtonClick = () => {
             this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true, isFirstLoad: false}), () => {
                 fireActions(this.state);
             }); // Set isLoadingMoreDetails to true
@@ -72,13 +78,13 @@ class Widget extends React.Component {
     }
 
     componentDidMount() {
-        UserStore.addChangeListener(this._onChange);
+        UserStore.listen(this.onChange);
 
         //fireActions(this.state);
     }
 
     componentWillUnmount() {
-        UserStore.removeChangeListener(this._onChange);
+        UserStore.unlisten(this.onChange);
     }
 
     /**
@@ -105,7 +111,7 @@ class Widget extends React.Component {
                 );
             } else {
                 userDetails = (
-                    <p><button onClick={this._onButtonClick}>Get more user details!</button></p>
+                    <p><button onClick={this.onButtonClick}>Get more user details!</button></p>
                 );
             }
         }

@@ -22,11 +22,11 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        AppStore.listen(this._onAlert);
+        AppStore.listen(this.onAlert);
     }
 
     componentWillUnmount() {
-        AppStore.unlisten(this._onAlert);
+        AppStore.unlisten(this.onAlert);
     }
 
     /**
@@ -46,7 +46,7 @@ class App extends React.Component {
     /**
      * Event handler for 'change' events coming from the UserStore
      */
-    _onAlert() {
+    onAlert() {
         _.forEach(AppStore.getPendingAlerts(), (alertPayload) => {
             console.log(`${alertPayload.type.toUpperCase()} :: ${alertPayload.title} - ${alertPayload.message}`);
             window.alert(`${alertPayload.type.toUpperCase()} :: ${alertPayload.title} - ${alertPayload.message}`);

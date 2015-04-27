@@ -50,7 +50,9 @@ class AppStore {
     }
 
     getPendingAlerts () {
-        return this.alerts.splice(0, this.alerts.length);
+        let state = this.getState();
+
+        return state.alerts.splice(0, state.alerts.length);
     }
 }
 

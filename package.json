@@ -38,6 +38,7 @@
     "gulp-uglify": "^1.2.0",
     "gulp-util": "^3.0.4",
     "gulp-webpack": "^1.4.0",
+    "handlebars": "^3.0.0",
     "install": "^0.1.8",
     "iso": "^4.1.0",
     "keymirror": "^0.1.1",
@@ -57,6 +58,7 @@
     "sitemap": "^0.8.1",
     "superagent": "^1.2.0",
     "superagent-prefix": "0.0.2",
+    "validator": "^3.39.0",
     "webpack": "^1.8.9"
   }
 }

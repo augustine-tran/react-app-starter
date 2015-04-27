@@ -33,6 +33,8 @@ class UserActions {
             }
 
             if (!error) {
+                console.log(`GET USER ACTION :: DISPATCHING DATA :: ${JSON.stringify(data)}`);
+
                 this.dispatch(data);
             } else {
                 AppActions.showAlert({error});
@@ -63,8 +65,11 @@ class UserActions {
             }
 
             if (!error) {
+                console.log(`GET USERS ACTION :: DISPATCHING DATA :: ${JSON.stringify(data)}`);
+
                 this.dispatch(data);
             } else {
+                console.log(`ERROR! ${JSON.stringify(error)}`);
                 AppActions.showAlert({error});
             }
         };
@@ -75,6 +80,7 @@ class UserActions {
         //} else {
         //    UserAPI.getPage(page, perPageCount, responseCallback);
         //}
+
         UserAPI.getPage(page, perPageCount, responseCallback);
     }
 }

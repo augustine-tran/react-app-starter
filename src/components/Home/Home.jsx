@@ -36,8 +36,14 @@ function getStateFromStores(parameters) {
     };
 }
 
-function fireActions(parameters, callback) {
-    UserActions.getUsers(parameters.page, parameters.perPageCount, callback);
+function fireActions(state, callback) {
+    let parameters = {
+        page: state.page,
+        perPageCount: state.perPageCount,
+        callback: callback
+    };
+
+    UserActions.getUsers(parameters);
 }
 
 class Home extends React.Component {
@@ -49,7 +55,7 @@ class Home extends React.Component {
         /**
          * Event handler for 'change' events coming from the UserStore
          */
-        this._onChange = () => {
+        this.onChange = () => {
             let parameters = {
                 page: this.state.page,
                 perPageCount: this.state.perPageCount
@@ -62,29 +68,26 @@ class Home extends React.Component {
             }
         };
 
-        this._onNextButtonClicked = () => {
+        this.onNextButtonClicked = () => {
             let page = this.state.page + 1;
 
-            this._onLoadPage(page);
+            this.onLoadPage(page);
         };
 
-        this._onPrevButtonClicked = () => {
+        this.onPrevButtonClicked = () => {
             let page = this.state.page - 1;
 
             if (page < 1) {
                 page = 1;
             }
 
-            this._onLoadPage(page);
+            this.onLoadPage(page);
         };
 
-        this._onLoadPage = (page) => {
+        this.onLoadPage = (page) => {
             // TODO : Use router to transition to next / prev page
             this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true, page: page, perPageCount: this.state.perPageCount}), () => {
-                fireActions({
-                    page: this.state.page,
-                    perPageCount: this.state.perPageCount
-                });
+                fireActions(this.state);
             }); // Set isLoadingMoreDetails to true
         };
 
@@ -95,13 +98,13 @@ class Home extends React.Component {
     }
 
     componentDidMount() {
-        UserStore.addChangeListener(this._onChange);
+        UserStore.listen(this.onChange);
 
         fireActions(this.state);
     }
 
     componentWillUnmount() {
-        UserStore.removeChangeListener(this._onChange);
+        UserStore.unlisten(this.onChange);
     }
 
     /**
@@ -113,7 +116,7 @@ class Home extends React.Component {
                 <h2>USER DETAILS - Page {this.state.page}</h2>
                 <hr />
                 <List of={React.createFactory(UserWidget)} dataSet={this.state.users}  />
-                <p><button onClick={this._onPrevButtonClicked}>&#8592; Prev</button> or <button onClick={this._onNextButtonClicked}>Next &#8594;</button></p>
+                <p><button onClick={this.onPrevButtonClicked}>&#8592; Prev</button> or <button onClick={this.onNextButtonClicked}>Next &#8594;</button></p>
             </div>
         );
     }
