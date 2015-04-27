@@ -122,7 +122,6 @@ class Details extends React.Component {
                     <br />
                     <span>{this.state.user.address.line2}</span>
                 </p>
-
             );
         }
 

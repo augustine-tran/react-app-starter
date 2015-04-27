@@ -15,7 +15,6 @@ import List from '../Widgets/List';
 // Stores
 import AppStore from '../../stores/AppStore';
 
-
 class App extends React.Component {
     constructor(props, context) {
         super(props, context); // NOTE: IntelliJ lints this as invalid. Ignore warning.
