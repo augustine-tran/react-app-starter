@@ -71,7 +71,7 @@ class Home extends React.Component {
         this.onNextButtonClicked = () => {
             let page = this.state.page + 1;
 
-            this.onLoadPage(page);
+            this.loadPage(page);
         };
 
         this.onPrevButtonClicked = () => {
@@ -81,10 +81,10 @@ class Home extends React.Component {
                 page = 1;
             }
 
-            this.onLoadPage(page);
+            this.loadPage(page);
         };
 
-        this.onLoadPage = (page) => {
+        this.loadPage = (page) => {
             // TODO : Use router to transition to next / prev page
             this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true, page: page, perPageCount: this.state.perPageCount}), () => {
                 fireActions(this.state);
