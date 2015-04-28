@@ -42,12 +42,10 @@ class UserStore {
 
         let successCallback = user => {
             if (user != null) {
-                console.log(`SETTING USER ${JSON.stringify(user)}`);
                 this.set(user);
             }
 
             if (onFinish != null && _.isFunction(onFinish)) {
-                console.log(`GET USER ON FINISH!`);
                 onFinish();
             }
 
@@ -56,12 +54,10 @@ class UserStore {
 
         let errorCallback = error => {
             if (onError != null && _.isFunction(onError)) {
-                console.log(`GET USER ON ERROR! ERROR :: ${JSON.stringify(error)}`);
                 onError(error);
             }
 
             if (onFinish != null && _.isFunction(onFinish)) {
-                console.log(`GET USER ON FINISH! ERROR :: ${JSON.stringify(error)}`);
                 onFinish(error);
             }
         };
@@ -88,14 +84,11 @@ class UserStore {
         } = payload;
 
         let successCallback = users => {
-            console.log(`GET USERS SUCCESS CALLBACK WITH :: ${JSON.stringify(users)}`);
-
             if (users != null) {
                 this.setList(users, (page - 1) * perPageCount);
             }
 
             if (onFinish != null && _.isFunction(onFinish)) {
-                console.log(`GET USER ON FINISH! DATA :: ${JSON.stringify(users)}`);
                 onFinish();
             }
 
@@ -104,12 +97,10 @@ class UserStore {
 
         let errorCallback = error => {
             if (onError != null && _.isFunction(onError)) {
-                console.log(`GET USER ON ERROR! ERROR :: ${JSON.stringify(error)}`);
                 onError(error);
             }
 
             if (onFinish != null && _.isFunction(onFinish)) {
-                console.log(`GET USER ON FINISH! ERROR :: ${JSON.stringify(error)}`);
                 onFinish(error);
             }
         };
@@ -177,7 +168,6 @@ class UserStore {
 
     get(id) {
         let state = this.getState();
-        console.log(`GETTING USER WITH ID ${id} BASED ON CURRENT STATE :: ${JSON.stringify(state)}`);
 
         return state.users[id];
     }
@@ -212,11 +202,13 @@ class UserStore {
     set(user) {
         if (user != null) {
             let clonedUser = _.cloneDeep(user);
+
             //let currentUserObject = this.users[user.id];
             //
             //if (currentUserObject != null) {
             //    user = _.merge({}, currentUserObject, user);
             //}
+
             this.users[clonedUser.id] = clonedUser; // TODO We might want to do a merge here? In case the API returns data differently
 
             return true; // User was successfully updated.
@@ -226,7 +218,6 @@ class UserStore {
     }
 
     setList(userList, startIndex) {
-        console.log(`SETTING LIST AT INDEX ${startIndex} WITH DATA : ${JSON.stringify(userList)}`);
         let i = startIndex;
 
         if (_.isArray(userList)) {
@@ -245,19 +236,19 @@ class UserStore {
     }
 
     // TODO If we need to manage a separate sorted list
-    setSortedList(userList, startIndex) {
-        let i = startIndex;
-
-        if (_.isArray(userList)) {
-            _.forEach(userList, function (user) {
-                let clonedUser = _.cloneDeep(user);
-
-                this.users[clonedUser.id] = clonedUser; // TODO We might want to do a merge here? In case the API returns data differently
-                this.userSortedListOrder[i] = clonedUser.id;
-                ++i;
-            }, this);
-        }
-    }
+    // setSortedList(userList, startIndex) {
+    //     let i = startIndex;
+    //
+    //     if (_.isArray(userList)) {
+    //         _.forEach(userList, function (user) {
+    //             let clonedUser = _.cloneDeep(user);
+    //
+    //             this.users[clonedUser.id] = clonedUser; // TODO We might want to do a merge here? In case the API returns data differently
+    //             this.userSortedListOrder[i] = clonedUser.id;
+    //             ++i;
+    //         }, this);
+    //     }
+    // }
 }
 
 export default alt.createStore(UserStore, 'UserStore', true);

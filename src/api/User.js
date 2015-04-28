@@ -13,8 +13,6 @@ class User extends Base {
     static get(id) {
         return () => {
             let promise = new Promise((resolve, reject) => {
-                console.log(`PROMISE TO GET USER (ID : ${id}) FIRED!`);
-
                 async.waterfall([
                     callback => {
                         // TODO Refactor this out to a DAO layer.
@@ -46,8 +44,6 @@ class User extends Base {
     static getPage(page, perPageCount) {
         return () => {
             let promise = new Promise((resolve, reject) => {
-                console.log(`PROMISE TO GET USER PAGE ${page} FIRED!`);
-
                 async.waterfall([
                     callback => {
                         http
@@ -74,10 +70,8 @@ class User extends Base {
                     }
                 ], (error, data) => {
                     if (!error) {
-                        console.log(`GET USER API SUCCESS!`);
                         resolve(data);
                     } else {
-                        console.log(`GET USER API ERROR!`);
                         reject(error);
                     }
                 });

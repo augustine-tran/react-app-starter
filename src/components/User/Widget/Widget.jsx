@@ -64,8 +64,6 @@ class Widget extends React.Component {
 
             let newState = getStateFromStores(parameters);
 
-            console.log(`WIDGET ONCHANGE NEW STATE :: ${JSON.stringify(newState)}`);
-
             if (newState != null) {
                 this.setState(newState);
             }
@@ -75,8 +73,6 @@ class Widget extends React.Component {
          * Event handler for 'button click' events coming from the button
          */
         this.onButtonClick = () => {
-            console.log(`ON BUTTON CLICK!`);
-
             this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true, isFirstLoad: false}), () => {
                 fireActions(this.state);
             }); // Set isLoadingMoreDetails to true
@@ -122,7 +118,7 @@ class Widget extends React.Component {
 
         return (
             <div key={this.state.user.id}>
-                <h3>{this.state.user.name}  - (ID : {this.state.user.id})</h3>
+                <h3>{this.state.user.name} - (ID : {this.state.user.id})</h3>
                 {userDetails}
                 <br />
                 <Link to="user-details" params={{id: this.state.user.id}}>Full Details</Link>

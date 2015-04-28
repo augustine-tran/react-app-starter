@@ -56,8 +56,6 @@ class Home extends React.Component {
          * Event handler for 'change' events coming from the UserStore
          */
         this.onChange = () => {
-            console.log(`HOME ONCHANGE TRIGGERED`);
-
             let parameters = {
                 page: this.state.page,
                 perPageCount: this.state.perPageCount
@@ -84,8 +82,6 @@ class Home extends React.Component {
             }
 
             let newState = getStateFromStores(parameters);
-
-            console.log(`HOME ONCHANGE NEW STATE :: ${JSON.stringify(newState)}`);
 
             if (newState != null) {
                 this.setState(newState);

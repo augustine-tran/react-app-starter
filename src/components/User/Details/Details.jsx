@@ -54,8 +54,6 @@ class Details extends React.Component {
          * Event handler for 'change' events coming from the UserStore
          */
         this.onChange = () => {
-            console.log(`DETAILS ONCHANGE TRIGGERED`);
-
             let parameters = {
                 user: {
                     id: null
@@ -75,8 +73,6 @@ class Details extends React.Component {
             }
 
             let newState = getStateFromStores(parameters);
-
-            console.log(`DETAILS ONCHANGE NEW STATE :: ${JSON.stringify(newState)}`);
 
             if (newState != null) {
                 this.setState(newState);
