@@ -10,78 +10,47 @@ import alt from '../alt';
 import AppActions from './AppActions';
 
 // API
-import UserAPI from '../api/user';
-
-// Stores
-//import UserStore from '../stores/UserStore';
+import UserAPI from '../api/User';
 
 class UserActions {
-    /**
-     * Read user from API.
-     * @param id
-     */
     getUser(parameters) {
         let { id, fields, callback } = parameters;
 
-        let responseCallback = (error, user) => {
-            let data = {
-                user
-            };
-
-            if (callback != null && _.isFunction(callback)) {
-                callback(error);
-            }
-
-            if (!error) {
-                console.log(`GET USER ACTION :: DISPATCHING DATA :: ${JSON.stringify(data)}`);
-
-                this.dispatch(data);
-            } else {
+        let payload = {
+            id,
+            fields,
+            getData: UserAPI.get(id),
+            onSuccess: data => {
+                // TODO: You can add in hooks here to do something with the transformed data.
+            },
+            onError: error => {
                 AppActions.showAlert({error});
-            }
+            },
+            onFinish: (callback != null && _.isFunction(callback)) ? callback : undefined
         };
 
-        // TODO UserAPI should be refactored into UserUtil and it will check if UserStore has requested user before calling API.
-        //if (UserStore.has(id, fields)) {
-        //    responseCallback(null, UserStore.get(id));
-        //} else {
-        //    UserAPI.get(id, responseCallback);
-        //}
-        UserAPI.get(id, responseCallback);
+        this.dispatch(payload);
     }
 
     getUsers(parameters) {
         let { page, perPageCount, fields, callback } = parameters;
 
-        let responseCallback = (error, users) => {
-            let data = {
-                users,
-                page,
-                perPageCount
-            };
-
-            if (callback != null && _.isFunction(callback)) {
-                callback(error);
-            }
-
-            if (!error) {
-                console.log(`GET USERS ACTION :: DISPATCHING DATA :: ${JSON.stringify(data)}`);
-
-                this.dispatch(data);
-            } else {
-                console.log(`ERROR! ${JSON.stringify(error)}`);
+        let payload = {
+            page,
+            perPageCount,
+            fields,
+            getData: UserAPI.getPage(page, perPageCount),
+            onSuccess: data => {
+                // TODO: You can add in hooks here to do something with the transformed data.
+            },
+            onError: error => {
+                // TODO: You can add in hooks here to do something when an error occurs.
                 AppActions.showAlert({error});
-            }
+            },
+            onFinish: (callback != null && _.isFunction(callback)) ? callback : undefined
         };
 
-        // TODO UserAPI should be refactored into UserUtil and it will check if UserStore has requested users before calling API.
-        //if (UserStore.hasPage(page, perPageCount)) {
-        //    responseCallback(null, UserStore.getPage(page, perPageCount));
-        //} else {
-        //    UserAPI.getPage(page, perPageCount, responseCallback);
-        //}
-
-        UserAPI.getPage(page, perPageCount, responseCallback);
+        this.dispatch(payload);
     }
 }
 

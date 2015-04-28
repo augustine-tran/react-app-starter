@@ -14,7 +14,6 @@ import AppStore from './AppStore';
 import _ from 'lodash';
 import assign from 'object-assign';
 import objectHasKey from '../utilities/objectHasKey';
-import validator from 'validator';
 
 class UserStore {
     constructor () {
@@ -37,21 +36,102 @@ class UserStore {
         });
     }
 
-    onGetUser(data) {
-        console.log(`ON GET USER :: ${JSON.stringify(data)}`);
+    onGetUser(payload) {
+        let {
+            id,
+            fields,
+            getData,
+            onSuccess,
+            onError,
+            onFinish
+        } = payload;
 
-        if (data.user != null) {
-            this.set(data.user);
+        let successCallback = user => {
+            if (user != null) {
+                this.set(user);
+
+                if (onSuccess != null && _.isFunction(onSuccess)) {
+                    console.log(`GET USER ON SUCCESS! DATA :: ${JSON.stringify(user)}`);
+                    onSuccess(user);
+                }
+
+                if (onFinish != null && _.isFunction(onFinish)) {
+                    console.log(`GET USER ON FINISH! DATA :: ${JSON.stringify(user)}`);
+                    onFinish(null, user);
+                }
+            }
+        };
+
+        let errorCallback = error => {
+            if (onError != null && _.isFunction(onError)) {
+                console.log(`GET USER ON ERROR! ERROR :: ${JSON.stringify(error)}`);
+                onError(error);
+            }
+
+            if (onFinish != null && _.isFunction(onFinish)) {
+                console.log(`GET USER ON FINISH! ERROR :: ${JSON.stringify(error)}`);
+                onFinish(error);
+            }
+        };
+
+        if (!this.has(id, fields)) {
+            getData
+                .then(successCallback)
+                .catch(errorCallback);
+        } else {
+            successCallback(this.get(id));
         }
     }
 
-    onGetUsers(data) {
-        console.log(`ON GET USERS :: ${JSON.stringify(data)}`);
+    onGetUsers(payload) {
+        let {
+            page,
+            perPageCount,
+            fields,
+            getData,
+            onSuccess,
+            onError,
+            onFinish
+        } = payload;
 
-        if (data.users != null
-            && validator.isInt(data.page) && data.page >= 1
-            && validator.isInt(data.page) && data.perPageCount >= 1) {
-            this.setList(data.users, (data.page - 1) * data.perPageCount);
+        let successCallback = users => {
+            console.log(`GET USERS SUCCESS CALLBACK WITH :: ${JSON.stringify(users)}`);
+
+            if (users != null) {
+                this.setList(users, (page - 1) * perPageCount);
+
+                if (onSuccess != null && _.isFunction(onSuccess)) {
+                    console.log(`GET USER ON SUCCESS! DATA :: ${JSON.stringify(users)}`);
+                    onSuccess(users);
+                }
+
+                if (onFinish != null && _.isFunction(onFinish)) {
+                    console.log(`GET USER ON FINISH! DATA :: ${JSON.stringify(users)}`);
+                    onFinish(null, users);
+                }
+            } else {
+                console.log(`DID NOT VALIDATE`);
+            }
+        };
+
+        let errorCallback = error => {
+            if (onError != null && _.isFunction(onError)) {
+                console.log(`GET USER ON ERROR! ERROR :: ${JSON.stringify(error)}`);
+                onError(error);
+            }
+
+            if (onFinish != null && _.isFunction(onFinish)) {
+                console.log(`GET USER ON FINISH! ERROR :: ${JSON.stringify(error)}`);
+                onFinish(error);
+            }
+        };
+
+        if (!this.hasPage(page, perPageCount, fields)) {
+            getData
+                .then(successCallback)
+                .catch(errorCallback);
+        } else {
+            successCallback(this.getPage(page, perPageCount));
         }
     }
 
@@ -105,7 +185,7 @@ class UserStore {
         return this.hasList((page - 1) * count, count, fields);
     }
 
-    get(id) {
+    get(id, fields) {
         let state = this.getState();
 
         return state.users[id];
