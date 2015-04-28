@@ -35,7 +35,7 @@ export default class AppRouter {
      */
     static init() {
         Router.run(routes, Router.HistoryLocation, function (Handler, state) {
-            // GoogleAnalytics.pageview(state.pathname);
+            GoogleAnalytics.pageview(state.pathname);
 
             // Loop through the matching routes
             let routesWithData = state.routes.filter((route) => { return route.handler.fetchData; });
