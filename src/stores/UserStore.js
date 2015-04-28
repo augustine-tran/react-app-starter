@@ -82,19 +82,14 @@ class UserStore {
             if (user != null) {
                 console.log(`SETTING USER ${JSON.stringify(user)}`);
                 this.set(user);
-
-                if (onSuccess != null && _.isFunction(onSuccess)) {
-                    console.log(`GET USER ON SUCCESS! DATA :: ${JSON.stringify(user)}`);
-                    onSuccess(user);
-                }
-
-                if (onFinish != null && _.isFunction(onFinish)) {
-                    console.log(`GET USER ON FINISH!`);
-                    onFinish();
-                }
-
-                this.emitChange();
             }
+
+            if (onFinish != null && _.isFunction(onFinish)) {
+                console.log(`GET USER ON FINISH!`);
+                onFinish();
+            }
+
+            this.emitChange();
         };
 
         let errorCallback = error => {
@@ -114,7 +109,7 @@ class UserStore {
                 .then(successCallback)
                 .catch(errorCallback);
         } else {
-            successCallback(get(id, this));
+            successCallback();
         }
 
         return false; // We don't want to trigger the change event until the async operation completes.
@@ -136,19 +131,14 @@ class UserStore {
 
             if (users != null) {
                 this.setList(users, (page - 1) * perPageCount);
-
-                if (onSuccess != null && _.isFunction(onSuccess)) {
-                    console.log(`GET USER ON SUCCESS! DATA :: ${JSON.stringify(users)}`);
-                    onSuccess(users);
-                }
-
-                if (onFinish != null && _.isFunction(onFinish)) {
-                    console.log(`GET USER ON FINISH! DATA :: ${JSON.stringify(users)}`);
-                    onFinish(null, users);
-                }
-
-                this.emitChange();
             }
+
+            if (onFinish != null && _.isFunction(onFinish)) {
+                console.log(`GET USER ON FINISH! DATA :: ${JSON.stringify(users)}`);
+                onFinish();
+            }
+
+            this.emitChange();
         };
 
         let errorCallback = error => {
@@ -168,7 +158,7 @@ class UserStore {
                 .then(successCallback)
                 .catch(errorCallback);
         } else {
-            successCallback(getPage(page, perPageCount, this));
+            successCallback();
         }
 
         return false; // We don't want to trigger the change event until the async operation completes.

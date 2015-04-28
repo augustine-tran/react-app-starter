@@ -20,9 +20,6 @@ class UserActions {
             id,
             fields,
             getData: UserAPI.get(id),
-            onSuccess: data => {
-                // TODO: You can add in hooks here to do something with the transformed data.
-            },
             onError: error => {
                 AppActions.showAlert({error});
             },
@@ -40,9 +37,6 @@ class UserActions {
             perPageCount,
             fields,
             getData: UserAPI.getPage(page, perPageCount),
-            onSuccess: data => {
-                // TODO: You can add in hooks here to do something with the transformed data.
-            },
             onError: error => {
                 // TODO: You can add in hooks here to do something when an error occurs.
                 AppActions.showAlert({error});
