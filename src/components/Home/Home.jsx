@@ -105,10 +105,7 @@ class Home extends React.Component {
         };
 
         this.loadPage = (page) => {
-            // TODO : Use router to transition to next / prev page
-            this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true, page: page, perPageCount: this.state.perPageCount}), () => {
-                fireActions(this.state);
-            }); // Set isLoadingMoreDetails to true
+            this.context.router.transitionTo('user-list', {page: page});
         };
     }
 
@@ -123,6 +120,11 @@ class Home extends React.Component {
     componentWillUnmount() {
         UserStore.unlisten(this.onChange);
     }
+
+    componentWillReceiveProps(nextProps) {
+        this.onChange();
+    }
+
 
     /**
      * @return {object}
