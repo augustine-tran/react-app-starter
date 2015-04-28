@@ -52,26 +52,6 @@ class Home extends React.Component {
 
         this.state = getInitialState();
 
-        if (context.router != null) {
-            let params = context.router.getCurrentParams();
-
-            if (params.page != null) {
-                let page = parseInt(params.page);
-
-                if (!isNaN(page)) {
-                    this.state.page = page;
-                }
-            }
-
-            if (params.per_page_count != null) {
-                let perPageCount = parseInt(params.per_page_count);
-
-                if (!isNaN(perPageCount)) {
-                    this.state.perPageCount = perPageCount;
-                }
-            }
-        }
-
         /**
          * Event handler for 'change' events coming from the UserStore
          */
@@ -82,6 +62,26 @@ class Home extends React.Component {
                 page: this.state.page,
                 perPageCount: this.state.perPageCount
             };
+
+            if (this.context.router != null) {
+                let params = this.context.router.getCurrentParams();
+
+                if (params.page != null) {
+                    let page = parseInt(params.page);
+
+                    if (!isNaN(page)) {
+                        parameters.page = page;
+                    }
+                }
+
+                if (params.per_page_count != null) {
+                    let perPageCount = parseInt(params.per_page_count);
+
+                    if (!isNaN(perPageCount)) {
+                        parameters.perPageCount = perPageCount;
+                    }
+                }
+            }
 
             let newState = getStateFromStores(parameters);
 

@@ -55,6 +55,7 @@ class Widget extends React.Component {
          */
         this.onChange = () => {
             console.log(`WIDGET ONCHANGE TRIGGERED`);
+
             let parameters = {
                 user: {
                     id: this.state.user.id
@@ -121,7 +122,7 @@ class Widget extends React.Component {
 
         return (
             <div key={this.state.user.id}>
-                <h3>{this.state.user.name}</h3>
+                <h3>{this.state.user.name}  - (ID : {this.state.user.id})</h3>
                 {userDetails}
                 <br />
                 <Link to="user-details" params={{id: this.state.user.id}}>Full Details</Link>
