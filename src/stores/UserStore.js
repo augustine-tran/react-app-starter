@@ -117,7 +117,7 @@ class UserStore {
             successCallback(get(id, this));
         }
 
-        return false; // We don't want to trigger the change event.
+        return false; // We don't want to trigger the change event until the async operation completes.
     }
 
     onGetUsers(payload) {
@@ -171,7 +171,7 @@ class UserStore {
             successCallback(getPage(page, perPageCount, this));
         }
 
-        return false; // We don't want to trigger the change event.
+        return false; // We don't want to trigger the change event until the async operation completes.
     }
 
     has(id, fields) {
