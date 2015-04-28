@@ -29,8 +29,6 @@ function getInitialState() {
 function getStateFromStores(parameters) {
     let users = UserStore.getPage(parameters.page, parameters.perPageCount);
 
-    console.log(`GETTING STATE FROM USER STORE :: ${JSON.stringify(users)} :: WITH PARAMS :: ${JSON.stringify(parameters)}`);
-
     return (users == null) ? null : {
         page: parameters.page,
         perPageCount: parameters.perPageCount,
@@ -132,7 +130,6 @@ class Home extends React.Component {
      * @return {object}
      */
     render() {
-        console.log(`STATE IN RENDER :: ${JSON.stringify(this.state)}`);
         return (
             <div>
                 <h2>USER DETAILS - Page {this.state.page}</h2>
