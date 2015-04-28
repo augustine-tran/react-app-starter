@@ -57,7 +57,9 @@ class Details extends React.Component {
             console.log(`DETAILS ONCHANGE TRIGGERED`);
 
             let parameters = {
-                user: this.state.user
+                user: {
+                    id: null
+                }
             };
 
             if (this.context.router != null) {
