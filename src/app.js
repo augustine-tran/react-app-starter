@@ -2,20 +2,25 @@
 
 import Router from './router';
 
+/*=================================
+ Bootstrapping Libraries
+ =================================*/
+import alt from './alt';
+import Iso from 'iso';
+
+/*=================================
+ Google Analytics
+ =================================*/
+import GoogleAnalytics from 'react-ga';
+
 if (typeof window !== 'undefined') {
     window.onload = function () {
-        let data, hasServerData = false;
-        let serverDataDOM = document.getElementById('server-data');
+        GoogleAnalytics.initialize('UA-xxxxxxxx-x');
 
-        if (serverDataDOM != null && serverDataDOM.innerHTML != null && serverDataDOM.innerHTML.length > 0) {
-            try {
-                data = JSON.parse(serverDataDOM.innerHTML);
-                hasServerData = true;
-            } catch (error) { console.log('Invalid server data.'); }
+        Iso.bootstrap((state, meta, containerReference) => {
+            alt.bootstrap(state);
 
-            serverDataDOM.remove();
-        }
-
-        Router.init(hasServerData ? data : undefined);
+            Router.init();
+        });
     };
 }

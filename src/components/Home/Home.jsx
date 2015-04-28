@@ -36,8 +36,14 @@ function getStateFromStores(parameters) {
     };
 }
 
-function fireActions(parameters, callback) {
-    UserActions.getUsers(parameters.page, parameters.perPageCount, callback);
+function fireActions(state, callback) {
+    let parameters = {
+        page: state.page,
+        perPageCount: state.perPageCount,
+        callback: callback
+    };
+
+    UserActions.getUsers(parameters);
 }
 
 class Home extends React.Component {
@@ -49,11 +55,31 @@ class Home extends React.Component {
         /**
          * Event handler for 'change' events coming from the UserStore
          */
-        this._onChange = () => {
+        this.onChange = () => {
             let parameters = {
                 page: this.state.page,
                 perPageCount: this.state.perPageCount
             };
+
+            if (this.context.router != null) {
+                let params = this.context.router.getCurrentParams();
+
+                if (params.page != null) {
+                    let page = parseInt(params.page);
+
+                    if (!isNaN(page)) {
+                        parameters.page = page;
+                    }
+                }
+
+                if (params.per_page_count != null) {
+                    let perPageCount = parseInt(params.per_page_count);
+
+                    if (!isNaN(perPageCount)) {
+                        parameters.perPageCount = perPageCount;
+                    }
+                }
+            }
 
             let newState = getStateFromStores(parameters);
 
@@ -62,47 +88,43 @@ class Home extends React.Component {
             }
         };
 
-        this._onNextButtonClicked = () => {
+        this.onNextButtonClicked = () => {
             let page = this.state.page + 1;
 
-            this._onLoadPage(page);
+            this.loadPage(page);
         };
 
-        this._onPrevButtonClicked = () => {
+        this.onPrevButtonClicked = () => {
             let page = this.state.page - 1;
 
             if (page < 1) {
                 page = 1;
             }
 
-            this._onLoadPage(page);
+            this.loadPage(page);
         };
 
-        this._onLoadPage = (page) => {
-            // TODO : Use router to transition to next / prev page
-            this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true, page: page, perPageCount: this.state.perPageCount}), () => {
-                fireActions({
-                    page: this.state.page,
-                    perPageCount: this.state.perPageCount
-                });
-            }); // Set isLoadingMoreDetails to true
+        this.loadPage = (page) => {
+            this.context.router.transitionTo('user-list', {page: page});
         };
-
-        if (props.data != null) {
-            // Server side rendering. Let's use the provided data first.
-            _.merge(this.state, props.data);
-        }
     }
 
     componentDidMount() {
-        UserStore.addChangeListener(this._onChange);
+        UserStore.listen(this.onChange);
+    }
 
-        fireActions(this.state);
+    componentWillMount() {
+        this.onChange();
     }
 
     componentWillUnmount() {
-        UserStore.removeChangeListener(this._onChange);
+        UserStore.unlisten(this.onChange);
     }
+
+    componentWillReceiveProps(nextProps) {
+        this.onChange();
+    }
+
 
     /**
      * @return {object}
@@ -112,8 +134,8 @@ class Home extends React.Component {
             <div>
                 <h2>USER DETAILS - Page {this.state.page}</h2>
                 <hr />
-                <List of={React.createFactory(UserWidget)} dataSet={this.state.users}  />
-                <p><button onClick={this._onPrevButtonClicked}>&#8592; Prev</button> or <button onClick={this._onNextButtonClicked}>Next &#8594;</button></p>
+                <List of={React.createFactory(UserWidget)} dataSet={this.state.users} />
+                <p><button onClick={this.onPrevButtonClicked}>&#8592; Prev</button> or <button onClick={this.onNextButtonClicked}>Next &#8594;</button></p>
             </div>
         );
     }
@@ -125,7 +147,6 @@ class Home extends React.Component {
      * @returns {*}
      */
     static fetchData(routerState, callback) {
-        // TODO: Get state from router params
         let state = getInitialState();
 
         if (routerState.params != null) {
@@ -149,5 +170,9 @@ class Home extends React.Component {
         fireActions(state, callback);
     }
 }
+
+Home.contextTypes = {
+    router: React.PropTypes.func.isRequired
+};
 
 export default Home;

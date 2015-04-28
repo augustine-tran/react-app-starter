@@ -20,7 +20,7 @@ let routes = (
     <Route name="app" path="/" handler={App} >
         <Route name="user-details" path="/user/:id/?" handler={UserDetails} />
         <Route name="user-list" path="/:page/?" handler={Home} />
-        <DefaultRoute handler={Home} />
+        <DefaultRoute name="home" handler={Home} />
     </Route>
 );
 

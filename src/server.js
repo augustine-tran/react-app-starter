@@ -102,7 +102,7 @@ apiRouter.get('/user/:id', (req, res) => {
 app.use('/api', apiRouter);
 
 // React App
-app.use(Router.serve);
+app.use(Router.getData, Router.serve);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

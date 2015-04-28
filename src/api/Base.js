@@ -15,4 +15,3 @@ API.constants = {
 };
 
 export default API;
-

@@ -9,18 +9,11 @@ import {RouteHandler} from 'react-router';
 
 // Components
 import {Button} from 'react-bootstrap';
-import GoogleAnalytics from '../Widgets/GoogleAnalytics';
+import GoogleAnalytics from 'react-ga';
 import List from '../Widgets/List';
-import UserWidget from '../User/Widget';
-
-// Actions
-import AppActions from '../../actions/AppActions';
-import UserActions from '../../actions/UserActions';
 
 // Stores
 import AppStore from '../../stores/AppStore';
-import UserStore from '../../stores/UserStore';
-
 
 class App extends React.Component {
     constructor(props, context) {
@@ -28,11 +21,11 @@ class App extends React.Component {
     }
 
     componentDidMount() {
-        AppStore.addAlertListener(this._onAlert);
+        AppStore.listen(this.onAlert);
     }
 
     componentWillUnmount() {
-        AppStore.removeAlertListener(this._onAlert);
+        AppStore.unlisten(this.onAlert);
     }
 
     /**
@@ -41,10 +34,9 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <h1>App</h1>
+                <h1>React App Starter</h1>
                 <hr />
-                <RouteHandler data={this.props.data} />
-                <GoogleAnalytics id="UA-*******-**" />
+                <RouteHandler {...this.props}/>
             </div>
         );
     }
@@ -52,10 +44,10 @@ class App extends React.Component {
     /**
      * Event handler for 'change' events coming from the UserStore
      */
-    _onAlert() {
+    onAlert() {
         _.forEach(AppStore.getPendingAlerts(), (alertPayload) => {
             console.log(`${alertPayload.type.toUpperCase()} :: ${alertPayload.title} - ${alertPayload.message}`);
-            //window.alert(`${alertPayload.type.toUpperCase()} :: ${alertPayload.title} - ${alertPayload.message}`);
+            window.alert(`${alertPayload.type.toUpperCase()} :: ${alertPayload.title} - ${alertPayload.message}`);
         });
     }
 }

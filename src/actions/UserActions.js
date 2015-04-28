@@ -2,82 +2,50 @@
 
 // Libraries
 import _ from 'lodash';
-//import async from 'async';
 
-// App Dispatcher and constants
-import AppDispatcher from '../dispatcher/AppDispatcher';
-import AppConstants from '../constants/AppConstants';
+// Dispatcher and constants
+import alt from '../alt';
+
+// Actions
+import AppActions from './AppActions';
 
 // API
-import UserAPI from '../api/user';
-import UserStore from '../stores/UserStore';
+import UserAPI from '../api/User';
 
-export default {
-    /**
-     * Read user from API.
-     * @param id
-     */
-    getUser(id, fields, callback) {
-        if (fields != null && callback == null && _.isFunction(fields)) {
-            callback = fields;
-            fields = undefined;
-        }
+class UserActions {
+    getUser(parameters) {
+        let { id, fields, callback } = parameters;
 
-        let responseCallback = (error, user) => {
-            let actionPayload = {
-                user: user
-            };
-
-            if (callback != null && _.isFunction(callback)) {
-                callback(error, actionPayload);
-            }
-
-            if (!error) {
-                actionPayload.actionType = AppConstants.ActionTypes.READ_USER_SUCCESS;
-            } else {
-                actionPayload.actionType = AppConstants.ActionTypes.READ_USER_ERROR;
-            }
-
-            AppDispatcher.dispatch(actionPayload);
+        let payload = {
+            id,
+            fields,
+            getData: UserAPI.get(id),
+            onError: error => {
+                AppActions.showAlert({error});
+            },
+            onFinish: (callback != null && _.isFunction(callback)) ? callback : undefined
         };
 
-        if (UserStore.has(id, fields)) {
-            responseCallback(null, UserStore.get(id));
-        } else {
-            UserAPI.get(id, responseCallback);
-        }
-    },
+        this.dispatch(payload);
+    }
 
-    getUsers(page, perPageCount, fields, callback) {
-        if (fields != null && callback == null && _.isFunction(fields)) {
-            callback = fields;
-            fields = undefined;
-        }
+    getUsers(parameters) {
+        let { page, perPageCount, fields, callback } = parameters;
 
-        let responseCallback = (error, users) => {
-            let actionPayload = {
-                users: users,
-                page: page,
-                perPageCount: perPageCount
-            };
-
-            if (callback != null && _.isFunction(callback)) {
-                callback(error, actionPayload);
-            }
-
-            if (!error) {
-                actionPayload.actionType = AppConstants.ActionTypes.READ_USER_LIST_SUCCESS;
-            } else {
-                actionPayload.actionType = AppConstants.ActionTypes.READ_USER_LIST_ERROR;
-            }
-
-            AppDispatcher.dispatch(actionPayload);
+        let payload = {
+            page,
+            perPageCount,
+            fields,
+            getData: UserAPI.getPage(page, perPageCount),
+            onError: error => {
+                // TODO: You can add in hooks here to do something when an error occurs.
+                AppActions.showAlert({error});
+            },
+            onFinish: (callback != null && _.isFunction(callback)) ? callback : undefined
         };
 
-        if (UserStore.hasPage(page, perPageCount)) {
-            responseCallback(null, UserStore.getPage(page, perPageCount));
-        } else {
-            UserAPI.getPage(page, perPageCount, responseCallback);
-        }
+        this.dispatch(payload);
     }
 }
+
+export default alt.createActions(UserActions);
