@@ -15,43 +15,6 @@ import _ from 'lodash';
 import assign from 'object-assign';
 import objectHasKey from '../utilities/objectHasKey';
 
-function get(id, state) {
-    if (state == null) {
-        state = this;
-    }
-
-    return state.users[id];
-}
-
-function getList(startIndex, count, state) {
-    if (state == null) {
-        state = this;
-    }
-
-    if (count == null && startIndex != null) {
-        count = startIndex;
-        startIndex = 0;
-    }
-
-    if (startIndex >= 0 && count > 1) {
-        let endIndex = startIndex + count;
-
-        let userList = _.slice(state.userListOrder, startIndex, endIndex);
-
-        userList = _.map(userList, function (id) {
-            return this.users[id];
-        }, state);
-
-        return userList;
-    } else {
-        return null;
-    }
-}
-
-function getPage (page, count, state) {
-    return getList((page - 1) * count, count, state);
-}
-
 class UserStore {
     constructor () {
         this.users = {};
@@ -73,7 +36,6 @@ class UserStore {
             id,
             fields,
             getData,
-            onSuccess,
             onError,
             onFinish
         } = payload;
@@ -121,7 +83,6 @@ class UserStore {
             perPageCount,
             fields,
             getData,
-            onSuccess,
             onError,
             onFinish
         } = payload;
@@ -215,11 +176,33 @@ class UserStore {
     }
 
     get(id) {
-        return get(id, this.getState());
+        let state = this.getState();
+        console.log(`GETTING USER WITH ID ${id} BASED ON CURRENT STATE :: ${JSON.stringify(state)}`);
+
+        return state.users[id];
     }
 
     getList(startIndex, count) {
-        return getList(startIndex, count, this.getState());
+        let state = this.getState();
+
+        if (count == null && startIndex != null) {
+            count = startIndex;
+            startIndex = 0;
+        }
+
+        if (startIndex >= 0 && count > 1) {
+            let endIndex = startIndex + count;
+
+            let userList = _.slice(state.userListOrder, startIndex, endIndex);
+
+            userList = _.map(userList, function (id) {
+                return this.users[id];
+            }, state);
+
+            return userList;
+        } else {
+            return null;
+        }
     }
 
     getPage(page, count) {
@@ -228,13 +211,13 @@ class UserStore {
 
     set(user) {
         if (user != null) {
+            let clonedUser = _.cloneDeep(user);
             //let currentUserObject = this.users[user.id];
             //
             //if (currentUserObject != null) {
             //    user = _.merge({}, currentUserObject, user);
             //}
-
-            this.users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
+            this.users[clonedUser.id] = clonedUser; // TODO We might want to do a merge here? In case the API returns data differently
 
             return true; // User was successfully updated.
         } else {
@@ -248,8 +231,10 @@ class UserStore {
 
         if (_.isArray(userList)) {
             _.forEach(userList, function (user) {
-                this.users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
-                this.userListOrder[i] = user.id;
+                let clonedUser = _.cloneDeep(user);
+
+                this.users[clonedUser.id] = clonedUser; // TODO We might want to do a merge here? In case the API returns data differently
+                this.userListOrder[i] = clonedUser.id;
                 ++i;
             }, this);
 
@@ -260,17 +245,19 @@ class UserStore {
     }
 
     // TODO If we need to manage a separate sorted list
-    // setSortedList(userList, startIndex) {
-    //     let i = startIndex;
-    //
-    //     if (_.isArray(userList)) {
-    //         _.forEach(userList, function (user) {
-    //             this.users[user.id] = user; // TODO We might want to do a merge here? In case the API returns data differently
-    //             this.userSortedListOrder[i] = user.id;
-    //             ++i;
-    //         }, this);
-    //     }
-    // }
+    setSortedList(userList, startIndex) {
+        let i = startIndex;
+
+        if (_.isArray(userList)) {
+            _.forEach(userList, function (user) {
+                let clonedUser = _.cloneDeep(user);
+
+                this.users[clonedUser.id] = clonedUser; // TODO We might want to do a merge here? In case the API returns data differently
+                this.userSortedListOrder[i] = clonedUser.id;
+                ++i;
+            }, this);
+        }
+    }
 }
 
 export default alt.createStore(UserStore, 'UserStore', true);
