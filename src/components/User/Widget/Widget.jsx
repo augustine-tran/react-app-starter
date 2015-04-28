@@ -54,8 +54,6 @@ class Widget extends React.Component {
          * Event handler for 'change' events coming from the UserStore
          */
         this.onChange = () => {
-            console.log(`WIDGET ONCHANGE TRIGGERED`);
-
             let parameters = {
                 user: {
                     id: this.state.user.id
