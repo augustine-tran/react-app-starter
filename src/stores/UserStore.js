@@ -80,6 +80,7 @@ class UserStore {
 
         let successCallback = user => {
             if (user != null) {
+                console.log(`SETTING USER ${JSON.stringify(user)}`);
                 this.set(user);
 
                 if (onSuccess != null && _.isFunction(onSuccess)) {
@@ -91,6 +92,8 @@ class UserStore {
                     console.log(`GET USER ON FINISH!`);
                     onFinish();
                 }
+
+                this.emitChange();
             }
         };
 
@@ -113,6 +116,8 @@ class UserStore {
         } else {
             successCallback(get(id, this));
         }
+
+        return false; // We don't want to trigger the change event.
     }
 
     onGetUsers(payload) {
@@ -141,6 +146,8 @@ class UserStore {
                     console.log(`GET USER ON FINISH! DATA :: ${JSON.stringify(users)}`);
                     onFinish(null, users);
                 }
+
+                this.emitChange();
             }
         };
 
@@ -163,6 +170,8 @@ class UserStore {
         } else {
             successCallback(getPage(page, perPageCount, this));
         }
+
+        return false; // We don't want to trigger the change event.
     }
 
     has(id, fields) {
