@@ -52,17 +52,19 @@ class Home extends React.Component {
 
         this.state = getInitialState();
 
-        if (context.router.params != null) {
-            if (context.router.params.page != null) {
-                let page = parseInt(context.router.params.page);
+        if (context.router != null) {
+            let params = context.router.getCurrentParams();
+
+            if (params.page != null) {
+                let page = parseInt(params.page);
 
                 if (!isNaN(page)) {
                     this.state.page = page;
                 }
             }
 
-            if (context.router.params.per_page_count != null) {
-                let perPageCount = parseInt(context.router.params.per_page_count);
+            if (params.per_page_count != null) {
+                let perPageCount = parseInt(params.per_page_count);
 
                 if (!isNaN(perPageCount)) {
                     this.state.perPageCount = perPageCount;

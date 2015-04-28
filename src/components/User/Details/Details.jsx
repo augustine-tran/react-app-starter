@@ -50,6 +50,18 @@ class Details extends React.Component {
 
         this.state = getInitialState();
 
+        if (context.router != null) {
+            let params = context.router.getCurrentParams();
+
+            if (params.id != null) {
+                let userId = parseInt(params.id);
+
+                if (!isNaN(userId)) {
+                    this.state.user.id = userId;
+                }
+            }
+        }
+
         this.updateStateFromProps = (nextProps) => {
             // We should always treat state as immutable
             let newState = _.merge({}, this.state);
@@ -68,6 +80,7 @@ class Details extends React.Component {
          * Event handler for 'change' events coming from the UserStore
          */
         this.onChange = () => {
+            console.log(`DETAILS ONCHANGE TRIGGERED`);
             let parameters = {
                 user: {
                     id: this.state.user.id
@@ -75,6 +88,8 @@ class Details extends React.Component {
             };
 
             let newState = getStateFromStores(parameters);
+
+            console.log(`DETAILS ONCHANGE NEW STATE :: ${JSON.stringify(newState)}`);
 
             if (newState != null) {
                 this.setState(newState);
