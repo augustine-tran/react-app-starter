@@ -49,7 +49,7 @@ function getList(startIndex, count, state) {
 }
 
 function getPage (page, count, state) {
-    return getPage((page - 1) * count, count, state);
+    return getList((page - 1) * count, count, state);
 }
 
 class UserStore {
