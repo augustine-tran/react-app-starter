@@ -84,8 +84,10 @@ class Details extends React.Component {
 
     componentDidMount() {
         UserStore.listen(this.onChange);
+    }
 
-        fireActions(this.state);
+    componentWillMount() {
+        this.onChange();
     }
 
     componentWillUnmount() {

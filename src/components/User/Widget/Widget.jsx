@@ -71,6 +71,8 @@ class Widget extends React.Component {
          * Event handler for 'button click' events coming from the button
          */
         this.onButtonClick = () => {
+            console.log(`ON BUTTON CLICK!`);
+
             this.setState(_.merge({}, this.state, {isLoadingMoreDetails: true, isFirstLoad: false}), () => {
                 fireActions(this.state);
             }); // Set isLoadingMoreDetails to true

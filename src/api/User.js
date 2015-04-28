@@ -11,108 +11,114 @@ import Base from './Base';
 
 class User extends Base {
     static get(id) {
-        let promise = new Promise((resolve, reject) => {
-            console.log(`PROMISE TO GET USER (ID : ${id}) FIRED!`);
+        return () => {
+            let promise = new Promise((resolve, reject) => {
+                console.log(`PROMISE TO GET USER (ID : ${id}) FIRED!`);
 
-            async.waterfall([
-                callback => {
-                    // TODO Refactor this out to a DAO layer.
-                    http
-                        .get('/user/' + id)
-                        .use(super.constants.BASE_URL)
-                        .timeout(super.constants.TIMEOUT_MS)
-                        .end(callback);
-                },
+                async.waterfall([
+                    callback => {
+                        // TODO Refactor this out to a DAO layer.
+                        http
+                            .get('/user/' + id)
+                            .use(super.constants.BASE_URL)
+                            .timeout(super.constants.TIMEOUT_MS)
+                            .end(callback);
+                    },
 
-                (result, callback) => {
-                    // TODO: Transform the data if necessary.
-                    // TODO: Otherwise, pass it back to the caller.
-                    callback(null, result.body);
-                }
-            ], (error, data) => {
-                if (!error) {
-                    resolve(data);
-                } else {
-                    reject(error);
-                }
+                    (result, callback) => {
+                        // TODO: Transform the data if necessary.
+                        // TODO: Otherwise, pass it back to the caller.
+                        callback(null, result.body);
+                    }
+                ], (error, data) => {
+                    if (!error) {
+                        resolve(data);
+                    } else {
+                        reject(error);
+                    }
+                });
             });
-        });
 
-        return promise;
+            return promise;
+        };
     }
 
     static getPage(page, perPageCount) {
-        let promise = new Promise((resolve, reject) => {
-            console.log(`PROMISE TO GET USER PAGE ${page} FIRED!`);
+        return () => {
+            let promise = new Promise((resolve, reject) => {
+                console.log(`PROMISE TO GET USER PAGE ${page} FIRED!`);
 
-            async.waterfall([
-                callback => {
-                    http
-                        .get('/users')
-                        .query({
-                            page: page,
-                            'per_page_count': perPageCount
-                        })
-                        .use(super.constants.BASE_URL)
-                        .timeout(super.constants.TIMEOUT_MS)
-                        .end(callback);
-                },
+                async.waterfall([
+                    callback => {
+                        http
+                            .get('/users')
+                            .query({
+                                page: page,
+                                'per_page_count': perPageCount
+                            })
+                            .use(super.constants.BASE_URL)
+                            .timeout(super.constants.TIMEOUT_MS)
+                            .end(callback);
+                    },
 
-                (result, callback) => {
-                    // TODO: Transform the data if necessary.
-                    // TODO: Otherwise, pass it back to the caller.
-                    let response = result.body;
+                    (result, callback) => {
+                        // TODO: Transform the data if necessary.
+                        // TODO: Otherwise, pass it back to the caller.
+                        let response = result.body;
 
-                    if (response.page === page && response.perPageCount === perPageCount && response.data != null) {
-                        callback(null, response.data);
-                    } else {
-                        callback(new Error('Invalid response!'));
+                        if (response.page === page && response.perPageCount === perPageCount && response.data != null) {
+                            callback(null, response.data);
+                        } else {
+                            callback(new Error('Invalid response!'));
+                        }
                     }
-                }
-            ], (error, data) => {
-                if (!error) {
-                    console.log(`GET USER API SUCCESS!`);
-                    resolve(data);
-                } else {
-                    console.log(`GET USER API ERROR!`);
-                    reject(error);
-                }
+                ], (error, data) => {
+                    if (!error) {
+                        console.log(`GET USER API SUCCESS!`);
+                        resolve(data);
+                    } else {
+                        console.log(`GET USER API ERROR!`);
+                        reject(error);
+                    }
+                });
             });
-        });
 
-        return promise;
+            return promise;
+        };
     }
 
     static register(email, name) {
-        let promise = new Promise((resolve, reject) => {
-            async.waterfall([
-                function (callback) {
-                    http
-                        .get('/register')
-                        .query({
-                            email,
-                            name
-                        })
-                        .use(super.constants.BASE_URL)
-                        .timeout(super.constants.TIMEOUT_MS)
-                        .end(callback);
-                },
+        return () => {
+            let promise = new Promise((resolve, reject) => {
+                async.waterfall([
+                    function (callback) {
+                        http
+                            .get('/register')
+                            .query({
+                                email,
+                                name
+                            })
+                            .use(super.constants.BASE_URL)
+                            .timeout(super.constants.TIMEOUT_MS)
+                            .end(callback);
+                    },
 
-                function (result, callback) {
-                    // TODO: Transform the data if necessary.
-                    // TODO: Otherwise, pass it back to the caller.
-                    callback(null, result.body);
-                }
-            ], (error, data) => {
-                if (!error) {
-                    resolve(data);
-                } else {
-                    reject(error);
-                }
+                    function (result, callback) {
+                        // TODO: Transform the data if necessary.
+                        // TODO: Otherwise, pass it back to the caller.
+                        callback(null, result.body);
+                    }
+                ], (error, data) => {
+                    if (!error) {
+                        resolve(data);
+                    } else {
+                        reject(error);
+                    }
+                });
             });
-        });
 
-        return promise;
+            return promise;
+        };
     }
 }
 

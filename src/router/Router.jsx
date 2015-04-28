@@ -35,13 +35,13 @@ export default class AppRouter {
      */
     static init() {
         Router.run(routes, Router.HistoryLocation, function (Handler, state) {
-            GoogleAnalytics.pageview(state.pathname);
+            // GoogleAnalytics.pageview(state.pathname);
 
             // Loop through the matching routes
             let routesWithData = state.routes.filter((route) => { return route.handler.fetchData; });
 
             async.map(routesWithData, (route, callback) => {
-                // Fetch data for each route and then merge it back into the data source.
+                // Fetch data for each route
                 route.handler.fetchData(state, callback);
             }, () => {
                 React.render(<Handler/>, document.body);
@@ -61,9 +61,9 @@ export default class AppRouter {
             let routesWithData = state.routes.filter((route) => { return route.handler.fetchData; });
 
             async.map(routesWithData, (route, callback) => {
-                // Fetch data for each route and then merge it back into the data source.
+                // Fetch data for each route
                 route.handler.fetchData(state, callback);
-            }, (error) => {
+            }, error => {
                 next(error);
             });
         });

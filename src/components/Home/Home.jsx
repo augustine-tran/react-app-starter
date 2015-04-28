@@ -29,6 +29,8 @@ function getInitialState() {
 function getStateFromStores(parameters) {
     let users = UserStore.getPage(parameters.page, parameters.perPageCount);
 
+    console.log(`GETTING STATE FROM USER STORE :: ${JSON.stringify(users)} :: WITH PARAMS :: ${JSON.stringify(parameters)}`);
+
     return (users == null) ? null : {
         page: parameters.page,
         perPageCount: parameters.perPageCount,
@@ -52,16 +54,38 @@ class Home extends React.Component {
 
         this.state = getInitialState();
 
+        if (context.router.params != null) {
+            if (context.router.params.page != null) {
+                let page = parseInt(context.router.params.page);
+
+                if (!isNaN(page)) {
+                    this.state.page = page;
+                }
+            }
+
+            if (context.router.params.per_page_count != null) {
+                let perPageCount = parseInt(context.router.params.per_page_count);
+
+                if (!isNaN(perPageCount)) {
+                    this.state.perPageCount = perPageCount;
+                }
+            }
+        }
+
         /**
          * Event handler for 'change' events coming from the UserStore
          */
         this.onChange = () => {
+            console.log(`HOME ONCHANGE TRIGGERED`);
+
             let parameters = {
                 page: this.state.page,
                 perPageCount: this.state.perPageCount
             };
 
             let newState = getStateFromStores(parameters);
+
+            console.log(`HOME ONCHANGE NEW STATE :: ${JSON.stringify(newState)}`);
 
             if (newState != null) {
                 this.setState(newState);
@@ -96,6 +120,10 @@ class Home extends React.Component {
         UserStore.listen(this.onChange);
     }
 
+    componentWillMount() {
+        this.onChange();
+    }
+
     componentWillUnmount() {
         UserStore.unlisten(this.onChange);
     }
@@ -104,6 +132,7 @@ class Home extends React.Component {
      * @return {object}
      */
     render() {
+        console.log(`STATE IN RENDER :: ${JSON.stringify(this.state)}`);
         return (
             <div>
                 <h2>USER DETAILS - Page {this.state.page}</h2>
@@ -121,7 +150,6 @@ class Home extends React.Component {
      * @returns {*}
      */
     static fetchData(routerState, callback) {
-        // TODO: Get state from router params
         let state = getInitialState();
 
         if (routerState.params != null) {
@@ -145,5 +173,9 @@ class Home extends React.Component {
         fireActions(state, callback);
     }
 }
+
+Home.contextTypes = {
+    router: React.PropTypes.func.isRequired
+};
 
 export default Home;

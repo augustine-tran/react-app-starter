@@ -15,6 +15,43 @@ import _ from 'lodash';
 import assign from 'object-assign';
 import objectHasKey from '../utilities/objectHasKey';
 
+function get(id, state) {
+    if (state == null) {
+        state = this;
+    }
+
+    return state.users[id];
+}
+
+function getList(startIndex, count, state) {
+    if (state == null) {
+        state = this;
+    }
+
+    if (count == null && startIndex != null) {
+        count = startIndex;
+        startIndex = 0;
+    }
+
+    if (startIndex >= 0 && count > 1) {
+        let endIndex = startIndex + count;
+
+        let userList = _.slice(state.userListOrder, startIndex, endIndex);
+
+        userList = _.map(userList, function (id) {
+            return this.users[id];
+        }, state);
+
+        return userList;
+    } else {
+        return null;
+    }
+}
+
+function getPage (page, count, state) {
+    return getPage((page - 1) * count, count, state);
+}
+
 class UserStore {
     constructor () {
         this.users = {};
@@ -25,14 +62,9 @@ class UserStore {
         this.bindAction(UserActions.getUsers, this.onGetUsers);
 
         this.exportPublicMethods({
-            has: this.has,
-            hasList: this.hasList,
-            hasPage: this.hasPage,
             get: this.get,
             getList: this.getList,
-            getPage: this.getPage,
-            set: this.set,
-            setList: this.setList
+            getPage: this.getPage
         });
     }
 
@@ -56,8 +88,8 @@ class UserStore {
                 }
 
                 if (onFinish != null && _.isFunction(onFinish)) {
-                    console.log(`GET USER ON FINISH! DATA :: ${JSON.stringify(user)}`);
-                    onFinish(null, user);
+                    console.log(`GET USER ON FINISH!`);
+                    onFinish();
                 }
             }
         };
@@ -75,11 +107,11 @@ class UserStore {
         };
 
         if (!this.has(id, fields)) {
-            getData
+            getData()
                 .then(successCallback)
                 .catch(errorCallback);
         } else {
-            successCallback(this.get(id));
+            successCallback(get(id, this));
         }
     }
 
@@ -109,8 +141,6 @@ class UserStore {
                     console.log(`GET USER ON FINISH! DATA :: ${JSON.stringify(users)}`);
                     onFinish(null, users);
                 }
-            } else {
-                console.log(`DID NOT VALIDATE`);
             }
         };
 
@@ -127,11 +157,11 @@ class UserStore {
         };
 
         if (!this.hasPage(page, perPageCount, fields)) {
-            getData
+            getData()
                 .then(successCallback)
                 .catch(errorCallback);
         } else {
-            successCallback(this.getPage(page, perPageCount));
+            successCallback(getPage(page, perPageCount, this));
         }
     }
 
@@ -185,29 +215,12 @@ class UserStore {
         return this.hasList((page - 1) * count, count, fields);
     }
 
-    get(id, fields) {
-        let state = this.getState();
-
-        return state.users[id];
+    get(id) {
+        return get(id, this.getState());
     }
 
     getList(startIndex, count) {
-        if (count == null && startIndex != null) {
-            count = startIndex;
-            startIndex = 0;
-        }
-
-        if (startIndex >= 0 && count > 1) {
-            let endIndex = startIndex + count;
-            let state = this.getState();
-            let userList = _.slice(state.userListOrder, startIndex, endIndex);
-
-            return _.map(userList, function (id) {
-                return state.users[id];
-            });
-        }
-
-        return null;
+        return getList(startIndex, count, this.getState());
     }
 
     getPage(page, count) {
@@ -231,6 +244,7 @@ class UserStore {
     }
 
     setList(userList, startIndex) {
+        console.log(`SETTING LIST AT INDEX ${startIndex} WITH DATA : ${JSON.stringify(userList)}`);
         let i = startIndex;
 
         if (_.isArray(userList)) {
