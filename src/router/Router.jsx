@@ -75,9 +75,9 @@ export default class AppRouter {
 
         let htmlBody = React.renderToString(<Handler/>);
 
-        let data = alt.flush();
+        let data = alt.flush(); // Take a snapshot of the datastores and flush it
 
-        iso.add(htmlBody, data);
+        iso.add(htmlBody, data); // Add the data snapshot to the response
 
         res.render('index', {
             body: iso.render(),
