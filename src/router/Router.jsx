@@ -50,6 +50,9 @@ export default class AppRouter {
         });
     }
 
+    /**
+     * Server side rendering - Data retrieval
+     */
     static getData(req, res, next) {
         Router.run(routes, req.url, (Handler, state) => {
             res.local = {
@@ -69,6 +72,9 @@ export default class AppRouter {
         });
     }
 
+    /**
+     * Server side rendering - Website serving
+     */
     static serve(req, res, next) {
         let iso = new Iso();
         let Handler = res.local.Handler;
