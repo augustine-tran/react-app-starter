@@ -11,6 +11,9 @@ import {Link, RouteHandler} from 'react-router';
 import AppActions from '../../../actions/AppActions';
 import UserActions from '../../../actions/UserActions';
 
+// Components
+import {Button, ButtonGroup, Panel} from 'react-bootstrap';
+
 // Stores
 import UserStore from '../../../stores/UserStore';
 
@@ -26,7 +29,7 @@ function getStateFromStores(parameters) {
 function fireActions(state, callback) {
     let parameters = {
         id: state.user.id,
-        fields: ['id', 'name', 'gender', ['address', 'line1'], ['address', 'line2']],
+        fields: ['id', 'name', 'gender'],
         callback: callback
     };
 
@@ -89,39 +92,36 @@ class Widget extends React.Component {
      * @return {object}
      */
     render() {
-        let userDetails;
+        let panelContent;
 
         if (this.state.isLoadingMoreDetails === true) {
-            userDetails = (
+            panelContent = (
                 <p><span>Loading more details...</span></p>
             );
         } else {
             if (this.state.user.gender != null && this.state.isFirstLoad !== true) {
-                userDetails = (
+                panelContent = (
                     <p>
                         <span>{this.state.user.name} is {this.state.user.gender}!</span>
-                        <br />
-                        <span>{this.state.user.address.line1}</span>
-                        <br />
-                        <span>{this.state.user.address.line2}</span>
                     </p>
 
                 );
             } else {
-                userDetails = (
-                    <p><button onClick={this.onButtonClick}>Get more user details!</button></p>
+                panelContent = (
+                    <p><Button bsStyle='success' bsSize='large' onClick={this.onButtonClick}>Show Gender!</Button></p>
                 );
             }
         }
 
+        const panelHeader = (<h3>{this.state.user.name} (ID : {this.state.user.id})</h3>);
+        const panelFooter = (
+            <Button bsStyle='info' onClick={() => {this.context.router.transitionTo('user-details', {id: this.state.user.id});}}>
+                Full Details
+            </Button>
+        );
+
         return (
-            <div key={this.state.user.id}>
-                <h3>{this.state.user.name} - (ID : {this.state.user.id})</h3>
-                {userDetails}
-                <br />
-                <Link to="user-details" params={{id: this.state.user.id}}>Full Details</Link>
-                <hr />
-            </div>
+            <Panel key={this.state.user.id} header={panelHeader} footer={panelFooter}>{panelContent}</Panel>
         );
     }
 }

@@ -12,6 +12,9 @@ import {Link, RouteHandler} from 'react-router';
 import AppActions from '../../../actions/AppActions';
 import UserActions from '../../../actions/UserActions';
 
+// Components
+import {Button, ButtonGroup, Panel} from 'react-bootstrap';
+
 // Stores
 import UserStore from '../../../stores/UserStore';
 
@@ -100,14 +103,26 @@ class Details extends React.Component {
      * @return {object}
      */
     render() {
-        let userDetails;
+        const panelHeader = (<h3>{this.state.user.name} (ID : {this.state.user.id})</h3>);
+        const panelFooter = (
+            <ButtonGroup>
+                <Button bsStyle='info' onClick={() => {this.context.router.transitionTo('user-details', {id: parseInt(this.state.user.id) + 1});}}>
+                    Next User
+                </Button>
+                <Button bsStyle='warning' onClick={() => { if (!this.context.router.goBack()) {this.context.router.transitionTo('app');}}}>
+                    Back
+                </Button>
+            </ButtonGroup>
+        );
+
+        let panelContent;
 
         if (this.state.isLoading === true) {
-            userDetails = (
+            panelContent = (
                 <p><span>Loading user details...</span></p>
             );
         } else {
-            userDetails = (
+            panelContent = (
                 <p>
                     <span>{this.state.user.name} is {this.state.user.gender} and born on {this.state.user.birthday}!</span>
                     <br />
@@ -119,14 +134,7 @@ class Details extends React.Component {
         }
 
         return (
-            <div>
-                <h3>{this.state.user.name} - (ID : {this.state.user.id})</h3>
-                {userDetails}
-                <hr/>
-                <button onClick={() => {this.context.router.transitionTo('user-details', {id: parseInt(this.state.user.id) + 1});}}>Next User</button>
-                <br />
-                <button onClick={() => { if (!this.context.router.goBack()) {this.context.router.transitionTo('app');}}}>Back</button>
-            </div>
+            <Panel header={panelHeader} footer={panelFooter}>{panelContent}</Panel>
         );
     }
 

@@ -1,0 +1,17 @@
+.btn:focus,
+.btn:active:focus,
+.btn.active:focus,
+.btn.focus,
+.btn:active.focus,
+.btn.active.focus {
+  outline: none; // Get rid of outline for Chrome browsers
+}
+
+footer {
+  > .row {
+    > section {
+      @include make-md-column(4);
+      text-align: center;
+    }
+  }
+}

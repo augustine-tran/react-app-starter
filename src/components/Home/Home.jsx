@@ -8,7 +8,7 @@ import _ from 'lodash';
 //import {RouteHandler} from 'react-router';
 
 // Components
-import {Button} from 'react-bootstrap';
+import {Button, ButtonGroup, Panel} from 'react-bootstrap';
 import List from '../Widgets/List';
 import UserWidget from '../User/Widget';
 
@@ -125,18 +125,25 @@ class Home extends React.Component {
         this.onChange();
     }
 
-
     /**
      * @return {object}
      */
     render() {
+        const panelHeader = (<h2>USER DETAILS - Page {this.state.page}</h2>);
+        const panelContent = (<List of={React.createFactory(UserWidget)} dataSet={this.state.users} />);
+        const panelFooter = (
+            <ButtonGroup>
+                <Button bsStyle='info' onClick={this.onPrevButtonClicked}>
+                    &#8592; Prev
+                </Button>
+                <Button bsStyle='info' onClick={this.onNextButtonClicked}>
+                    Next &#8594;
+                </Button>
+            </ButtonGroup>
+        );
+
         return (
-            <div>
-                <h2>USER DETAILS - Page {this.state.page}</h2>
-                <hr />
-                <List of={React.createFactory(UserWidget)} dataSet={this.state.users} />
-                <p><button onClick={this.onPrevButtonClicked}>&#8592; Prev</button> or <button onClick={this.onNextButtonClicked}>Next &#8594;</button></p>
-            </div>
+            <Panel header={panelHeader} footer={panelFooter}>{panelContent}</Panel>
         );
     }
 

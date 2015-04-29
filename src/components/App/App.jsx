@@ -8,7 +8,7 @@ import _ from 'lodash';
 import {RouteHandler} from 'react-router';
 
 // Components
-import {Button} from 'react-bootstrap';
+import {Navbar, Nav, NavItem} from 'react-bootstrap';
 import GoogleAnalytics from 'react-ga';
 import List from '../Widgets/List';
 
@@ -34,9 +34,30 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <h1>React App Starter</h1>
-                <hr />
-                <RouteHandler {...this.props}/>
+                <Navbar brand='React App Starter' staticTop toggleNavKey={0}>
+                    <Nav right eventKey={0}> {/* This is the eventKey referenced */}
+                      <NavItem eventKey={1} href='http://stevetan.me'>Blog</NavItem>
+                    </Nav>
+                </Navbar>
+                <main className='container-fluid'>
+                    <RouteHandler {...this.props}/>
+                </main>
+                <footer className='container-fluid'>
+                    <div className='row'>
+                        <hr />
+                        <section>
+                            <span>Footer Section 1</span>
+                        </section>
+
+                        <section>
+                            <span>Footer Section 2</span>
+                        </section>
+
+                        <section>
+                            <span>Footer Section 3</span>
+                        </section>
+                    </div>
+                </footer>
             </div>
         );
     }
