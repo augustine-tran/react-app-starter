@@ -159,6 +159,27 @@ class Details extends React.Component {
 
         fireActions(state, callback);
     }
+
+    static generateMetadata(routerState) {
+        let state = getInitialState();
+
+        if (routerState.params != null) {
+            if (routerState.params.id != null) {
+                let userId = parseInt(routerState.params.id);
+
+                if (!isNaN(userId)) {
+                    state.user.id = userId;
+                }
+            }
+        }
+
+        let user = UserStore.get(state.user.id);
+
+        return {
+            title: `User Details - ${user.name}`,
+            description: `${user.name} is ${user.gender} and born on ${user.birthday}!`
+        };
+    }
 }
 
 Details.contextTypes = {

@@ -176,6 +176,33 @@ class Home extends React.Component {
 
         fireActions(state, callback);
     }
+
+    static generateMetadata(routerState) {
+        let state = getInitialState();
+
+        if (routerState.params != null) {
+            if (routerState.params.page != null) {
+                let page = parseInt(routerState.params.page);
+
+                if (!isNaN(page)) {
+                    state.page = page;
+                }
+            }
+
+            if (routerState.params.per_page_count != null) {
+                let perPageCount = parseInt(routerState.params.per_page_count);
+
+                if (!isNaN(perPageCount)) {
+                    state.perPageCount = perPageCount;
+                }
+            }
+        }
+
+        return {
+            title: `Home - Page ${state.page}`,
+            description: `This is the home page.`
+        };
+    }
 }
 
 Home.contextTypes = {
