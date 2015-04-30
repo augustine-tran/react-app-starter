@@ -9,6 +9,11 @@ import async from 'async';
 import Iso from 'iso';
 
 /*=================================
+ Configs
+ =================================*/
+import appConfig from '../configs/app';
+
+/*=================================
  React & Router
  =================================*/
 import React from 'react';
@@ -122,6 +127,7 @@ export default class AppRouter {
         iso.add(htmlBody, data); // Add the data snapshot to the response
 
         res.render('index', {
+            app: appConfig,
             body: iso.render(),
             metadata
         });
