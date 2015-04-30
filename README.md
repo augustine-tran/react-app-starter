@@ -2,7 +2,7 @@ React App Starter
 ==================
  * Opinionated.
  * Isomorphic Flux / React starter app.
- * Gulp task runner.
+ * Gulp task runner with webpack module bundler.
  * Written using ES6 style, with Babel integration.
  * Designed to be used for real world applications.
       * Search Engine Optimizations (SEO) and social network meta tags.
@@ -21,3 +21,5 @@ React App Starter
  * `react-ga`
  * `react-router`
  * `superagent`
+
+> More Information Soon...
