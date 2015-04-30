@@ -5,7 +5,7 @@ React App Starter
  * Gulp task runner.
  * Written using ES6 style, with Babel integration.
  * Designed to be used for real world applications.
-      * Search Engine Optimizations (SE0) and social network meta tags.
+      * Search Engine Optimizations (SEO) and social network meta tags.
       * Interface with existing API.
 
 ## Main NPM Libraries Used
