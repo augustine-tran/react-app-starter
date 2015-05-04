@@ -90,10 +90,7 @@ export default class AppRouter {
                 },
 
                 (routeWithMetadata, callback) => {
-                    let metadata = {
-                        title: 'React App Starter',
-                        description: 'This is a fully isomorphic React / Flux App starter.'
-                    };
+                    let metadata = _.cloneDeep(appConfig.metadata);
 
                     if (routeWithMetadata != null) {
                         _.merge(metadata, routeWithMetadata.handler.generateMetadata(state));
