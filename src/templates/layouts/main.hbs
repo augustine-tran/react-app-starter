@@ -12,6 +12,9 @@
 
         <link rel="stylesheet" type="text/css" href="/css/global.css">
         <script async src="/js/app.js"></script>
+        {{#if app.addthis.id}}
+            <script async type="text/javascript" src="//s7.addthis.com/js/300/addthis_widget.js#pubid={{{ app.addthis.id }}}"></script>
+        {{/if}}
     </head>
     <body>
         <!--[if lt IE 9]>
