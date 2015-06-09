@@ -4,6 +4,6 @@
 var gulp = require('gulp');
 
 // Run this to compress all the things!
-gulp.task('production', function () {
-    gulp.start(['clean', 'assets', 'minifyCss', 'uglifyJs', 'templates', 'images', 'fonts', 'markup'])
+gulp.task('production', ['clean'], function () {
+    gulp.start(['assets', 'minifyCss', 'uglifyJs', 'templates', 'images', 'fonts', 'markup']);
 });
