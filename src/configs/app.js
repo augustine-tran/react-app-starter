@@ -7,6 +7,9 @@ export default {
     addthis: {
         id: 'ra-55485b266c561c10'
     },
+    facebook: {
+        appId: '425937027510514'
+    },
     baseUrl: 'http://react.stevetan.me',
     metadata: {
         title: 'React App Starter',
