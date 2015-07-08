@@ -11,7 +11,7 @@ var webpackConfig = require('./webpack.config')(src, bowerSrc, nodeSrc);
 
 module.exports = {
     browserSync: {
-        proxy: "http://localhost:8080",
+        proxy: "http://localhost:8000",
         port: 4000,
         ui: {
             port: 4001
