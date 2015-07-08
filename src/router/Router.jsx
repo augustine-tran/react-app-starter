@@ -84,7 +84,7 @@ export default class AppRouter {
                     document.title = metadata.title;
                 }
 
-                React.render(<Handler/>, document.body);
+                React.render(<Handler/>, document.getElementById('app'));
             };
 
             getDataForRoutes(state, callback);

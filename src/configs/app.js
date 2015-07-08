@@ -12,6 +12,9 @@ export default {
     },
     baseUrl: 'http://react.stevetan.me',
     metadata: {
+        siteName: 'React App Starter - by Steve Tan',
+        type: 'website',
+        url: 'http://react.stevetan.me',
         title: 'React App Starter',
         description: 'This is a fully isomorphic React / Flux App starter.'
     }
