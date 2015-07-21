@@ -113,6 +113,37 @@ class User extends Base {
             return promise;
         };
     }
+
+    static login(email, password) {
+        return () => {
+            let promise = new Promise((resolve, reject) => {
+                async.waterfall([
+                    function (callback) {
+                        http
+                            .post('/login')
+                            .use(super.constants.BASE_URL)
+                            .type('json')
+                            .send({
+                                email,
+                                password
+                            })
+                            .timeout(super.constants.TIMEOUT_MS)
+                            .end(callback);
+                    }, function (result, callback) {
+                        callback(null, result);
+                    }
+                ], (error, data) => {
+                    if (!error) {
+                        resolve(data);
+                    } else {
+                        reject(error);
+                    }
+                });
+            });
+
+            return promise;
+        };
+    }
 }
 
 export default User;
