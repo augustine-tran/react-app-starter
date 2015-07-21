@@ -23,12 +23,52 @@ class UserStore {
 
         this.bindAction(UserActions.getUser, this.onGetUser);
         this.bindAction(UserActions.getUsers, this.onGetUsers);
+        this.bindAction(UserActions.loginSubmit, this.onLoginSubmit);
 
         this.exportPublicMethods({
             get: this.get,
             getList: this.getList,
             getPage: this.getPage
         });
+    }
+
+    onLoginSubmit(payload) {
+        let {
+            email,
+            password,
+            login,
+            onError,
+            onFinish
+        } = payload;
+
+        let successCallback = (data) => {
+            //TODO: What do we do with the logged in user details? Store what parts?
+            console.log(data.body);
+
+            if (onFinish != null && _.isFunction(onFinish)) {
+                onFinish();
+            }
+
+            this.emitChange();
+        };
+
+        let errorCallback = error => {
+            if (onError != null && _.isFunction(onError)) {
+                onError(error);
+            }
+
+            if (onFinish != null && _.isFunction(onFinish)) {
+                onFinish(error);
+            }
+        };
+
+        if (email != null && password != null) {
+            login()
+                .then(successCallback)
+                .catch(errorCallback);
+        } else {
+            successCallback();
+        }
     }
 
     onGetUser(payload) {

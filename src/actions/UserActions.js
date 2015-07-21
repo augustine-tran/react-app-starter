@@ -13,6 +13,23 @@ import AppActions from './AppActions';
 import UserAPI from '../api/proxy/User';
 
 class UserActions {
+    loginSubmit(parameters) {
+        let {email, password, callback} = parameters;
+        //TODO: Callback will perform what function?
+
+        let payload = {
+            email,
+            password,
+            login: UserAPI.login(email, password),
+            onError: error => {
+                AppActions.showAlert({error});
+            },
+            onFinish: (callback != null && _.isFunction(callback)) ? callback : undefined
+        };
+
+        this.dispatch(payload);
+    }
+
     getUser(parameters) {
         let { id, fields, callback } = parameters;
 
