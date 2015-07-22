@@ -21,8 +21,6 @@ import _ from 'lodash';
 import chance from 'chance';
 import validator from 'validator';
 
-import User from './api/User';
-
 /**
  * Setup server app.
  */
@@ -105,6 +103,22 @@ apiRouter.get('/user/:id', (req, res) => {
     }
 });
 
+apiRouter.post('/proxy/*', (req, res) => {
+    //TODO: Check for cookies, and perform other necessary magicks
+    console.log(req.url);
+    console.log(req.headers);
+    console.log(req.body);
+    res.send({msg: 'PEEG'});
+});
+
+apiRouter.get('/proxy/*', (req, res) => {
+    //TODO: Check for cookies, and perform other necessary magicks
+    console.log(req.url);
+    console.log(req.headers);
+    console.log(req.params);
+    res.send({msg: 'GEEP'});
+});
+
 app.use('/api', apiRouter);
 
 // React App
@@ -128,35 +142,4 @@ app.set('port', port);
  */
 let server = app.listen(app.get('port'), () => {
     debug('Express server listening on port ' + server.address().port);
-});
-
-apiRouter.post('/login', (req, res) => {
-    let email = req.body.email,
-        password = req.body.password,
-        hasError = false,
-        errors = [];
-
-    if (!validator.isEmail(email)) {
-        hasError = true;
-        errors.push('Invalid email');
-    }
-    if (password == null || !password.length > 0) {
-        hasError = true;
-        errors.push('Invalid password');
-    }
-
-    if (!hasError) {
-        let login = User.login(email, password);
-        login()
-            .then(data => {
-                //TODO: Handle tokens and generate session-token pairing?
-                res.send(data);
-            })
-            .catch(error => {
-                console.log(error);
-                res.send(error);
-            });
-    } else {
-        res.status(500).send({error: errors});
-    }
 });

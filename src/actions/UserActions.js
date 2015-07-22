@@ -10,7 +10,7 @@ import alt from '../alt';
 import AppActions from './AppActions';
 
 // API
-import UserAPI from '../api/proxy/User';
+import UserAPI from '../api/User';
 
 class UserActions {
     loginSubmit(parameters) {
