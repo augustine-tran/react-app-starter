@@ -20,6 +20,10 @@ import bodyParser from 'body-parser';
 import _ from 'lodash';
 import chance from 'chance';
 import validator from 'validator';
+import http from 'superagent';
+import async from 'async';
+
+import appConfigs from './configs/app';
 
 /**
  * Setup server app.
@@ -103,12 +107,34 @@ apiRouter.get('/user/:id', (req, res) => {
     }
 });
 
+let proxyRegex = /(?:\/proxy)(\S*)/;
+
 apiRouter.post('/proxy/*', (req, res) => {
     //TODO: Check for cookies, and perform other necessary magicks
-    console.log(req.url);
+    let path = proxyRegex.exec(req.url)[1];
+    console.log(path);
     console.log(req.headers);
     console.log(req.body);
-    res.send({msg: 'PEEG'});
+
+    //TODO: Refactor out?
+    async.waterfall([
+        function(callback) {
+            http
+                .post(appConfigs.apiUrl + '' + path)
+                .type('json')
+                .send(req.body)
+                .timeout(appConfigs.timeout_ms)
+                .end(callback);
+        }, function(result, callback) {
+            callback(result.body);
+        }
+    ], (error, data) => {
+        if (!error) {
+            res.send(data);
+        } else {
+            res.send(error);
+        }
+    });
 });
 
 apiRouter.get('/proxy/*', (req, res) => {

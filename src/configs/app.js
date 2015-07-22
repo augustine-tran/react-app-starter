@@ -17,5 +17,7 @@ export default {
         url: 'http://react.stevetan.me',
         title: 'React App Starter',
         description: 'This is a fully isomorphic React / Flux App starter.'
-    }
+    },
+    apiUrl: 'http://localhost:3000',
+    timeoutMs: 3 * 1000 //TODO: Get api/Base.js to refer to this?
 };
