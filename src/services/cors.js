@@ -64,7 +64,7 @@ function configureAllowedHeaders(options, req) {
     return null;
 }
 
-function configureExposedHeaders(options, req) {
+function configureExposedHeaders(options) {
     var headers = options.exposedHeaders;
     if (!headers) {
         return null;
@@ -171,11 +171,11 @@ function middlewareWrapper(o) {
                 }
 
                 if (originCallback) {
-                    originCallback(req.headers.origin, function (err, origin) {
+                    originCallback(req.headers.origin, function (error, origin) {
                         req.isOriginWhitelisted = (origin === true);
 
-                        if (err || !origin) {
-                            next(err);
+                        if (error || !origin) {
+                            next(error);
                         } else {
                             var corsOptions = Object.create(options);
                             corsOptions.origin = origin;
