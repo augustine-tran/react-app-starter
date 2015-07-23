@@ -43,7 +43,8 @@ class UserStore {
 
         let successCallback = (data) => {
             //TODO: What do we do with the logged in user details? Store what parts?
-            console.log(data.body);
+            console.log(data);
+            document.cookie = 'sessionId=' + data.sessionId;
 
             if (onFinish != null && _.isFunction(onFinish)) {
                 onFinish();

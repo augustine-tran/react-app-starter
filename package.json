@@ -52,6 +52,7 @@
     "react-bootstrap": "^0.19.1",
     "react-ga": "^1.0.12",
     "react-router": "^0.13.3",
+    "redis": "^0.12.1",
     "require-dir": "^0.1.0",
     "rimraf": "^2.4.1",
     "rss": "^1.1.1",
@@ -59,6 +60,7 @@
     "sitemap": "^0.8.1",
     "superagent": "^1.2.0",
     "superagent-prefix": "0.0.2",
+    "uuid": "^2.0.1",
     "validator": "^3.41.2",
     "webpack": "^1.10.1"
   }

@@ -116,9 +116,11 @@ class User extends Base {
 
     static login(email, password) {
         return () => {
+            document.cookie = 'sessionId=hello';
             let promise = new Promise((resolve, reject) => {
                 async.waterfall([
                     function (callback) {
+                        //TODO: Set Cookie, X-Forwarded-For here?
                         http
                             .post('/proxy/authentication/connect/local')
                             .use(super.constants.BASE_URL)
@@ -130,7 +132,7 @@ class User extends Base {
                             .timeout(super.constants.TIMEOUT_MS)
                             .end(callback);
                     }, function (result, callback) {
-                        callback(null, result);
+                        callback(null, result.body);
                     }
                 ], (error, data) => {
                     if (!error) {

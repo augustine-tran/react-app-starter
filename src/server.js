@@ -22,8 +22,13 @@ import chance from 'chance';
 import validator from 'validator';
 import http from 'superagent';
 import async from 'async';
+import uuid from 'uuid';
 
 import appConfigs from './configs/app';
+
+import redis from './services/redis';
+
+let redisClient = redis.connect();
 
 /**
  * Setup server app.
@@ -112,9 +117,6 @@ let proxyRegex = /(?:\/proxy)(\S*)/;
 apiRouter.post('/proxy/*', (req, res) => {
     //TODO: Check for cookies, and perform other necessary magicks
     let path = proxyRegex.exec(req.url)[1];
-    console.log(path);
-    console.log(req.headers);
-    console.log(req.body);
 
     //TODO: Refactor out?
     async.waterfall([
@@ -123,13 +125,19 @@ apiRouter.post('/proxy/*', (req, res) => {
                 .post(appConfigs.apiUrl + '' + path)
                 .type('json')
                 .send(req.body)
-                .timeout(appConfigs.timeout_ms)
+                .timeout(appConfigs.timeoutMs)
                 .end(callback);
         }, function(result, callback) {
-            callback(result.body);
+            callback(null, result.body);
         }
     ], (error, data) => {
         if (!error) {
+            if (data.tokens) {
+                let sessionId = uuid.v4();
+                redisClient.hmset(sessionId, data.tokens);
+                data.tokens = undefined;
+                data.sessionId = sessionId;
+            }
             res.send(data);
         } else {
             res.send(error);
