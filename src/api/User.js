@@ -116,7 +116,6 @@ class User extends Base {
 
     static login(email, password) {
         return () => {
-            document.cookie = 'sessionId=hello';
             let promise = new Promise((resolve, reject) => {
                 async.waterfall([
                     function (callback) {
