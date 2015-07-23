@@ -24,17 +24,23 @@ import http from 'superagent';
 import async from 'async';
 import uuid from 'uuid';
 
-import appConfigs from './configs/app';
+import appConfig from './configs/app';
+import corsConfig from './configs/cors';
 
-import redis from './services/redis';
+import corsService from './services/cors';
+import errorService from './services/error';
+import redisService from './services/redis';
 
-let redisClient = redis.connect();
+let redisClient = redisService.connect();
 
 /**
  * Setup server app.
  */
 
 let app = express();
+
+let env = app.get('env').toLowerCase();
+
 import Router from './router';
 
 // disable `X-Powered-By` HTTP header
@@ -49,7 +55,43 @@ app.use(favicon(path.join(__dirname, '../public/favicon.ico')));
 app.use(logger('dev'));
 app.use(express.static(path.join(__dirname, '../public')));
 
-app.use(cors());
+var corsOptions = corsConfig.options;
+
+console.log('CORS SERVICE :: Operating in %s mode.', corsConfig.mode);
+
+corsOptions.origin = function (origin, callback) {
+    if (origin == null) {
+        return callback(null, (false || env === 'development'));
+    }
+
+    var originIsWhitelisted = false;
+
+    if (env === 'development') {
+        // If we are in development env, we'll match localhost too.
+        originIsWhitelisted = /^http[s]?:\/\/(?:[0-9a-zA-Z-]+\.)?localhost(?::\d+)*(?:\/.*)*$/i.test(origin);
+    }
+
+    // We'll allow any requests from *.qanvast.com in relaxed mode!
+    // For strict mode, we'll only allow requests from URLs specified in config.
+    if (originIsWhitelisted === false) {
+        if (corsConfig.mode === 'relaxed') {
+            originIsWhitelisted = /^http[s]?:\/\/(?:[0-9a-zA-Z-]+\.)?qanvast\.com(?:\/.*)*$/i.test(origin);
+        } else {
+            originIsWhitelisted = corsConfig.whitelist.indexOf(origin) !== -1;
+        }
+    }
+
+    var error = null;
+
+    if (originIsWhitelisted === false) {
+        error = errorService.throwForbiddenError();
+    }
+
+    callback(error, originIsWhitelisted);
+};
+
+app.options('*', corsService(corsOptions));
+app.use(corsService(corsOptions));
 
 app.use(bodyParser.json());
 
@@ -122,10 +164,10 @@ apiRouter.post('/proxy/*', (req, res) => {
     async.waterfall([
         function(callback) {
             http
-                .post(appConfigs.apiUrl + '' + path)
+                .post(appConfig.apiUrl + '' + path)
                 .type('json')
                 .send(req.body)
-                .timeout(appConfigs.timeoutMs)
+                .timeout(appConfig.timeoutMs)
                 .end(callback);
         }, function(result, callback) {
             callback(null, result.body);

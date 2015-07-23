@@ -62,6 +62,7 @@
     "superagent-prefix": "0.0.2",
     "uuid": "^2.0.1",
     "validator": "^3.41.2",
+    "vary": "^1.0.1",
     "webpack": "^1.10.1"
   }
 }
