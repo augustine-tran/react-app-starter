@@ -20,6 +20,8 @@ class UserStore {
         this.users = {};
         this.userListOrder = []; // TODO: If user list is to be filtered, we can have a new order array. e.g. userSortedListOrder or userFilteredListOrder
         this.userSortedListOrder = [];
+        this.loggedInUser = null;
+        this.loggedInRole = null;
 
         this.bindAction(UserActions.getUser, this.onGetUser);
         this.bindAction(UserActions.getUsers, this.onGetUsers);
@@ -28,7 +30,8 @@ class UserStore {
         this.exportPublicMethods({
             get: this.get,
             getList: this.getList,
-            getPage: this.getPage
+            getPage: this.getPage,
+            getUserAndRole: this.getUserAndRole
         });
     }
 
@@ -43,8 +46,10 @@ class UserStore {
 
         let successCallback = (data) => {
             //TODO: What do we do with the logged in user details? Store what parts?
-            console.log(data);
             document.cookie = 'sessionId=' + data.sessionId;
+            if (data.user != null && data.role != null) {
+                this.setLoggedInState(data.user, data.role);
+            }
 
             if (onFinish != null && _.isFunction(onFinish)) {
                 onFinish();
@@ -70,6 +75,8 @@ class UserStore {
         } else {
             successCallback();
         }
+
+        return false;
     }
 
     onGetUser(payload) {
@@ -240,6 +247,14 @@ class UserStore {
         return this.getList((page - 1) * count, count);
     }
 
+    getUserAndRole() {
+        let state = this.getState();
+        return {
+            user: state.loggedInUser,
+            role: state.loggedInRole
+        };
+    }
+
     set(user) {
         if (user != null) {
             let clonedUser = _.cloneDeep(user);
@@ -274,6 +289,12 @@ class UserStore {
         } else {
             return false;
         }
+    }
+
+    setLoggedInState(user, role) {
+        this.loggedInUser = _.cloneDeep(user);
+        this.loggedInRole = _.clone(role);
+        return true;
     }
 
     // TODO If we need to manage a separate sorted list
