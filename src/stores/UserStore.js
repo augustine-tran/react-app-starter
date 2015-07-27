@@ -46,7 +46,6 @@ class UserStore {
 
         let successCallback = (data) => {
             //TODO: What do we do with the logged in user details? Store what parts?
-            document.cookie = 'sessionId=' + data.sessionId;
             if (data.user != null && data.role != null) {
                 this.setLoggedInState(data.user, data.role);
             }

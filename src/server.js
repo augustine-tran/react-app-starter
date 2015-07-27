@@ -9,20 +9,21 @@ let debug = _debug('react-app-starter');
 /**
  * Express app dependencies.
  */
-import express, {Router as expressRouter} from 'express';
+import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import express, {Router as expressRouter} from 'express';
 import hbs from 'express-handlebars';
+import logger from 'morgan';
 import path from 'path';
 import favicon from 'serve-favicon';
-import logger from 'morgan';
-import bodyParser from 'body-parser';
 
-import _ from 'lodash';
-import chance from 'chance';
-import validator from 'validator';
-import http from 'superagent';
 import async from 'async';
+import chance from 'chance';
+import _ from 'lodash';
+import http from 'superagent';
 import uuid from 'uuid';
+import validator from 'validator';
 
 import appConfig from './configs/app';
 import corsConfig from './configs/cors';
@@ -53,6 +54,7 @@ app.set('view engine', 'hbs');
 
 app.use(favicon(path.join(__dirname, '../public/favicon.ico')));
 app.use(logger('dev'));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, '../public')));
 
 var corsOptions = corsConfig.options;
@@ -178,7 +180,7 @@ apiRouter.post('/proxy/*', (req, res) => {
                 let sessionId = uuid.v4();
                 redisClient.hmset(sessionId, data.tokens);
                 data.tokens = undefined;
-                data.sessionId = sessionId;
+                res.cookie('sessionId', sessionId);
             }
             res.send(data);
         } else {

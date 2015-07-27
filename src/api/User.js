@@ -128,6 +128,7 @@ class User extends Base {
                                 email,
                                 password
                             })
+                            .withCredentials()
                             .timeout(super.constants.TIMEOUT_MS)
                             .end(callback);
                     }, function (result, callback) {
