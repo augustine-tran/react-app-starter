@@ -19,5 +19,6 @@ export default {
         description: 'This is a fully isomorphic React / Flux App starter.'
     },
     apiUrl: 'http://localhost:3000',
-    timeoutMs: 3 * 1000 //TODO: Get api/Base.js to refer to this?
+    timeoutMs: 3 * 1000, //TODO: Get api/Base.js to refer to this?
+    apiVersion: 'v3.5.0'
 };

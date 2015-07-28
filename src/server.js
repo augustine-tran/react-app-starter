@@ -168,6 +168,7 @@ apiRouter.post('/proxy/*', (req, res) => {
             http
                 .post(appConfig.apiUrl + '' + path)
                 .type('json')
+                .set('X-QANVAST-API-VERSION', 'v3.5.0')
                 .send(req.body)
                 .timeout(appConfig.timeoutMs)
                 .end(callback);
