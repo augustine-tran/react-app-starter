@@ -20,5 +20,6 @@ export default {
     },
     apiUrl: 'http://localhost:3000',
     timeoutMs: 3 * 1000, //TODO: Get api/Base.js to refer to this?
-    apiVersion: 'v3.5.0'
+    apiVersion: 'v3.5.0',
+    signature: 'qanvast'
 };
