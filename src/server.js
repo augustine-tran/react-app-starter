@@ -159,13 +159,15 @@ apiRouter.get('/user/:id', (req, res) => {
 
 let proxyRegex = /(?:\/proxy)(\S*)/;
 
-//TODO: Refactor whole algo waterfall?
+//TODO: Refactor whole algo waterfall and repeated checks into functions
 apiRouter.post('/proxy/*', (req, res) => {
     let path = proxyRegex.exec(req.url)[1];
     let authToken;
     let sessionId;
 
     if (req.signedCookies != null && req.signedCookies.sessionId != null) {
+        //TODO: Check for CSRF before refresh
+
         redisClient.hget(req.signedCookies.sessionId, 'expiry', function(err, value) {
             if (!err && value != null) {
                 sessionId = req.signedCookies.sessionId;
@@ -185,9 +187,6 @@ apiRouter.post('/proxy/*', (req, res) => {
                 console.error(err);
             }
         });
-    } else {
-        //TODO: enable logic to check for whitelisted endpoints that need no credentials?
-        console.log('no signed cookies!');
     }
 
     //TODO: Refactor out?
@@ -206,8 +205,7 @@ apiRouter.post('/proxy/*', (req, res) => {
     ], (error, data) => {
         if (!error) {
             if (data.tokens) {
-                let expiryDate = moment();
-                expiryDate.add(65, 'minutes'); //TODO: refactor into config
+                let expiryDate = moment(data.tokens.expiry);
                 if (!sessionId) {
                     sessionId = uuid.v4();
                 }
