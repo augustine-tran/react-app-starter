@@ -19,6 +19,7 @@ import UserActions from '../../actions/UserActions';
 import AppStore from '../../stores/AppStore';
 import UserStore from '../../stores/UserStore';
 
+//TODO: Rename this method?
 function authenticate(callback) {
     let parameters = {
         callback: callback
@@ -34,7 +35,7 @@ function getInitialState() {
 }
 
 function getStateFromStores() {
-    return UserStore.getUserAndRole();
+    return UserStore.getUser();
 }
 
 class App extends React.Component {
@@ -70,6 +71,7 @@ class App extends React.Component {
     componentDidMount() {
         AppStore.listen(this.onAlert);
         UserStore.listen(this.onChange);
+        authenticate();
     }
 
     componentWillMount() {
@@ -127,17 +129,6 @@ class App extends React.Component {
                 </footer>
             </div>
         );
-    }
-
-    /**
-     * Static method to trigger data actions for server-side rendering.
-     *
-     * @param routerState
-     * @returns {*}
-     */
-    static fetchData(routerState, callback) {
-        //TODO: No longer needed? Do not populate on first call to server, only after first request?
-        authenticate(callback);
     }
 
     /**

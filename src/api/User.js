@@ -156,7 +156,7 @@ class User extends Base {
                         http
                             .get('/proxy/user/')
                             .use(super.constants.BASE_URL)
-                            //.withCredentials()
+                            .withCredentials()
                             .timeout(super.constants.TIMEOUT_MS)
                             .end(callback);
                     }, function (result, callback) {

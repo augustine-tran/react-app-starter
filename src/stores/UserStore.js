@@ -21,7 +21,6 @@ class UserStore {
         this.userListOrder = []; // TODO: If user list is to be filtered, we can have a new order array. e.g. userSortedListOrder or userFilteredListOrder
         this.userSortedListOrder = [];
         this.loggedInUser = null;
-        this.loggedInRole = null;
 
         this.bindAction(UserActions.getUser, this.onGetUser);
         this.bindAction(UserActions.getUsers, this.onGetUsers);
@@ -32,7 +31,7 @@ class UserStore {
             get: this.get,
             getList: this.getList,
             getPage: this.getPage,
-            getUserAndRole: this.getUserAndRole
+            getUser: this.getUser
         });
     }
 
@@ -44,8 +43,11 @@ class UserStore {
         } = payload;
 
         let successCallback = (data) => {
-            if (data.user != null && data.role != null) {
-                this.setLoggedInState(data.user, data.role);
+            let user = _.cloneDeep(data);
+            user.avatar = undefined;
+            user.worksAt = undefined;
+            if (user != null) {
+                this.setLoggedInState(user);
             }
 
             if (onFinish != null && _.isFunction(onFinish)) {
@@ -83,8 +85,8 @@ class UserStore {
 
         let successCallback = (data) => {
             //TODO: What do we do with the logged in user details? Store what parts?
-            if (data.user != null && data.role != null) {
-                this.setLoggedInState(data.user, data.role);
+            if (data.user != null) {
+                this.setLoggedInState(data.user);
             }
 
             if (onFinish != null && _.isFunction(onFinish)) {
@@ -283,11 +285,10 @@ class UserStore {
         return this.getList((page - 1) * count, count);
     }
 
-    getUserAndRole() {
+    getUser() {
         let state = this.getState();
         return {
-            user: state.loggedInUser,
-            role: state.loggedInRole
+            user: state.loggedInUser
         };
     }
 
@@ -327,9 +328,8 @@ class UserStore {
         }
     }
 
-    setLoggedInState(user, role) {
+    setLoggedInState(user) {
         this.loggedInUser = _.cloneDeep(user);
-        this.loggedInRole = _.clone(role);
         return true;
     }
 
