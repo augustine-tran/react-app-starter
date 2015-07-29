@@ -227,41 +227,43 @@ apiRouter.get('/proxy/*', (req, res) => {
     let authToken = 'bearer ';
     let sessionId;
 
-    if (req.signedCookies != null && req.signedCookies.sessionId != null) {
-        //TODO: Check for CSRF before refresh
-
-        redisClient.hget(req.signedCookies.sessionId, 'expiry', function(err, value) {
-            if (!err && value != null) {
-                sessionId = req.signedCookies.sessionId;
-                let expiryMoment = moment(value);
-                let nowMoment = moment();
-                if (nowMoment.valueOf() > expiryMoment.valueOf()) {
-                    //TODO: refresh logic
-                    console.log('refresh needed');
-                } else {
-                    //TODO: Append authtoken?
-                    console.log('populating authToken');
-                    redisClient.hget(req.signedCookies.sessionId, 'accessToken', function(error, accessToken) {
-                        if (!error) {
-                            authToken += accessToken;
-                        }
-                    });
-                }
-            } else if (value == null) {
-                //TODO: respond to client with error?
-                console.log('sessionId has expired');
-            } else {
-                console.error(err);
-            }
-        });
-    } else {
-        //TODO: enable logic to check for whitelisted endpoints that need no credentials?
-        console.log('no signed cookies!');
-    }
-
-    //TODO: Refactor out?
     async.waterfall([
         function(callback) {
+            if (req.signedCookies != null && req.signedCookies.sessionId != null) {
+                //TODO: Check for CSRF before refresh
+
+                redisClient.hget(req.signedCookies.sessionId, 'expiry', function(err, value) {
+                    if (!err && value != null) {
+                        sessionId = req.signedCookies.sessionId;
+                        let expiryMoment = moment(value);
+                        let nowMoment = moment();
+                        if (nowMoment.valueOf() > expiryMoment.valueOf()) {
+                            //TODO: refresh logic
+                            console.log('refresh needed');
+                            callback();
+                        } else {
+                            //TODO: Append authtoken?
+                            console.log('populating authToken');
+                            redisClient.hget(req.signedCookies.sessionId, 'accessToken', function(error, accessToken) {
+                                if (!error) {
+                                    authToken += accessToken;
+                                }
+                                callback();
+                            });
+                        }
+                    } else if (value == null) {
+                        //TODO: respond to client with error?
+                        console.log('sessionId has expired');
+                        callback();
+                    } else {
+                        console.error(err);
+                        callback();
+                    }
+                });
+            } else {
+                callback();
+            }
+        }, function(callback) { //TODO: Refactor out?
             http
                 .get(appConfig.apiUrl + '' + path)
                 .type('json')
