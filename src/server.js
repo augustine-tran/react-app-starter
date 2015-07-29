@@ -221,12 +221,75 @@ apiRouter.post('/proxy/*', (req, res) => {
     });
 });
 
+//TODO: Refactor whole algo waterfall and repeated checks into functions
 apiRouter.get('/proxy/*', (req, res) => {
-    //TODO: Check for cookies, and perform other necessary magicks
-    console.log(req.url);
-    console.log(req.headers);
-    console.log(req.params);
-    res.send({msg: 'GEEP'});
+    let path = proxyRegex.exec(req.url)[1];
+    let authToken = 'bearer ';
+    let sessionId;
+
+    if (req.signedCookies != null && req.signedCookies.sessionId != null) {
+        //TODO: Check for CSRF before refresh
+
+        redisClient.hget(req.signedCookies.sessionId, 'expiry', function(err, value) {
+            if (!err && value != null) {
+                sessionId = req.signedCookies.sessionId;
+                let expiryMoment = moment(value);
+                let nowMoment = moment();
+                if (nowMoment.valueOf() > expiryMoment.valueOf()) {
+                    //TODO: refresh logic
+                    console.log('refresh needed');
+                } else {
+                    //TODO: Append authtoken?
+                    console.log('populating authToken');
+                    redisClient.hget(req.signedCookies.sessionId, 'accessToken', function(error, accessToken) {
+                        if (!error) {
+                            authToken += accessToken;
+                        }
+                    });
+                }
+            } else if (value == null) {
+                //TODO: respond to client with error?
+                console.log('sessionId has expired');
+            } else {
+                console.error(err);
+            }
+        });
+    } else {
+        //TODO: enable logic to check for whitelisted endpoints that need no credentials?
+        console.log('no signed cookies!');
+    }
+
+    //TODO: Refactor out?
+    async.waterfall([
+        function(callback) {
+            http
+                .get(appConfig.apiUrl + '' + path)
+                .type('json')
+                .set('X-QANVAST-API-VERSION', appConfig.apiVersion)
+                .set('Authorization', authToken)
+                .query(req.query)
+                .timeout(appConfig.timeoutMs)
+                .end(callback);
+        }, function(result, callback) {
+            callback(null, result.body);
+        }
+    ], (error, data) => {
+        if (!error) {
+            if (data.tokens) {
+                let expiryDate = moment(data.tokens.expiry);
+                if (!sessionId) {
+                    sessionId = uuid.v4();
+                }
+                redisClient.hmset(sessionId, data.tokens);
+                redisClient.expireat(sessionId, expiryDate.unix());
+                data.tokens = undefined;
+                res.cookie('sessionId', sessionId, {signed: true});
+            }
+            res.send(data);
+        } else {
+            res.send(error);
+        }
+    });
 });
 
 app.use('/api', apiRouter);

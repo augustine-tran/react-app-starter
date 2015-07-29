@@ -19,6 +19,20 @@ import UserActions from '../../actions/UserActions';
 import AppStore from '../../stores/AppStore';
 import UserStore from '../../stores/UserStore';
 
+function authenticate(callback) {
+    let parameters = {
+        callback: callback
+    };
+
+    UserActions.getUserDetails(parameters);
+}
+
+function getInitialState() {
+    return {
+        users: undefined
+    };
+}
+
 function getStateFromStores() {
     return UserStore.getUserAndRole();
 }
@@ -27,7 +41,7 @@ class App extends React.Component {
     constructor(props, context) {
         super(props, context); // NOTE: IntelliJ lints this as invalid. Ignore warning.
 
-        this.state = getStateFromStores();
+        this.state = getInitialState();
 
         /**
          * Event handler for 'change' events coming from the UserStore
@@ -113,6 +127,17 @@ class App extends React.Component {
                 </footer>
             </div>
         );
+    }
+
+    /**
+     * Static method to trigger data actions for server-side rendering.
+     *
+     * @param routerState
+     * @returns {*}
+     */
+    static fetchData(routerState, callback) {
+        //TODO: No longer needed? Do not populate on first call to server, only after first request?
+        authenticate(callback);
     }
 
     /**

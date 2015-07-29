@@ -26,6 +26,7 @@ class UserStore {
         this.bindAction(UserActions.getUser, this.onGetUser);
         this.bindAction(UserActions.getUsers, this.onGetUsers);
         this.bindAction(UserActions.loginSubmit, this.onLoginSubmit);
+        this.bindAction(UserActions.getUserDetails, this.onGetUserDetails);
 
         this.exportPublicMethods({
             get: this.get,
@@ -33,6 +34,42 @@ class UserStore {
             getPage: this.getPage,
             getUserAndRole: this.getUserAndRole
         });
+    }
+
+    onGetUserDetails(payload) {
+        let {
+            getUserDetails,
+            onError,
+            onFinish
+        } = payload;
+
+        let successCallback = (data) => {
+            if (data.user != null && data.role != null) {
+                this.setLoggedInState(data.user, data.role);
+            }
+
+            if (onFinish != null && _.isFunction(onFinish)) {
+                onFinish();
+            }
+
+            this.emitChange();
+        };
+
+        let errorCallback = error => {
+            if (onError != null && _.isFunction(onError)) {
+                onError(error);
+            }
+
+            if (onFinish != null && _.isFunction(onFinish)) {
+                onFinish(error);
+            }
+        };
+
+        getUserDetails()
+            .then(successCallback)
+            .catch(errorCallback);
+
+        return false;
     }
 
     onLoginSubmit(payload) {

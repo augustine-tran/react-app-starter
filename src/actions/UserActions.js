@@ -30,6 +30,20 @@ class UserActions {
         this.dispatch(payload);
     }
 
+    getUserDetails(parameters) {
+        let { callback } = parameters;
+
+        let payload = {
+            getUserDetails: UserAPI.getUser(),
+            onError: error => {
+                AppActions.showAlert({error});
+            },
+            onFinish: (callback != null && _.isFunction(callback)) ? callback : undefined
+        };
+
+        this.dispatch(payload);
+    }
+
     getUser(parameters) {
         let { id, fields, callback } = parameters;
 
