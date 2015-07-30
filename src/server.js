@@ -160,42 +160,54 @@ apiRouter.get('/user/:id', (req, res) => {
 let proxyRegex = /(?:\/proxy)(\S*)/;
 
 //TODO: Refactor whole algo waterfall and repeated checks into functions
-apiRouter.post('/proxy/*', (req, res) => {
+apiRouter.post('/proxy/*', (req, res, next) => {
     let path = proxyRegex.exec(req.url)[1];
-    let authToken;
+    let authToken = 'bearer ';
     let sessionId;
-
-    if (req.signedCookies != null && req.signedCookies.sessionId != null) {
-        //TODO: Check for CSRF before refresh
-
-        redisClient.hget(req.signedCookies.sessionId, 'expiry', function(err, value) {
-            if (!err && value != null) {
-                sessionId = req.signedCookies.sessionId;
-                let expiryMoment = moment(value);
-                let nowMoment = moment();
-                if (nowMoment.valueOf() > expiryMoment.valueOf()) {
-                    //TODO: refresh logic
-                    console.log('refresh needed');
-                } else {
-                    //TODO: Append authtoken?
-                    console.log('populating authToken');
-                }
-            } else if (value == null) {
-                //TODO: respond to client with error?
-                console.log('sessionId has expired');
-            } else {
-                console.error(err);
-            }
-        });
-    }
 
     //TODO: Refactor out?
     async.waterfall([
         function(callback) {
+            if (req.signedCookies != null && req.signedCookies.sessionId != null) {
+                //TODO: Check for CSRF before refresh
+
+                redisClient.hget(req.signedCookies.sessionId, 'expiry', function(err, value) {
+                    if (!err && value != null) {
+                        sessionId = req.signedCookies.sessionId;
+                        let expiryMoment = moment(value);
+                        let nowMoment = moment();
+                        if (nowMoment.valueOf() > expiryMoment.valueOf()) {
+                            //TODO: refresh logic
+                            console.log('refresh needed');
+                            callback();
+                        } else {
+                            //TODO: Append authtoken?
+                            console.log('populating authToken');
+                            redisClient.hget(req.signedCookies.sessionId, 'accessToken', function(error, accessToken) {
+                                if (!error) {
+                                    authToken += accessToken;
+                                }
+                                callback();
+                            });
+                        }
+                    } else if (value == null) {
+                        //TODO: respond to client with error?
+                        console.log('sessionId has expired');
+                        callback();
+                    } else {
+                        console.error(err);
+                        callback(err);
+                    }
+                });
+            } else {
+                callback();
+            }
+        }, function(callback) {
             http
                 .post(appConfig.apiUrl + '' + path)
                 .type('json')
                 .set('X-QANVAST-API-VERSION', appConfig.apiVersion)
+                .set('Authorization', authToken)
                 .send(req.body)
                 .timeout(appConfig.timeoutMs)
                 .end(callback);
