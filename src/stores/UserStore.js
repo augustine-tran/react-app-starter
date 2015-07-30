@@ -59,7 +59,7 @@ class UserStore {
 
         let errorCallback = error => {
             if (onError != null && _.isFunction(onError)) {
-                onError(error);
+                onError(error); //TODO: do nothing instead?
             }
 
             if (onFinish != null && _.isFunction(onFinish)) {

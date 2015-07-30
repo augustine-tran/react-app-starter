@@ -216,13 +216,13 @@ apiRouter.post('/proxy/*', (req, res) => {
             }
             res.send(data);
         } else {
-            res.send(error);
+            next(error);
         }
     });
 });
 
 //TODO: Refactor whole algo waterfall and repeated checks into functions
-apiRouter.get('/proxy/*', (req, res) => {
+apiRouter.get('/proxy/*', (req, res, next) => {
     let path = proxyRegex.exec(req.url)[1];
     let authToken = 'bearer ';
     let sessionId;
@@ -289,7 +289,7 @@ apiRouter.get('/proxy/*', (req, res) => {
             }
             res.send(data);
         } else {
-            res.send(error);
+            next(error);
         }
     });
 });
