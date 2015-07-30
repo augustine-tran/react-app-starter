@@ -13,6 +13,17 @@ import AppActions from './AppActions';
 import UserAPI from '../api/User';
 
 class UserActions {
+    logoutClick() {
+        let payload = {
+            logout: UserAPI.logout(),
+            onError: error => {
+                AppActions.showAlert({error});
+            }
+        };
+
+        this.dispatch(payload);
+    }
+
     loginSubmit(parameters) {
         let {email, password, callback} = parameters;
         //TODO: Callback will perform what function?

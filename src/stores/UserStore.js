@@ -26,6 +26,7 @@ class UserStore {
         this.bindAction(UserActions.getUsers, this.onGetUsers);
         this.bindAction(UserActions.loginSubmit, this.onLoginSubmit);
         this.bindAction(UserActions.getUserDetails, this.onGetUserDetails);
+        this.bindAction(UserActions.logoutClick, this.onLogoutClick);
 
         this.exportPublicMethods({
             get: this.get,
@@ -33,6 +34,31 @@ class UserStore {
             getPage: this.getPage,
             getUser: this.getUser
         });
+    }
+
+    onLogoutClick(payload) {
+        let {
+            logout,
+            onError
+        } = payload;
+
+        let successCallback = () => {
+            this.setLoggedInState(null);
+
+            this.emitChange();
+        };
+
+        let errorCallback = error => {
+            if (onError != null && _.isFunction(onError)) {
+                onError(error); //TODO: do nothing instead?
+            }
+        };
+
+        logout()
+            .then(successCallback)
+            .catch(errorCallback);
+
+        return false;
     }
 
     onGetUserDetails(payload) {

@@ -8,7 +8,7 @@ import _ from 'lodash';
 import {RouteHandler} from 'react-router';
 
 // Components
-import {Navbar, Nav, NavItem} from 'react-bootstrap';
+import {Button, ButtonGroup, Navbar, Nav, NavItem} from 'react-bootstrap';
 import GoogleAnalytics from 'react-ga';
 import List from '../Widgets/List';
 
@@ -66,6 +66,10 @@ class App extends React.Component {
 
             UserActions.loginSubmit(parameters);
         };
+
+        this.onLogoutClick = () => {
+            UserActions.logoutClick();
+        }
     }
 
     componentDidMount() {
@@ -96,14 +100,24 @@ class App extends React.Component {
             </form>
         );
         const userDetails = (
-            <span>Welcome! {this.state.user ? this.state.user.name : ''}</span>
+            <span>Welcome {this.state.user ? this.state.user.name : ''}</span>
         );
+
+        const logoutButton = (
+            <ButtonGroup>
+                <Button bsStyle='info' onClick={this.onLogoutClick}>
+                    {'Logout'}
+                </Button>
+            </ButtonGroup>
+        );
+
         return (
             <div>
                 <Navbar brand='React App Starter' staticTop toggleNavKey={0}>
                     <Nav right eventKey={0}> {/* This is the eventKey referenced */}
                         <NavItem>
                             {this.state.user ? userDetails : userAuth}
+                            {this.state.user ? logoutButton : ''}
                         </NavItem>
                         <NavItem eventKey={1} href='http://stevetan.me'>Blog</NavItem>
                     </Nav>

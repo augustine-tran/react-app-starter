@@ -174,6 +174,34 @@ class User extends Base {
             return promise;
         };
     }
+
+    static logout() {
+        return () => {
+            let promise = new Promise((resolve, reject) => {
+                async.waterfall([
+                    function (callback) {
+                        //TODO: Set Cookie, X-Forwarded-For here?
+                        http
+                            .post('/logout/')
+                            .use(super.constants.BASE_URL)
+                            .withCredentials()
+                            .timeout(super.constants.TIMEOUT_MS)
+                            .end(callback);
+                    }, function (result, callback) {
+                        callback(null, result.body);
+                    }
+                ], (error, data) => {
+                    if (!error) {
+                        resolve(data);
+                    } else {
+                        reject(error);
+                    }
+                });
+            });
+
+            return promise;
+        };
+    }
 }
 
 export default User;

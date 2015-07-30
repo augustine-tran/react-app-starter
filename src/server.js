@@ -157,6 +157,20 @@ apiRouter.get('/user/:id', (req, res) => {
     }
 });
 
+apiRouter.post('/logout/', (req, res, next) => {
+    if(req.signedCookies != null && req.signedCookies.sessionId != null) {
+        redisClient.del(req.signedCookies.sessionId, function(err) {
+            if (!err) {
+                res.send();
+            } else {
+                next(err);
+            }
+        });
+    } else {
+        res.send();
+    }
+});
+
 let proxyRegex = /(?:\/proxy)(\S*)/;
 
 //TODO: Refactor whole algo waterfall and repeated checks into functions
